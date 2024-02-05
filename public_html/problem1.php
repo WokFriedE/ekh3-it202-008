@@ -10,7 +10,6 @@ function processArray($arr)
     // Ethan Ho - ekkh3 - 2/5/24
 
     //note: use the $arr variable to iterate over, don't directly touch $a1-$a4
-    //TODO add logic here to echo out only odd values
     foreach ($arr as $x) {
         if ($x % 2 == 1)
             echo $x . "<br>";
