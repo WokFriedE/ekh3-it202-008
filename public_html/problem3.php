@@ -9,7 +9,7 @@ function bePositive($arr)
     echo "<br>Processing Array:<br><pre>" . var_export($arr, true) . "</pre>";
     echo "<br>Positive output:<br>";
 
-    // Ethan Ho - ekh3 - due: 2/5/24 - last worked: 2/4/24
+    // Ethan Ho - ekh3 - due: 2/5/24 - last worked: 2/5/24
     // assumptions: the conversion must be in place
 
     //note: use the $arr variable, don't directly touch $a1-$a4
@@ -22,8 +22,9 @@ function bePositive($arr)
     }
 
     foreach ($arr as $num) {
-        echo $num  . "<br>";
+        echo "$num - " . gettype($num) . " <br>";
     }
+    // end
 
     //hint: may want to use var_dump() or similar to show final data types
 }

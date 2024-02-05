@@ -7,7 +7,7 @@ function getTotal($arr)
 {
     echo "<br>Processing Array:<br><pre>" . var_export($arr, true) . "</pre>";
     $total = 0.00;
-    // Ethan Ho - ekh3 - due: 2/5/24 - last worked: 2/4/24
+    // Ethan Ho - ekh3 - due: 2/5/24 - last worked: 2/5/24
 
     //note: use the $arr variable, don't directly touch $a1-$a4
     //TODO do adding here
@@ -17,6 +17,7 @@ function getTotal($arr)
 
     //TODO do rounding stuff here (round to two decimals i.e., 0.10, 0.01, 0.00)
     $total = round($total, 2);
+    $total = number_format($total, 2);
 
     echo "The total is " . var_export($total, true);
 }
