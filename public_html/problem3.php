@@ -21,7 +21,7 @@ function bePositive($arr)
     }
 
     foreach ($arr as $num) {
-        echo var_dump($num)  . "<br>";
+        echo $num  . "<br>";
     }
 
     //hint: may want to use var_dump() or similar to show final data types
