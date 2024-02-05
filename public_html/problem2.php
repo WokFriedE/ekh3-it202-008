@@ -14,10 +14,12 @@ function getTotal($arr)
     foreach ($arr as $num) {
         $total += $num;
     }
+    // end
 
     //TODO do rounding stuff here (round to two decimals i.e., 0.10, 0.01, 0.00)
     $total = round($total, 2);
     $total = number_format($total, 2);
+    // end
 
     echo "The total is " . var_export($total, true);
 }
