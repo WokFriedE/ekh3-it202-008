@@ -11,9 +11,9 @@ function processArray($arr)
 
     //note: use the $arr variable to iterate over, don't directly touch $a1-$a4
     //TODO add logic here to echo out only odd values
-    foreach ($arr as $x) {
-        if ($x % 2 == 1)
-            echo $x . "<br>";
+    foreach ($arr as $item) {
+        if ($item % 2 == 1)
+            echo $item . "<br>";
     }
 }
 echo "Problem 1: Odd Output<br>";
