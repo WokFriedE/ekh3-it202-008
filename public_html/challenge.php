@@ -8,18 +8,64 @@
         window.addEventListener("load", () => {
             console.log("loaded via javascript");
             //TODO: add any extra onload processing you may need here
+            // Ethan Ho - ekh3 - due 2/12/23 - modified 2/12/23
+            getCurrentSelection()
         });
+
         function getCurrentSelection() {
             setTimeout(() => {
                 //added this delay here as some solutions may require it to update properly (i.e., click code may complete before the navigation changes)
                 //TODO: add code for processing the current selection 
-
                 //Note: likely you'll want to call updateCurrentPage towards the end
+                window.onhashchange = function() {
+                    let currPage = window.location.hash.slice(1);
+                    updateCurrentPage(currPage);
+                    document.getElementsByTagName("title")[0].innerText = currPage;
+                }
             }, 100);
         }
     </script>
     <style>
         /* TODO: make edits here */
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #343E3D;
+        }
+
+        nav li a {
+            float: left;
+            padding: 10px;
+            text-decoration: none;
+            color: #FFFFFF;
+            font-size: large;
+        }
+
+        nav a:hover {
+            background-color: #333333;
+        }
+
+        ul li ul li {
+            list-style-type: "✓";
+            font-size: medium;
+        }
+
+        h1::first-letter,
+        a::first-letter {
+            text-transform: uppercase;
+        }
+
+        /* Updated to make it look better*/
+        body {
+            background-color: #E9EDDE;
+        }
+
+        ul li {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: large;
+        }
     </style>
     <!-- make the necessary edits above this line -->
 
