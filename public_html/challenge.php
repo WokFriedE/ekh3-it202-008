@@ -41,6 +41,7 @@
             text-decoration: none;
             color: #FFFFFF;
             font-size: large;
+            text-align: center;
         }
 
         nav a:hover {
