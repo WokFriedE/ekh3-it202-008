@@ -19,8 +19,8 @@
                 //Note: likely you'll want to call updateCurrentPage towards the end
                 window.onhashchange = function() {
                     let currPage = window.location.hash.slice(1);
-                    updateCurrentPage(currPage);
-                    document.getElementsByTagName("title")[0].innerText = currPage;
+                    updateCurrentPage(currPage); // provides change to both <h1> and <title>
+                    // document.getElementsByTagName("title")[0].innerText = currPage; // for my reference in the future
                 }
             }, 100);
         }
