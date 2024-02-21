@@ -61,7 +61,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                     if (password_verify($password, $hash)) { // use the same salt --> hash the current password and test it to the hash
                         // true if get it works 
                         echo "Weclome $email";
-                        $_SESSION = $user;
+                        $_SESSION["user"] = $user;
                         die(header("Location: home.php"));
                     } else {
                         echo "Invalid password";
