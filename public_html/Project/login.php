@@ -1,22 +1,16 @@
 <?php
-
 require(__DIR__ . "/../../partials/nav.php");
 ?>
 <form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email</label>
-
         <input type="email" name="email" required />
     </div>
     <div>
         <label for="pw">Password</label>
         <input type="password" id="pw" name="password" required minlength="8" />
     </div>
-    <div>
-        <label for="confirm">Confirm</label>
-        <input type="password" name="confirm" required minlength="8" />
-    </div>
-    <input type="submit" value="Register" />
+    <input type="submit" value="Login" />
 </form>
 <script>
     function validate(form) {
@@ -28,16 +22,10 @@ require(__DIR__ . "/../../partials/nav.php");
 </script>
 <?php
 //TODO 2: add PHP Code
-// check if posts exists first then cache if it exists 
-if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"])) {
+if (isset($_POST["email"]) && isset($_POST["password"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
-    $confirm = se(
-        $_POST,
-        "confirm",
-        "",
-        false
-    );
+
     //TODO 3
     $hasError = false;
     if (empty($email)) {
@@ -55,32 +43,35 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         echo "password must not be empty";
         $hasError = true;
     }
-    if (empty($confirm)) {
-        echo "Confirm password must not be empty";
-        $hasError = true;
-    }
     if (strlen($password) < 8) {
         echo "Password too short";
         $hasError = true;
     }
-    if (
-        strlen($password) > 0 && $password !== $confirm
-    ) {
-        echo "Passwords must match";
-        $hasError = true;
-    }
     if (!$hasError) {
-        echo "Welcome, $email";
         //TODO 4
-        $hash = password_hash($password, PASSWORD_BCRYPT);
         $db = getDB();
-        $stmt = $db->prepare("INSERT INTO Users (email, password) VALUES(:email, :password)");
+        $stmt = $db->prepare("SELECT id, email, password from Users where email = :email"); // allows u to get the info for specific email + any other info and can store in cookie
         try {
-            $stmt->execute([":email" => $email, ":password" => $hash]);
-            echo "Successfully registered!";
+            $r = $stmt->execute([":email" => $email]);
+            if ($r) {
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($user) {
+                    $hash = $user["password"];
+                    unset($user["password"]); //unset the password hash so it cannot be used outside of the context
+                    if (password_verify($password, $hash)) { // use the same salt --> hash the current password and test it to the hash
+                        // true if get it works 
+                        echo "Weclome $email";
+                        $_SESSION["user"] = $user;
+                        die(header("Location: home.php"));
+                    } else {
+                        echo "Invalid password";
+                    }
+                } else {
+                    echo "Email not found";
+                }
+            }
         } catch (Exception $e) {
-            echo "There was a problem registering";
-            "<pre>" . var_export($e, true) . "</pre>";
+            echo "<pre>" . var_export($e, true) . "</pre>";
         }
     }
 }
