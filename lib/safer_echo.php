@@ -26,6 +26,7 @@ function se($v, $k = null, $default = "", $isEcho = true)
             $returnValue = $default;
         }
     }
+
     // use default value if not set yet
     if (!isset($returnValue)) {
         $returnValue = $default;
