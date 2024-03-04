@@ -11,14 +11,18 @@ function getTotal($arr)
 
     //note: use the $arr variable, don't directly touch $a1-$a4
     //TODO do adding here
-    foreach ($arr as $num) {
+
+    /* foreach ($arr as $num) {
         $total += $num;
-    }
+    } */
+    $total = array_sum($arr);
+
     // end
 
     //TODO do rounding stuff here (round to two decimals i.e., 0.10, 0.01, 0.00)
-    $total = round($total, 2);
-    $total = number_format($total, 2);
+    // $total = round($total, 2);
+    // $total = number_format($total, 2);
+    $total = sprintf("%.2f", $total);
     // end
 
     echo "The total is " . var_export($total, true);
