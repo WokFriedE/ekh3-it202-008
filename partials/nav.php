@@ -1,6 +1,7 @@
 <!-- EDITED W/ COMMENTS-->
 
-<!-- <?php
+<!-- <?php /*
+
         //Note: this is to resolve cookie issues with port numbers
         $domain = $_SERVER["HTTP_HOST"];
         if (strpos($domain, ":")) {
@@ -34,7 +35,9 @@
         <li><a href="register.php">Register</a></li>
         <li><a href="logout.php">Logout</a></li>
     </ul>
-</nav> -->
+</nav> 
+*/
+        ?>-->
 
 <?php
 //Note: this is to resolve cookie issues with port numbers
