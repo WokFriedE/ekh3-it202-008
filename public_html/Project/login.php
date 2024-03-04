@@ -33,9 +33,9 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         $hasError = true;
     }
     //sanitize
-    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    $email = sanitize_email($email);
     //validate
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!is_valid_email($email)) {
         flash("Invalid email address");
         $hasError = true;
     }
@@ -50,14 +50,14 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     if (!$hasError) {
         //TODO 4
         $db = getDB();
-        $stmt = $db->prepare("SELECT id, email, password from Users where email = :email"); // allows u to get the info for specific email + any other info and can store in cookie
+        $stmt = $db->prepare("SELECT email, password from Users where email = :email"); // allows u to get the info for specific email + any other info and can store in cookie
         try {
             $r = $stmt->execute([":email" => $email]);
             if ($r) {
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($user) {
                     $hash = $user["password"];
-                    unset($user["password"]); //unset the password hash so it cannot be used outside of the context
+                    unset($user["password"]);  //unset the password hash so it cannot be used outside of the context
                     if (password_verify($password, $hash)) { // use the same salt --> hash the current password and test it to the hash
                         // true if get it works 
                         flash("Weclome $email");
@@ -71,10 +71,11 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                 }
             }
         } catch (Exception $e) {
-            // flash("<pre>" . var_export($e, true) . "</pre>");
-            flash("An unhandled error occured");
-            error_log(var_export($e, true));
+            flash("<pre>" . var_export($e, true) . "</pre>");
         }
     }
 }
+?>
+<?php
+require(__DIR__ . "/../../partials/flash.php");
 ?>
