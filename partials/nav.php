@@ -1,44 +1,3 @@
-<!-- EDITED W/ COMMENTS-->
-
-<!-- <?php /*
-
-        //Note: this is to resolve cookie issues with port numbers
-        $domain = $_SERVER["HTTP_HOST"];
-        if (strpos($domain, ":")) {
-            $domain = explode(":", $domain)[0]; //get the domain to see if you can get cookies
-        }
-        $localWorks = true; //some people have issues with localhost for the cookie params
-        //if you're one of those people make this false
-
-        //this is an extra condition added to "resolve" the localhost issue for the session cookie
-        if (($localWorks && $domain == "localhost") || $domain != "localhost") {
-            session_set_cookie_params([ // session cookie, can be used to impersonate 
-                "lifetime" => 60 * 60,
-                "path" => "/Project", // if don't have this, people could log into your session with admin perms
-                //"domain" => $_SERVER["HTTP_HOST"] || "localhost",
-                "domain" => $domain, //
-                "secure" => true, //only HTTPS
-                "httponly" => true, //JS cannot access cookies
-                "samesite" => "lax" // can make this more restrictive 
-            ]);
-        }
-        session_start(); // load session, make session, or so on
-        //include functions here so we can have it on every page that uses the nav bar
-        //that way we don't need to include so many other files on each page
-        //nav will pull in functions and functions will pull in db
-        require(__DIR__ . "/../lib/functions.php");
-        ?>
-<nav>
-    <ul>
-        <li><a href="home.php">Home</a></li>
-        <li><a href="login.php">Login</a></li>
-        <li><a href="register.php">Register</a></li>
-        <li><a href="logout.php">Logout</a></li>
-    </ul>
-</nav> 
-*/
-        ?>-->
-
 <?php
 //Note: this is to resolve cookie issues with port numbers
 $domain = $_SERVER["HTTP_HOST"];
@@ -68,6 +27,7 @@ require_once(__DIR__ . "/../lib/functions.php");
     <ul>
         <?php if (is_logged_in()) : ?>
             <li><a href="home.php">Home</a></li>
+            <li><a href="profile.php">Profile</a></li>
         <?php endif; ?>
         <?php if (!is_logged_in()) : ?>
             <li><a href="login.php">Login</a></li>

@@ -4,7 +4,7 @@
 ?>
 <div class="container" id="flash">
     <!-- can be blank or can have messages within it -->
-    <?php $messages = getMessages(); ?> 
+    <?php $messages = getMessages(); ?>
     <?php if ($messages) : ?>
         <?php foreach ($messages as $msg) : ?>
             <!-- integrated with bootstrap -->
