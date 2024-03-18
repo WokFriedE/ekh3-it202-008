@@ -1,3 +1,9 @@
+<!-- 
+    // allows u to get the info for specific email + any other info and can store in cookie
+    //unset the password hash so it cannot be used outside of the context
+    // use the same salt -> hash the current password and test it to the hash, true if get it works
+-->
+
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 ?>
@@ -29,52 +35,52 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     //TODO 3
     $hasError = false;
     if (empty($email)) {
-        flash("Email must not be empty");
+        flash("Email must not be empty", "danger");
         $hasError = true;
     }
     //sanitize
-    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    $email = sanitize_email($email);
     //validate
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        flash("Invalid email address");
+    if (!is_valid_email($email)) {
+        flash("Invalid email address", "danger");
         $hasError = true;
     }
     if (empty($password)) {
-        flash("password must not be empty");
+        flash("password must not be empty", "danger");
         $hasError = true;
     }
     if (strlen($password) < 8) {
-        flash("Password too short");
+        flash("Password too short", "danger");
         $hasError = true;
     }
     if (!$hasError) {
         //TODO 4
         $db = getDB();
-        $stmt = $db->prepare("SELECT id, email, password from Users where email = :email"); // allows u to get the info for specific email + any other info and can store in cookie
+        $stmt = $db->prepare("SELECT id, email, username, password from Users where email = :email");
         try {
             $r = $stmt->execute([":email" => $email]);
             if ($r) {
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($user) {
                     $hash = $user["password"];
-                    unset($user["password"]); //unset the password hash so it cannot be used outside of the context
-                    if (password_verify($password, $hash)) { // use the same salt --> hash the current password and test it to the hash
-                        // true if get it works 
-                        flash("Weclome $email");
+                    unset($user["password"]);
+                    if (password_verify($password, $hash)) {
+                        flash("Welcome $email");
                         $_SESSION["user"] = $user;
                         die(header("Location: home.php"));
                     } else {
-                        flash("Invalid password");
+                        flash("Invalid password", "danger");
                     }
                 } else {
-                    flash("Email not found");
+                    flash("Email not found", "danger");
                 }
             }
         } catch (Exception $e) {
-            // flash("<pre>" . var_export($e, true) . "</pre>");
-            flash("An unhandled error occured");
-            error_log(var_export($e, true));
+            flash("<pre>" . var_export($e, true) . "</pre>");
         }
     }
 }
+?>
+<?php
+require(__DIR__ . "/../../partials/flash.php");
 ?>

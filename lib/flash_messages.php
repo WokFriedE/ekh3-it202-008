@@ -1,5 +1,4 @@
 <?php
-
 // color is not required in this function -- default is info 
 function flash($msg = "", $color = "info")
 {
