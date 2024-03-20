@@ -2,7 +2,9 @@
     // allows u to get the info for specific email + any other info and can store in cookie
     //unset the password hash so it cannot be used outside of the context
     // use the same salt -> hash the current password and test it to the hash, true if get it works
+    //where UserRoles.user_id = :user_id and Roles.is_active = 1 and UserRoles.is_active = 1"); // makes sure the roles are active and alive
 -->
+
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 ?>
@@ -73,6 +75,22 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                     if (password_verify($password, $hash)) {
                         //flash("Weclome $email");
                         $_SESSION["user"] = $user; //sets our session data from db
+                        try {
+                            //lookup potential roles
+                            $stmt = $db->prepare("SELECT Roles.name FROM Roles 
+                        JOIN UserRoles on Roles.id = UserRoles.role_id 
+                        where UserRoles.user_id = :user_id and Roles.is_active = 1 and UserRoles.is_active = 1"); // makes sure the roles are active and alive
+                            $stmt->execute([":user_id" => $user["id"]]);
+                            $roles = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all since we'll want multiple
+                        } catch (Exception $e) {
+                            error_log(var_export($e, true));
+                        }
+                        //save roles or empty array
+                        if (isset($roles)) {
+                            $_SESSION["user"]["roles"] = $roles; //at least 1 role
+                        } else {
+                            $_SESSION["user"]["roles"] = []; //no roles
+                        }
                         flash("Welcome, " . get_username());
                         die(header("Location: home.php"));
                     } else {
