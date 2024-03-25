@@ -44,6 +44,12 @@ nav li a{
 
 }
 
+nav li a:hover{
+    color: burlywood;
+    background-color: azure;
+    border-radius: 5%;
+}
+
 /* Other */
 
 input{
