@@ -28,24 +28,12 @@ reset_session();
         //ensure it returns false for an error and true for success
         let pw = form.password.value;
         let con = form.confirm.value;
-        let user = form.username.value;
-        let email = form.email.value;
         let isValid = true;
-        let userPattern = /^[a-z0-9_-]{3,16}$/;
-        let emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-
-        // Username verification
-        if (!(userPattern.test(user)) || user == "") {
-            flash("Username must only contain 3-30 characters a-z, 0-9, _, or -", "warning");
+        if (!verifyUsername(form))
             isValid = false;
-        }
-
-        // email verification
-        if (!(emailPattern.test(email)) || email == "") {
-            flash("Email is not valid", "warning")
+        if (!verifyEmail(form))
             isValid = false;
-        }
 
         // pw verification
         if (pw == "") {

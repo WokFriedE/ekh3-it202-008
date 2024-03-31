@@ -51,12 +51,12 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
             $hasError = true;
         }*/
         if (!is_valid_email($email)) {
-            flash("Invalid email address");
+            flash("Invalid email address"); //edit
             $hasError = true;
         }
     } else {
         if (!is_valid_username($email)) {
-            flash("Invalid username");
+            flash("Invalid username"); //edit
             $hasError = true;
         }
     }
@@ -99,7 +99,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                         flash("Welcome, " . get_username());
                         die(header("Location: home.php"));
                     } else {
-                        flash("Invalid password");
+                        flash("Invalid password"); //edit
                     }
                 } else {
                     flash("Email not found");
