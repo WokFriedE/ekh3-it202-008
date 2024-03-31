@@ -93,7 +93,7 @@ if (isset($_POST["save"])) {
 $email = get_user_email();
 $username = get_username();
 ?>
-<form method="POST" onsubmit="return validate(this);">
+<form class="mainform" method="POST" onsubmit="return validate(this);">
     <div class="mb-3">
         <label for="email">Email</label>
         <input type="email" name="email" id="email" value="<?php se($email); ?>" />
@@ -103,7 +103,7 @@ $username = get_username();
         <input type="text" name="username" id="username" value="<?php se($username); ?>" />
     </div>
     <!-- DO NOT PRELOAD PASSWORD -->
-    <div>Password Reset</div>
+    <h3>Password Reset</h3>
     <div class="mb-3">
         <label for="cp">Current Password</label>
         <input type="password" name="currentPassword" id="cp" />

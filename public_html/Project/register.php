@@ -3,10 +3,10 @@
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();
 ?>
-<form onsubmit="return validate(this)" method="POST">
+<form class="mainform" onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email</label>
-        <input type="email" name="email" required />
+        <input type="text" name="email" required />
     </div>
     <div>
         <label for="username">Username</label>
@@ -26,8 +26,38 @@ reset_session();
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+        let pw = form.password.value;
+        let con = form.confirm.value;
+        let user = form.username.value;
+        let email = form.email.value;
+        let isValid = true;
+        let userPattern = /^[a-z0-9_-]{3,16}$/;
+        let emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-        return true;
+
+        // Username verification
+        if (!(userPattern.test(user)) || user == "") {
+            flash("Username must only contain 3-30 characters a-z, 0-9, _, or -", "warning");
+            isValid = false;
+        }
+
+        // email verification
+        if (!(emailPattern.test(email)) || email == "") {
+            flash("Email is not valid", "warning")
+            isValid = false;
+        }
+
+        // pw verification
+        if (pw == "") {
+            isValid = false;
+        }
+
+        if (pw != con) {
+            flash("Password and Confirm password must match", "warning");
+            isValid = false;
+        }
+
+        return isValid;
     }
 </script>
 <?php

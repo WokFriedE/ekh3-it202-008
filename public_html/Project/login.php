@@ -8,7 +8,7 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 ?>
-<form onsubmit="return validate(this)" method="POST">
+<form class="mainform" onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email/Username</label>
         <input type="text" name="email" required />
