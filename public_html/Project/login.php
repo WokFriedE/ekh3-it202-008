@@ -8,7 +8,7 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 ?>
-<form onsubmit="return validate(this)" method="POST">
+<form class="mainform" onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email/Username</label>
         <input type="text" name="email" required />
@@ -24,8 +24,13 @@ require(__DIR__ . "/../../partials/nav.php");
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
 
+
         //TODO update clientside validation to check if it should
         //valid email or username
+        if (!verifyUsername(form))
+            return false;
+        if (!verifyEmail(form))
+            return false;
         return true;
     }
 </script>
@@ -51,12 +56,12 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
             $hasError = true;
         }*/
         if (!is_valid_email($email)) {
-            flash("Invalid email address");
+            flash("Invalid email address"); //edit
             $hasError = true;
         }
     } else {
         if (!is_valid_username($email)) {
-            flash("Invalid username");
+            flash("Invalid username"); //edit
             $hasError = true;
         }
     }
@@ -99,14 +104,15 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                         flash("Welcome, " . get_username());
                         die(header("Location: home.php"));
                     } else {
-                        flash("Invalid password");
+                        flash("Invalid Username/Email or Password");
                     }
                 } else {
-                    flash("Email not found");
+                    flash("Invalid Username/Email or Password");
                 }
             }
         } catch (Exception $e) {
-            flash("<pre>" . var_export($e, true) . "</pre>");
+            flash("<pre>An error has occured, please try again.</pre>");
+            error_log("login: " . var_export($e, true));
         }
     }
 }

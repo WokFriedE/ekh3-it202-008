@@ -75,11 +75,14 @@ if (isset($_POST["save"])) {
 
                             flash("Password reset", "success");
                         } else {
+
                             flash("Current password is invalid", "warning");
                         }
                     }
                 } catch (PDOException $e) {
-                    echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
+                    flash("An unexpected error occurred, please try again", "danger");
+                    error_log("Profile pwd change: " . var_export($e->errorInfo, true));
+                    // echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
                 }
             } else {
                 flash("New passwords don't match", "warning");
@@ -93,7 +96,7 @@ if (isset($_POST["save"])) {
 $email = get_user_email();
 $username = get_username();
 ?>
-<form method="POST" onsubmit="return validate(this);">
+<form class="mainform" method="POST" onsubmit="return validate(this);">
     <div class="mb-3">
         <label for="email">Email</label>
         <input type="email" name="email" id="email" value="<?php se($email); ?>" />
@@ -103,7 +106,7 @@ $username = get_username();
         <input type="text" name="username" id="username" value="<?php se($username); ?>" />
     </div>
     <!-- DO NOT PRELOAD PASSWORD -->
-    <div>Password Reset</div>
+    <h3>Password Reset</h3>
     <div class="mb-3">
         <label for="cp">Current Password</label>
         <input type="password" name="currentPassword" id="cp" />
@@ -125,6 +128,13 @@ $username = get_username();
         let con = form.confirmPassword.value;
         let isValid = true;
         //TODO add other client side validation....
+
+        if (!verifyUsername(form))
+            isValid = false;
+        if (!verifyEmail(form))
+            isValid = false;
+        if (!verifyPassword(pw))
+            isValid = false;
 
         //example of using flash via javascript
         //find the flash container, create a new element, appendChild

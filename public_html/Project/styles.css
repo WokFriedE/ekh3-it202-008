@@ -1,4 +1,12 @@
 /* Alerts */
+.alert {
+    margin: 5px;
+    padding: 2px;
+    padding-inline: 4px;
+    font-size: medium;
+    border-radius: 10px;
+}
+
 .alert-success {
     background-color: rgb(150, 255, 150)
 }
@@ -16,9 +24,10 @@
 }
 
 /* Nav bar */
-nav{
+nav {
     padding-bottom: 10px;
 }
+
 nav ul {
     background-color: rgba(46, 159, 235, 0.822);
     height: auto;
@@ -28,40 +37,89 @@ nav ul {
     overflow: hidden;
 }
 
-nav li{
-    display: inline; 
+nav li {
+    display: inline;
     padding: 1%;
     float: left;
 
 }
 
-nav li a{
+nav li a {
     color: wheat;
     font-size: larger;
+    font-weight: bold;
     padding: 10px;
     text-decoration: none;
     text-align: center;
 
 }
 
-nav li a:hover{
-    color: burlywood;
-    background-color: azure;
+nav li a:hover {
+    color: rgba(46, 159, 235, 0.822);
+    background-color: cornsilk;
     border-radius: 5%;
+}
+
+/* Form */
+form>div {
+    margin-bottom: 15px;
+}
+
+form input[type="text"],
+input[type="password"],
+input[type="email"] {
+    display: block;
+}
+
+form label,
+input {
+    font-size: large;
+}
+
+form input[type="submit"] {
+    font-size: large;
+    padding: 5px;
+    padding-inline: 15px;
+    background-color: cornflowerblue;
+    border-style: none;
+    color: wheat;
+}
+
+form input[type="submit"]:hover {
+    font-size: large;
+    padding: 5px;
+    padding-inline: 15px;
+    background-color: cadetblue;
+    border-style: none;
+    color: wheat;
+}
+
+/* Admin pages */
+table thead {
+    font-size: larger;
+}
+
+table thead th,
+table td {
+    padding-inline: 15px;
+}
+
+table td {
+    font-size: large;
 }
 
 /* Other */
 
-input{
-    border-radius: 10%;
-}
-
-body{
+body {
     background-color: wheat;
     color: black;
     margin: 0;
 }
 
-body>*:not(nav){
+body>*:not(nav) {
     margin-left: 8px;
+}
+
+* {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
