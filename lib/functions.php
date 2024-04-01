@@ -24,3 +24,5 @@ require(__DIR__ . "/user_helpers.php");
 require(__DIR__ . "/duplicate_user_details.php");
 //reset session
 require(__DIR__ . "/reset_session.php");
+
+require(__DIR__ . "/api_helper.php");
