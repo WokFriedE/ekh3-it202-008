@@ -9,6 +9,18 @@
             console.log("loaded via javascript");
             //TODO: add any extra onload processing you may need here
             // Ethan Ho - ekh3 - due 2/12/23 - modified 2/12/23
+            
+            /*one solution using the elemments themselves*/
+            //get the elements we care about
+            // let eles = document.querySelectorAll("a");
+            // for (let e of eles){
+            //     // observe what kinda info is in the element --> could use hash or innerhtml
+            //     e.onclick = (event)=>{
+            //         console.log(event.srcElement.innerText);
+            //         updateCurrentPage(event.srcElement.innerText);
+            //     }
+            // } 
+            
             getCurrentSelection()
         });
 
@@ -18,7 +30,7 @@
                 //TODO: add code for processing the current selection 
                 //Note: likely you'll want to call updateCurrentPage towards the end
                 window.onhashchange = function() {
-                    let currPage = window.location.hash.slice(1);
+                    let currPage = window.location.hash.slice(1); //requires delay for using hash
                     updateCurrentPage(currPage); // provides change to both <h1> and <title>
                     // document.getElementsByTagName("title")[0].innerText = currPage; // for my reference in the future
                 }
