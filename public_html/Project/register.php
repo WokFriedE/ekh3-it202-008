@@ -3,7 +3,7 @@
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();
 ?>
-<form class="mainform" onsubmit="return validate(this)" method="POST">
+<form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email</label>
         <input type="text" name="email" required />
@@ -30,15 +30,15 @@ reset_session();
         let con = form.confirm.value;
         let isValid = true;
 
-        if (!verifyUsername(form))
+        if (!verifyUsername(form.username.value))
             isValid = false;
-        if (!verifyEmail(form))
+        if (!verifyEmail(form.email.value))
             isValid = false;
         if (!verifyPassword(pw))
             isValid = false;
 
         if (pw != con) {
-            flash("Password and Confirm password must match", "warning");
+            flash("[Client] Password and Confirm password must match", "warning");
             isValid = false;
         }
 
