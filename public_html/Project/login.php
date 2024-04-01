@@ -111,7 +111,8 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                 }
             }
         } catch (Exception $e) {
-            flash("<pre>" . var_export($e, true) . "</pre>");
+            flash("<pre>An error has occured, please try again.</pre>");
+            error_log("login: " . var_export($e, true));
         }
     }
 }

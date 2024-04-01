@@ -75,11 +75,14 @@ if (isset($_POST["save"])) {
 
                             flash("Password reset", "success");
                         } else {
+
                             flash("Current password is invalid", "warning");
                         }
                     }
                 } catch (PDOException $e) {
-                    echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
+                    flash("An unexpected error occurred, please try again", "danger");
+                    error_log("Profile pwd change: " . var_export($e->errorInfo, true));
+                    // echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
                 }
             } else {
                 flash("New passwords don't match", "warning");
