@@ -136,12 +136,13 @@ $username = get_username();
         if (!verifyPassword(pw))
             isValid = false;
 
-        //example of using flash via javascript
-        //find the flash container, create a new element, appendChild
-        if (pw !== con) {
-            flash("[Client] Password and Confrim password must match", "warning");
-            isValid = false;
-        }
+        if (form.currentPassword.value != "" && pw != "" && con != "")
+            //example of using flash via javascript
+            //find the flash container, create a new element, appendChild
+            if (pw !== con) {
+                flash("[Client] Password and Confrim password must match", "warning");
+                isValid = false;
+            }
         return isValid;
     }
 </script>
