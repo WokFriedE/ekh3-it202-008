@@ -24,8 +24,13 @@ require(__DIR__ . "/../../partials/nav.php");
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
 
+
         //TODO update clientside validation to check if it should
         //valid email or username
+        if (!verifyUsername(form))
+            return false;
+        if (!verifyEmail(form))
+            return false;
         return true;
     }
 </script>

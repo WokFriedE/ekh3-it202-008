@@ -61,20 +61,22 @@ nav li a:hover {
 }
 
 /* Form */
-.mainform>div {
+form>div {
     margin-bottom: 15px;
 }
 
-.mainform label {
-    font-size: large;
-}
-
-.mainform input {
-    font-size: large;
+form input[type="text"],
+input[type="password"],
+input[type="email"] {
     display: block;
 }
 
-.mainform>input:last-child {
+form label,
+input {
+    font-size: large;
+}
+
+form input[type="submit"] {
     font-size: large;
     padding: 5px;
     padding-inline: 15px;
@@ -83,13 +85,27 @@ nav li a:hover {
     color: wheat;
 }
 
-.mainform>input:last-child:hover {
+form input[type="submit"]:hover {
     font-size: large;
     padding: 5px;
     padding-inline: 15px;
     background-color: cadetblue;
     border-style: none;
     color: wheat;
+}
+
+/* Admin pages */
+table thead {
+    font-size: larger;
+}
+
+table thead th,
+table td {
+    padding-inline: 15px;
+}
+
+table td {
+    font-size: large;
 }
 
 /* Other */

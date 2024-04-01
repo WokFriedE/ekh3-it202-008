@@ -34,11 +34,8 @@ reset_session();
             isValid = false;
         if (!verifyEmail(form))
             isValid = false;
-
-        // pw verification
-        if (pw == "") {
+        if (!verifyPassword(pw))
             isValid = false;
-        }
 
         if (pw != con) {
             flash("Password and Confirm password must match", "warning");

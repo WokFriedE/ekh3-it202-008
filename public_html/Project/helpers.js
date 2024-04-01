@@ -47,9 +47,19 @@ function verifyEmail(form) {
 }
 
 function comparePass(pw, con) {
+
     if (pw != con) {
         flash("Password and Confirm password must match", "warning");
         return false;
     }
     return false;
+}
+
+function verifyPassword(pw) {
+    let passwdPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwdPattern.test(pw)) {
+        flash("Password must be 8 characters and have 1 uppercase, 1 lowercase, 1 number, and 1 sepcial character", "warning");
+        return false;
+    }
+    return true;
 }

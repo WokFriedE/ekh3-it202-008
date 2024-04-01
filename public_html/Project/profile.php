@@ -130,6 +130,8 @@ $username = get_username();
             isValid = false;
         if (!verifyEmail(form))
             isValid = false;
+        if (!verifyPassword(pw))
+            isValid = false;
 
         //example of using flash via javascript
         //find the flash container, create a new element, appendChild
