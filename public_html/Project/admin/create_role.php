@@ -29,7 +29,7 @@ if (isset($_POST["name"]) && isset($_POST["description"])) {
 }
 ?>
 <h1>Create Role</h1>
-<form method="POST">
+<form class="mainform" method="POST">
     <div>
         <label for="name">Name</label>
         <input id="name" name="name" required />

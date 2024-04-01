@@ -126,6 +126,11 @@ $username = get_username();
         let isValid = true;
         //TODO add other client side validation....
 
+        if (!verifyUsername(form))
+            isValid = false;
+        if (!verifyEmail(form))
+            isValid = false;
+
         //example of using flash via javascript
         //find the flash container, create a new element, appendChild
         if (pw !== con) {
