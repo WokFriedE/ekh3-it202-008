@@ -26,6 +26,8 @@ reset_session();
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+
+        // ekh3 - 4/1/24
         let pw = form.password.value;
         let con = form.confirm.value;
         let isValid = true;
@@ -36,6 +38,8 @@ reset_session();
             isValid = false;
         if (!verifyPassword(pw))
             isValid = false;
+
+        // validation end
 
         if (pw != con) {
             flash("[Client] Password and Confirm password must match", "warning");

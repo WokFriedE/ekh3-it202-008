@@ -35,6 +35,9 @@ require(__DIR__ . "/../../partials/nav.php");
         }
         //TODO update clientside validation to check if it should
         //valid email or username
+        if (!verifyPassword(form.password.value)) {
+            isValid = false;
+        }
 
         return isValid;
     }
