@@ -133,8 +133,14 @@ $username = get_username();
             isValid = false;
         if (!verifyEmail(form.email.value))
             isValid = false;
+        if (form.currentPassword.value !== "" && (!verifyPassword(form.currentPassword.value)))
+            isValid = false;
+        else if (form.currentPassword.value === "" && pw !== "" && con !== "") {
+            flash("[Client] Empty current password", "warning");
+            isValid = false;
+        }
 
-        if (form.currentPassword.value != "" && pw != "" && con != "")
+        if (form.currentPassword.value != "")
             if (!verifyPassword(pw))
                 isValid = false;
         //example of using flash via javascript
