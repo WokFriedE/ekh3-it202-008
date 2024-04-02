@@ -58,7 +58,7 @@ function comparePass(pw, con) {
 function verifyPassword(pw) {
     let passwdPattern = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwdPattern.test(pw)) {
-        flash("[Client] Password must be 8 characters and have 1 lowercase, 1 number, and 1 special character",
+        flash("[Client] Password must be 8 characters, have 1 lowercase, 1 number, and 1 special character",
             "warning");
         return false;
     }
