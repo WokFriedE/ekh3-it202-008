@@ -3,10 +3,10 @@
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();
 ?>
-<form class="mainform" onsubmit="return validate(this)" method="POST">
+<form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email</label>
-        <input type="text" name="email" required />
+        <input type="email" name="email" required />
     </div>
     <div>
         <label for="username">Username</label>
@@ -26,19 +26,23 @@ reset_session();
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+
+        // ekh3 - 4/1/24
         let pw = form.password.value;
         let con = form.confirm.value;
         let isValid = true;
 
-        if (!verifyUsername(form))
+        if (!verifyUsername(form.username.value))
             isValid = false;
-        if (!verifyEmail(form))
+        if (!verifyEmail(form.email.value))
             isValid = false;
         if (!verifyPassword(pw))
             isValid = false;
 
+        // validation end
+
         if (pw != con) {
-            flash("Password and Confirm password must match", "warning");
+            flash("[Client] Password and Confirm password must match", "warning");
             isValid = false;
         }
 
@@ -47,6 +51,7 @@ reset_session();
 </script>
 <?php
 //TODO 2: add PHP Code
+// ekh3 - 4/1/24
 if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);

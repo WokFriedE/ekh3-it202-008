@@ -96,7 +96,7 @@ if (isset($_POST["save"])) {
 $email = get_user_email();
 $username = get_username();
 ?>
-<form class="mainform" method="POST" onsubmit="return validate(this);">
+<form method="POST" onsubmit="return validate(this);">
     <div class="mb-3">
         <label for="email">Email</label>
         <input type="email" name="email" id="email" value="<?php se($email); ?>" />
@@ -129,17 +129,18 @@ $username = get_username();
         let isValid = true;
         //TODO add other client side validation....
 
-        if (!verifyUsername(form))
+        if (!verifyUsername(form.username.value))
             isValid = false;
-        if (!verifyEmail(form))
-            isValid = false;
-        if (!verifyPassword(pw))
+        if (!verifyEmail(form.email.value))
             isValid = false;
 
+        if (form.currentPassword.value != "" && pw != "" && con != "")
+            if (!verifyPassword(pw))
+                isValid = false;
         //example of using flash via javascript
         //find the flash container, create a new element, appendChild
         if (pw !== con) {
-            flash("Password and Confrim password must match", "warning");
+            flash("[Client] Password and Confrim password must match", "warning");
             isValid = false;
         }
         return isValid;

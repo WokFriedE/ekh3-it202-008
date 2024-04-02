@@ -8,7 +8,8 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 ?>
-<form class="mainform" onsubmit="return validate(this)" method="POST">
+<!-- ekh3 - 4/1/24 -->
+<form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email/Username</label>
         <input type="text" name="email" required />
@@ -24,21 +25,35 @@ require(__DIR__ . "/../../partials/nav.php");
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
 
+        //ekh3 - 4/1/24
+        let cred = form.email.value;
+        let isValid = true;
 
+        if ((/^.*@.*$/.test(cred))) {
+            if (!verifyEmail(cred))
+                isValid = false;
+        } else {
+            if (!verifyUsername(cred))
+                isValid = false;
+        }
         //TODO update clientside validation to check if it should
         //valid email or username
-        if (!verifyUsername(form))
-            return false;
-        if (!verifyEmail(form))
-            return false;
-        return true;
+        if (!verifyPassword(form.password.value)) {
+            isValid = false;
+        }
+
+        return isValid;
     }
+
+    // end JS validation
 </script>
 <?php
 //TODO 2: add PHP Code
 if (isset($_POST["email"]) && isset($_POST["password"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
+
+    //ekh3 - 
 
     //TODO 3
     $hasError = false;
@@ -92,7 +107,8 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                         //lookup potential roles
                         $stmt = $db->prepare("SELECT Roles.name FROM Roles 
                         JOIN UserRoles on Roles.id = UserRoles.role_id 
-                        where UserRoles.user_id = :user_id and Roles.is_active = 1 and UserRoles.is_active = 1");
+                        where UserRoles.user_id = :user_id and Roles.is_active = 1 
+                        and UserRoles.is_active = 1");
                         $stmt->execute([":user_id" => $user["id"]]);
                         $roles = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all since we'll want multiple
                         //save roles or empty array

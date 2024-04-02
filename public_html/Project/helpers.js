@@ -22,25 +22,25 @@ function flashClear() {
     }
 }
 
-function verifyUsername(form) {
-    let user = form.username.value;
+// ekh3 - 4/1/24
+
+function verifyUsername(user) {
     let userPattern = /^[a-z0-9_-]{3,16}$/;
 
     // Username verification
     if (!(userPattern.test(user)) || user == "") {
-        flash("Username must only contain 3-30 characters a-z, 0-9, _, or -", "warning");
+        flash("[Client] Username must only contain 3-30 characters a-z, 0-9, _, or -", "warning");
         return false;
     }
     return true;
 }
 
-function verifyEmail(form) {
-    let email = form.email.value;
+function verifyEmail(email) {
     let emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
     // email verification
     if (!(emailPattern.test(email)) || email == "") {
-        flash("Email is not valid", "warning")
+        flash("[Client] Email is not valid", "warning")
         return false;
     }
     return true;
@@ -49,16 +49,17 @@ function verifyEmail(form) {
 function comparePass(pw, con) {
 
     if (pw != con) {
-        flash("Password and Confirm password must match", "warning");
+        flash("[Client] Password and Confirm password must match", "warning");
         return false;
     }
     return false;
 }
 
 function verifyPassword(pw) {
-    let passwdPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    let passwdPattern = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwdPattern.test(pw)) {
-        flash("Password must be 8 characters and have 1 uppercase, 1 lowercase, 1 number, and 1 sepcial character", "warning");
+        flash("[Client] Password must be 8 characters, have 1 lowercase, 1 number, and 1 special character",
+            "warning");
         return false;
     }
     return true;
