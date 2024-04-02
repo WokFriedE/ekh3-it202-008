@@ -11,7 +11,7 @@ require(__DIR__ . "/../../partials/nav.php");
 <form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email/Username</label>
-        <input type="email" name="email" required />
+        <input type="text" name="email" required />
     </div>
     <div>
         <label for="pw">Password</label>
@@ -23,6 +23,8 @@ require(__DIR__ . "/../../partials/nav.php");
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+
+        //ekh3 - 4/1/24
         let cred = form.email.value;
         let isValid = true;
 
@@ -47,6 +49,8 @@ require(__DIR__ . "/../../partials/nav.php");
 if (isset($_POST["email"]) && isset($_POST["password"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
+
+    //ekh3 - 
 
     //TODO 3
     $hasError = false;
