@@ -14,18 +14,28 @@ function bePositive($arr)
 
     //note: use the $arr variable, don't directly touch $a1-$a4
     //TODO use echo to output all of the values as positive (even if they were originally positive) and maintain the original datatype
-    foreach ($arr as $key => $num) {
+    /*foreach ($arr as $key => $num) {
         if ($num < 0) {
             $arr[$key] = $num * -1;
             settype($arr[$key], gettype($num));
         }
+    }*/
+
+    for ($i = 0; $i < count($arr); $i++) {
+        $data = $arr[$i];
+        $data = abs($data);
+        if (is_string($arr[$i]) || gettype($arr[$i]) === "string") {
+            // $data = strval($data);
+            // $data = (string)$data; //or but has special rules
+            $data .= ""; //easy shortcut 
+        }
     }
 
-    foreach ($arr as $num) {
-        echo "$num - " . gettype($num) . " <br>";
-    }
+    // foreach ($arr as $num) {
+    //     echo "$num - " . gettype($num) . " <br>";
+    // }
     // end
-
+    var_dump($arr);
     //hint: may want to use var_dump() or similar to show final data types
 }
 echo "Problem 3: Be Positive<br>";
