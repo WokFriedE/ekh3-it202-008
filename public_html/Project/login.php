@@ -8,10 +8,10 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 ?>
-<form class="mainform" onsubmit="return validate(this)" method="POST">
+<form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email/Username</label>
-        <input type="text" name="email" required />
+        <input type="email" name="email" required />
     </div>
     <div>
         <label for="pw">Password</label>
@@ -23,15 +23,20 @@ require(__DIR__ . "/../../partials/nav.php");
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+        let cred = form.email.value;
+        let isValid = true;
 
-
+        if ((/^.*@.*$/.test(cred))) {
+            if (!verifyEmail(cred))
+                isValid = false;
+        } else {
+            if (!verifyUsername(cred))
+                isValid = false;
+        }
         //TODO update clientside validation to check if it should
         //valid email or username
-        if (!verifyUsername(form))
-            return false;
-        if (!verifyEmail(form))
-            return false;
-        return true;
+
+        return isValid;
     }
 </script>
 <?php
