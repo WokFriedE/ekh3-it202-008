@@ -63,7 +63,7 @@ if (isset($_POST["action"])) {
     }
 }
 
-//TODO handle manual create stock
+//TODO handle manual create stock (allows to go between views)
 ?>
 <div class="container-fluid">
     <h3>Create or Fetch Stock</h3>
@@ -116,3 +116,12 @@ if (isset($_POST["action"])) {
 //note we need to go up 1 more directory
 require_once(__DIR__ . "/../../../partials/flash.php");
 ?>
+
+<!-- when any form is submitted, see what the action is labeled as -> use it to determine where it came from
+if create loop over post data and check the data that we care about and unset everything else 
+set the quote to a var so it is marked as a string and it is not used maliciously 
+
+single record 
+so for multi
+- same name placeholder but insert multiple
+one prepare -> prepare each one individually -->

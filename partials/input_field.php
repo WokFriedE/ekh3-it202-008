@@ -72,3 +72,8 @@
     unset($_name);
     ?>
 <?php endif; ?>
+
+<!-- for the option, value is what the server sees but whats in the option html, it is what the user sees
+    prefill dropdowns -> use js in the end to set the values in the end 
+    if serverside then iterate through and check if the value is the same as the key 
+-->
