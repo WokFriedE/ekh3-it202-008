@@ -2,7 +2,6 @@
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();
 ?>
-<<<<<<< HEAD
 <div class="container-fluid">
     <form onsubmit="return validate(this)" method="POST">
         <?php render_input(["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "rules" => ["required" => true]]); ?>
@@ -12,35 +11,10 @@ reset_session();
         <?php render_button(["text" => "Register", "type" => "submit"]); ?>
     </form>
 </div>
-=======
-<form onsubmit="return validate(this)" method="POST">
-    <div>
-        <label for="email">Email</label>
-        <input type="email" name="email" required />
-    </div>
-    <div>
-        <label for="username">Username</label>
-        <input type="text" name="username" required maxlength="30" />
-    </div>
-    <div>
-        <label for="pw">Password</label>
-        <input type="password" id="pw" name="password" required minlength="8" />
-    </div>
-    <div>
-        <label for="confirm">Confirm</label>
-        <input type="password" name="confirm" required minlength="8" />
-    </div>
-    <input type="submit" value="Register" />
-</form>
->>>>>>> e9552049d8c3fdf2d7214989ccd455ecbe130cca
 <script>
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
-<<<<<<< HEAD
-
-        return true;
-=======
 
         // ekh3 - 4/1/24
         let pw = form.password.value;
@@ -62,17 +36,12 @@ reset_session();
         }
 
         return isValid;
->>>>>>> e9552049d8c3fdf2d7214989ccd455ecbe130cca
     }
 </script>
 <?php
 //TODO 2: add PHP Code
-<<<<<<< HEAD
-if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"]) && isset($_POST["username"])) {
-=======
 // ekh3 - 4/1/24
 if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"])) {
->>>>>>> e9552049d8c3fdf2d7214989ccd455ecbe130cca
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
     $confirm = se($_POST, "confirm", "", false);
