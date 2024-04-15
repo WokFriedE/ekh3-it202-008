@@ -34,7 +34,14 @@ function fetch_game($gameID)
 function fetch_popularJSON()
 {
     $json = file_get_contents(__DIR__ . "/../_other/Milestone2/json/popularRes.json");
-    $json_data = json_decode($json, false);
+    $json_data = json_decode($json, true);
+    return $json_data;
+}
+
+function fetch_gameJSON()
+{
+    $json = file_get_contents(__DIR__ . "/../_other/Milestone2/json/apiTest.json");
+    $json_data = json_decode($json, true);
     return $json_data;
 }
 

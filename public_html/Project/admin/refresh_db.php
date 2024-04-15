@@ -11,14 +11,39 @@ $result = "hello";
 if (isset($_GET['popular'])) {
     // $result = fetch_popular();
     $result = fetch_popularJSON();
+    $result = map_popular_data($result, 1);
+
+    try {
+        $opts = ["debug" => true, "update_duplicate" => true,  "columns_to_update" => []];
+        $result = insert("Games", $result, $opts);
+
+        if (!$result) {
+            flash("Unhandled Error", "warning");
+        } else {
+            flash("Created record with id " . var_export($result, true), "success");
+        }
+    } catch (InvalidArgumentException $e1) {
+        error_log("Invalid arg" . var_export($e1, true));
+        flash("Invalid data passed", "danger");
+    } catch (PDOException $e2) {
+        if ($e2->errorInfo[1] == 1062) {
+            flash("An entry for this game already exists for today", "warning");
+        } else {
+            error_log("Database error" . var_export($e2, true));
+            flash("Database error", "danger");
+        }
+    } catch (Exception $e3) {
+        error_log("Invalid data records" . var_export($e3, true));
+        flash("Invalid data records", "danger");
+    }
 }
 
 if (isset($_GET['gameId'])) {
-    $id = se($_GET, "", "", false);
+    // $id = se($_GET, "gameId", "", false);
     // $result = fetch_game($id);
+    $result = fetch_gameJSON();
+    $result = map_game_data($result);
 }
-
-
 ?>
 
 <!-- HTML -->
@@ -32,5 +57,8 @@ if (isset($_GET['gameId'])) {
         <a href="?popular" class="btn btn-primary">Popular</a>
     </form>
     <h2>Response</h2>
-    <?php echo var_dump($result); ?>
+    <pre>
+        <?php echo var_dump($result);
+        ?>
+    </pre>
 </div>
