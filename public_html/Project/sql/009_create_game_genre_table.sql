@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXIST `GameGenre`(
+CREATE TABLE IF NOT EXISTS `GameGenre`(
     `id` INT AUTO INCREMENT NOT NULL,
     `genreId` INT,
     `gameId` INT,

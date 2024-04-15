@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXIST `Platforms` (
+CREATE TABLE IF NOT EXISTS `Platforms` (
     `id` INT NOT NULL PRIMARY KEY,
     `name` VARCHAR(30),
     `shortName` VARCHAR(20),

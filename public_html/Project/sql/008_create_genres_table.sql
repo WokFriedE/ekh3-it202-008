@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXIST `Genres`(
+CREATE TABLE IF NOT EXISTS `Genres`(
     `id` INT NOT NULL PRIMARY KEY,
     `name` VARCHAR(30),
     `is_active` TINYINT(1) default 1,

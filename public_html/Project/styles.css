@@ -26,16 +26,15 @@
 /* Nav bar */
 nav {
     padding-bottom: 10px;
+    background-color: rgba(46, 159, 235, 0.822);
 }
 
 nav ul {
-    background-color: rgba(46, 159, 235, 0.822);
     height: auto;
     margin: 0;
     padding: 0;
-    list-style-type: none;
-    overflow: hidden;
 }
+
 
 nav li {
     display: inline;

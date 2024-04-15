@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXIST `GameGenre`(
-    `id` INT AUTO INCREMENT NOT NULL,
+CREATE TABLE IF NOT EXISTS `GameGenre`(
+    `id` INT AUTO_INCREMENT NOT NULL,
     `platformId` INT,
     `gameId` INT,
     `is_active` TINYINT(1) default 1,
