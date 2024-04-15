@@ -17,7 +17,7 @@ function map_game_data($api_data)
 {
     $imgURI = "https://img.opencritic.com/";
     foreach ($api_data as $k => $v) {
-        if (!in_array($k, ["description", "Companies", "Platforms", "url", "firstReleaseDate", "images", "Genres"])) {
+        if (!in_array($k, ["description", "Companies", "Platforms", "url", "firstReleaseDate", "images", "Genres", "id"])) {
             unset($api_data[$k]);
         } elseif ($k === "Companies") {
             // get the publisher and developer
@@ -38,16 +38,39 @@ function map_game_data($api_data)
                 unset($api_data[$k]);
             }
         } elseif ($k === "Platforms") {
-            // parse platforms for later
-            foreach ($v as $item => $vals) {
-                foreach ($vals as $key => $value) {
-                    if (!in_array($key, ["id", "name", "shortName"])) {
-                        unset($api_data[$k][$item][$key]);
-                    }
-                }
-            }
+            // parse platforms for linking
+            $api_data[$k] = map_platform_data($api_data[$k]);
+        } elseif ($k === "Genres") {
+            // parse genres for linking
+            $api_data[$k] = map_genre_data($api_data[$k]);
         } elseif ($k === "firstReleaseDate") {
+            // update date format for sql
             $api_data[$k] = substr($api_data[$k], 0, 10);
+        }
+    }
+    return $api_data;
+}
+
+
+function map_platform_data($api_data)
+{
+    foreach ($api_data as $item => $vals) {
+        foreach ($vals as $key => $value) {
+            if (!in_array($key, ["id", "name", "shortName"])) {
+                unset($api_data[$item][$key]);
+            }
+        }
+    }
+    return $api_data;
+}
+
+function map_genre_data($api_data)
+{
+    foreach ($api_data as $item => $vals) {
+        foreach ($vals as $key => $value) {
+            if (!in_array($key, ["id", "name"])) {
+                unset($api_data[$item][$key]);
+            }
         }
     }
     return $api_data;

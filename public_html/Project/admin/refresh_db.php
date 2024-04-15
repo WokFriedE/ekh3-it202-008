@@ -6,11 +6,9 @@ if (!has_role("Admin")) {
     die(header("Location: " . get_url("home.php")));
 }
 
-$result = "hello";
-
 if (isset($_GET['popular'])) {
     // $result = fetch_popular();
-    $result = fetch_popularJSON();
+    $result = fetch_json("popularRes");
     $result = map_popular_data($result, 1);
 
     try {
@@ -41,21 +39,42 @@ if (isset($_GET['popular'])) {
 if (isset($_GET['gameId'])) {
     // $id = se($_GET, "gameId", "", false);
     // $result = fetch_game($id);
-    $result = fetch_gameJSON();
+    $result = fetch_json("apiTest");
     $result = map_game_data($result);
+    insertGame($result);
+}
+
+if (isset($_GET["genres"])) {
+    $result = fetch_json("genre");
+    $result = map_genre_data($result);
+    defaultInsert($result, "Genres");
+}
+
+if (isset($_GET["platforms"])) {
+    $result = fetch_json("platform");
+    $result = map_platform_data($result);
+    defaultInsert($result, "Platforms");
 }
 ?>
 
 <!-- HTML -->
 <h1>Simple Refresh / test</h1>
 <div class="container-fluid">
-    <form onsubmit="return attempt(this)" method="GET">
+    <form onsubmit="return true" method="GET">
         <?php render_input(["type" => "number", "id" => "gameId", "name" => "gameId", "label" => "gameId", "rules" => ["required" => true]]); ?>
         <?php render_button(["text" => "Get Game", "type" => "submit"]); ?>
     </form>
-    <form onsubmit="return getQuery(this)" method="GET">
-        <a href="?popular" class="btn btn-primary">Popular</a>
-    </form>
+    <span>
+        <form onsubmit="return true" method="GET">
+            <a href="?popular" class="btn btn-primary">Popular</a>
+        </form>
+        <form onsubmit="return true" method="GET">
+            <a href="?genres" class="btn btn-primary">Genres</a>
+        </form>
+        <form onsubmit="return true" method="GET">
+            <a href="?platforms" class="btn btn-primary">Platforms</a>
+        </form>
+    </span>
     <h2>Response</h2>
     <pre>
         <?php echo var_dump($result);
