@@ -59,6 +59,10 @@ if (isset($_GET["platforms"])) {
     $result = map_platform_data($result);
     defaultInsert($result, "Platforms");
 }
+
+if (isset($_GET["test"])) {
+    $result = selectGameInfo(12226);
+}
 ?>
 
 <!-- HTML -->
@@ -77,6 +81,9 @@ if (isset($_GET["platforms"])) {
         </form>
         <form onsubmit="return true" method="GET">
             <a href="?platforms" class="btn btn-primary">Platforms</a>
+        </form>
+        <form onsubmit="return true" method="GET">
+            <a href="?test" class="btn btn-primary">test</a>
         </form>
     </span>
     <h2>Response</h2>

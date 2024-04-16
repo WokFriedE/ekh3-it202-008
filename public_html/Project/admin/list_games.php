@@ -88,10 +88,9 @@ if (count($_GET) > 0) {
         }
     }
 
-    // TODO FIX LATER
     // Lets you show whats on 
-    $viewAll = se($_GET, "viewAll", "", false);
-    if (empty($viewAll) || $viewAll != "") {
+    $viewAll = se($_GET, "viewAll", "ACTIVE_ONLY", false);
+    if ($viewAll == "ACTIVE_ONLY") {
         $query .= " AND is_active=1";
     }
 
@@ -168,8 +167,6 @@ if (count($_GET) > 0) {
     $query .= " LIMIT $limit";
 }
 
-echo $query;
-
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
@@ -204,11 +201,11 @@ $table = [
 
         </div>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
+        <a href="?viewAll" class="btn custBtn">Filter With All Apps</a>
         <a href="?clear" class="btn btn-secondary">Clear</a>
-        <a href="?popular" class="btn custBtn">Pull Popular Games</a>
-        <a href="?viewAll" class="btn custBtn">See All Apps</a>
 
     </form>
+    <a href="?popular" class="btn custBtn">Pull Popular Games</a>
     <?php render_table($table); ?>
 </div>
 

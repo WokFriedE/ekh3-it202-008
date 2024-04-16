@@ -92,16 +92,8 @@ if ($game) {
     }
 }
 
-$platforms = selectGamePlatforms($id);
-$genres = selectGameGenres($id);
-
-echo var_dump($platforms) . "<br>";
-echo var_dump($genres) . "<br>";
-
 
 ?>
-
-
 <div class="container-fluid">
     <h3>Edit Game</h3>
     <div>
