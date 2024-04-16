@@ -6,9 +6,11 @@ if (!has_role("Admin")) {
     die(header("Location: " . get_url("home.php")));
 }
 
+$result = "";
+
 if (isset($_GET['popular'])) {
-    // $result = fetch_popular();
-    $result = fetch_json("popularRes");
+    $result = fetch_popular();
+    // $result = fetch_json("popularRes");
     $result = map_popular_data($result, 1);
 
     try {
@@ -37,21 +39,23 @@ if (isset($_GET['popular'])) {
 }
 
 if (isset($_GET['gameId'])) {
-    // $id = se($_GET, "gameId", "", false);
-    // $result = fetch_game($id);
-    $result = fetch_json("apiTest");
+    $id = se($_GET, "gameId", "", false);
+    $result = fetch_game($id);
+    // $result = fetch_json("hifi");
     $result = map_game_data($result);
-    insertGame($result);
+    $result = insertGame($result);
 }
 
 if (isset($_GET["genres"])) {
-    $result = fetch_json("genre");
+    $result = fetch_genres();
+    // $result = fetch_json("genre");
     $result = map_genre_data($result);
     defaultInsert($result, "Genres");
 }
 
 if (isset($_GET["platforms"])) {
-    $result = fetch_json("platform");
+    $result = fetch_platforms();
+    // $result = fetch_json("platform");
     $result = map_platform_data($result);
     defaultInsert($result, "Platforms");
 }
@@ -81,3 +85,7 @@ if (isset($_GET["platforms"])) {
         ?>
     </pre>
 </div>
+
+<?php
+require(__DIR__ . "/../../../partials/flash.php");
+?>

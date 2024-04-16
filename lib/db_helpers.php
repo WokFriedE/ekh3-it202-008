@@ -128,12 +128,91 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
     // what ever calls this must handle these exceptions 
 }
 
-
-function defaultInsert($data, $table)
+// Simple insert
+function defaultInsert($data, $table, $update_duplicate = true)
 {
     try {
-        $opts = ["debug" => true, "update_duplicate" => true,  "columns_to_update" => []];
+        $opts = ["debug" => true, "update_duplicate" => $update_duplicate,  "columns_to_update" => []];
         $result = insert($table, $data, $opts);
+
+        if (!$result) {
+            flash("Unhandled Error", "warning");
+        } else {
+            flash("Created record with id " . var_export($result, true), "success");
+        }
+    } catch (InvalidArgumentException $e1) {
+        error_log("Invalid arg" . var_export($e1, true));
+        flash("Invalid data passed", "danger");
+    } catch (PDOException $e2) {
+        if ($e2->errorInfo[1] == 1062) {
+            flash("An entry for this item already exists for today", "warning");
+        } else {
+            error_log("Database error" . var_export($e2, true));
+            flash("Database error", "danger");
+        }
+    } catch (Exception $e3) {
+        error_log("Invalid data records" . var_export($e3, true));
+        flash("Invalid data records", "danger");
+    }
+}
+
+// Inserts more game data on load
+function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "addGenre" => false])
+{
+    $addAll = $opts["addAll"];
+    $addPlat = $opts["addPlat"];
+    $addGenre = $opts["addGenre"];
+
+    // Adds platform relations
+    if (isset($gameMap["Platforms"])) {
+        $platforms = $gameMap["Platforms"];
+        // Lazy load platforms if needed (trades api call for sql call)
+        if ($addAll || $addPlat) {
+            defaultInsert($platforms, "Platforms", false);
+        }
+        foreach ($platforms as $index => $ent) {
+            if (isset($platforms[$index]["id"])) {
+                $platforms[$index]["platformId"] = $ent["id"];
+                $platforms[$index]["gameId"] = $gameMap["id"];
+            } else {
+                continue;
+            }
+            foreach ($ent as $key => $val) {
+                if (!in_array($key, ["platformId", "gameId"]))
+                    unset($platforms[$index][$key]);
+            }
+        }
+        defaultInsert($platforms, "PlatformGame", false);
+        unset($gameMap["Platforms"]);
+    }
+
+    // Adds genre relations
+    if (isset($gameMap["Genres"])) {
+        $Genres = $gameMap["Genres"];
+        // Lazy load Genres if needed (trades api call for sql call)
+        if ($addPlat || $addGenre) {
+            defaultInsert($Genres, "Genres", false);
+        }
+        foreach ($Genres as $index => $ent) {
+            if (isset($Genres[$index]["id"])) {
+                $Genres[$index]["genreId"] = $ent["id"];
+                $Genres[$index]["gameId"] = $gameMap["id"];
+            } else {
+                continue;
+            }
+            foreach ($ent as $key => $val) {
+                if (!in_array($key, ["genreId", "gameId"]))
+                    unset($Genres[$index][$key]);
+            }
+        }
+        defaultInsert($Genres, "GameGenre", false);
+        unset($gameMap["Genres"]);
+    }
+
+
+    try {
+        $opts = ["debug" => true, "update_duplicate" => true,  "columns_to_update" => []];
+        $result = insert("Games", $gameMap, $opts);
 
         if (!$result) {
             flash("Unhandled Error", "warning");
@@ -153,16 +232,6 @@ function defaultInsert($data, $table)
     } catch (Exception $e3) {
         error_log("Invalid data records" . var_export($e3, true));
         flash("Invalid data records", "danger");
-    }
-}
-
-
-function insertGame($gameMap)
-{
-    if (isset($gameMap["Platforms"])) {
-        $platforms = $gameMap["Platforms"];
-        echo var_dump($platforms);
-        unset($gameMap["Platforms"]);
     }
 }
 

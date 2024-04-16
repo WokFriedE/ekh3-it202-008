@@ -23,3 +23,5 @@ function getMessages()
 }
 
 //ekh3 - 4/1/24
+
+// TODO add a flash clear

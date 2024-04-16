@@ -17,7 +17,7 @@ function map_game_data($api_data)
 {
     $imgURI = "https://img.opencritic.com/";
     foreach ($api_data as $k => $v) {
-        if (!in_array($k, ["description", "Companies", "Platforms", "url", "firstReleaseDate", "images", "Genres", "id"])) {
+        if (!in_array($k, ["description", "Companies", "Platforms", "url", "firstReleaseDate", "images", "Genres", "id", "name", "topCriticScore"])) {
             unset($api_data[$k]);
         } elseif ($k === "Companies") {
             // get the publisher and developer

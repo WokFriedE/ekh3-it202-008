@@ -30,18 +30,18 @@ nav {
 }
 
 nav ul {
+    background-color: burlywood;
     height: auto;
     margin: 0;
     padding: 0;
 }
 
 
-nav li {
+/* nav li {
     display: inline;
     padding: 1%;
     float: left;
-
-}
+} */
 
 nav li a {
     color: wheat;
