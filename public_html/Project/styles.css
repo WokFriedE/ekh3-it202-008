@@ -75,7 +75,8 @@ input {
     font-size: large;
 }
 
-form input[type="submit"] {
+form input[type="submit"],
+.custBtn {
     font-size: large;
     padding: 5px;
     padding-inline: 15px;
@@ -84,7 +85,8 @@ form input[type="submit"] {
     color: wheat;
 }
 
-form input[type="submit"]:hover {
+form input[type="submit"]:hover,
+.custBtn:hover {
     font-size: large;
     padding: 5px;
     padding-inline: 15px;

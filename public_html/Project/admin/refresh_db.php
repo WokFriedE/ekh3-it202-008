@@ -39,9 +39,9 @@ if (isset($_GET['popular'])) {
 }
 
 if (isset($_GET['gameId'])) {
-    $id = se($_GET, "gameId", "", false);
-    $result = fetch_game($id);
-    // $result = fetch_json("hifi");
+    // $id = se($_GET, "gameId", "", false);
+    // $result = fetch_game($id);
+    $result = fetch_json("popularTest");
     $result = map_game_data($result);
     $result = insertGame($result);
 }

@@ -235,13 +235,60 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
     }
 }
 
+// Gets the related genres associated with the game
+function selectGameGenres($gameId)
+{
+    $db = getDB();
+    $query = "SELECT ge.name FROM `Genres` ge, `Games` g, `GameGenre` gg WHERE g.id=gg.gameId AND ge.id=genreId AND g.id=:gameID";
+    $params[":gameID"] = $gameId;
+    error_log("Query: " . $query);
+    error_log("Params: " . var_export($params, true));
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        $res = $stmt->fetch();
+        if ($res) {
+            $items = [];
+            foreach ($res as $key => $val) {
+                array_push($items, $val);
+            }
+            return $items;
+        } else {
+            return [];
+        }
+    } catch (PDOException $e) {
+        error_log("Something broke with the query" . var_export($e, true));
+        flash("An error occurred", "danger");
+    }
+}
 
 
-
-
-
-
-
+// SELECT Games.name, Platforms.name as `Platform` FROM ((`Games` INNER JOIN `PlatformGame` ON Games.`id`=`gameId`) INNER JOIN `Platforms` ON `platformId`=Platforms.id) LIMIT 100
+function selectGamePlatforms($gameId)
+{
+    $db = getDB();
+    $query = "SELECT plat.name FROM `Platforms` plat, `Games` g, `PlatformGame` pg WHERE g.id=pg.gameId AND plat.id=pg.platformId AND g.id=:gameID";
+    $params[":gameID"] = $gameId;
+    error_log("Query: " . $query);
+    error_log("Params: " . var_export($params, true));
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        $res = $stmt->fetch();
+        if ($res) {
+            $items = [];
+            foreach ($res as $key => $val) {
+                array_push($items, $val);
+            }
+            return $items;
+        } else {
+            return [];
+        }
+    } catch (PDOException $e) {
+        error_log("Something broke with the query" . var_export($e, true));
+        flash("An error occurred", "danger");
+    }
+}
 
 // used for testing via the cli (note: normally you'd used something like PHPUnit for proper test cases)
 if (php_sapi_name() == "cli") {

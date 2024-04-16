@@ -119,14 +119,7 @@ if (isset($_POST["action"])) {
 
     function validate(form) {
         let score = form.topCriticScore.value;
-        let pattern = /^\d{1,3}(\.\d+)?$/;
-
-        if (!(pattern.test(score)) || score == "") {
-            flash("[Client] Invalid score please enter a number", "warning")
-            return false;
-        }
-        return true;
-
+        return verifyScore(score);
     }
 </script>
 

@@ -7,8 +7,40 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
+// Pull popular games
+if (isset($_GET['popular'])) {
+    $popRes = fetch_popular();
+    // $popRes = fetch_json("popularRes");
+    $popRes = map_popular_data($popRes, 1);
+
+    try {
+        $opts = ["debug" => true, "update_duplicate" => true,  "columns_to_update" => []];
+        $popRes = insert("Games", $popRes, $opts);
+
+        if (!$popRes) {
+            flash("Unhandled Error", "warning");
+        } else {
+            flash("Created record with id " . var_export($popRes, true), "success");
+        }
+    } catch (InvalidArgumentException $e1) {
+        error_log("Invalid arg" . var_export($e1, true));
+        flash("Invalid data passed", "danger");
+    } catch (PDOException $e2) {
+        if ($e2->errorInfo[1] == 1062) {
+            flash("An entry for this game already exists for today", "warning");
+        } else {
+            error_log("Database error" . var_export($e2, true));
+            flash("Database error", "danger");
+        }
+    } catch (Exception $e3) {
+        error_log("Invalid data records" . var_export($e3, true));
+        flash("Invalid data records", "danger");
+    }
+}
+
 //build search form
 $form = [
+    ["type" => "number", "name" => "id", "placeholder" => "Game ID", "label" => "Game ID", "include_margin" => false],
     ["type" => "text", "name" => "name", "placeholder" => "Game Title", "label" => "Game Name", "include_margin" => false],
 
     ["type" => "text", "name" => "publisher", "placeholder" => "Publisher", "label" => "Publisher", "include_margin" => false],
@@ -54,6 +86,13 @@ if (count($_GET) > 0) {
         if (in_array($v["name"], $keys)) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
+    }
+
+    //id
+    $gameId = se($_GET, "id", "", false);
+    if (!empty($gameId)) {
+        $query .= " AND id = :gameId";
+        $params[":gameId"] = (int)"$gameId";
     }
     //name
     $name = se($_GET, "name", "", false);
@@ -123,9 +162,6 @@ if (count($_GET) > 0) {
 }
 
 
-
-
-
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
@@ -161,6 +197,7 @@ $table = [
         </div>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
+        <a href="?popular" class="btn custBtn">Pull Popular Games</a>
     </form>
     <?php render_table($table); ?>
 </div>
