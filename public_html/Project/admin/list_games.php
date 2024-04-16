@@ -54,6 +54,7 @@ $form = [
 
     ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["topCriticScore" => "Score", "firstReleaseDate" => "Date"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
+    ["type" => "select", "name" => "viewAll", "label" => "See Disabled", "options" => ["false" => "No", "true" => "Yes"], "include_margin" => false],
 
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false],
 ];
@@ -89,8 +90,8 @@ if (count($_GET) > 0) {
     }
 
     // Lets you show whats on 
-    $viewAll = se($_GET, "viewAll", "ACTIVE_ONLY", false);
-    if ($viewAll == "ACTIVE_ONLY") {
+    $viewAll = se($_GET, "viewAll", "false", false);
+    if ($viewAll == "false") {
         $query .= " AND is_active=1";
     }
 
@@ -162,10 +163,13 @@ if (count($_GET) > 0) {
     }
     if ($limit < 1 || $limit > 100) {
         $limit = 10;
+        flash("Limit's limit is 100, defaulted 10", "warning");
     }
     //IMPORTANT make sure you fully validate/trust $limit (sql injection possibility)
     $query .= " LIMIT $limit";
 }
+
+// echo $query;
 
 $db = getDB();
 $stmt = $db->prepare($query);
@@ -201,7 +205,6 @@ $table = [
 
         </div>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
-        <a href="?viewAll" class="btn custBtn">Filter With All Apps</a>
         <a href="?clear" class="btn btn-secondary">Clear</a>
 
     </form>

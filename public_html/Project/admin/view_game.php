@@ -38,6 +38,8 @@ foreach ($game as $key => $value) {
     <h3>Game: <?php se($game, "name", "Unknown"); ?> </h3>
     <div>
         <a href=" <?php echo get_url("admin/list_games.php"); ?>" class="btn btn-secondary mb-3">Back</a>
+        <a href=" <?php echo get_url("admin/edit_game.php?id=") . $id; ?>" class="btn btn-secondary mb-3">Edit</a>
+        <a href=" <?php echo get_url("admin/delete_game.php?id=") . $id; ?>" class="btn btn-secondary mb-3">Delete</a>
     </div>
     <div class="row justify-content-md-center">
         <div class="card mx-3" style="width: 18rem;">

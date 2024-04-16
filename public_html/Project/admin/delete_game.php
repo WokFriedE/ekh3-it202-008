@@ -18,19 +18,11 @@ $query = "UPDATE `Games` SET is_active = !is_active  WHERE id = :id";
 try {
     $stmt = $db->prepare($query);
     $stmt->execute([":id" => $id]);
-    flash("Deleted record with id $id", "success");
+    flash("Toggled record with id $id", "success");
 } catch (Exception $e) {
     error_log("Error deleting game $id" . var_export($e, true));
     flash("Error deleting record", "danger");
 }
 
-// $query = "DELETE FROM `Games` WHERE id = :id";
-// try {
-//     $stmt = $db->prepare($query);
-//     $stmt->execute([":id" => $id]);
-//     flash("Deleted record with id $id", "success");
-// } catch (Exception $e) {
-//     error_log("Error deleting game $id" . var_export($e, true));
-//     flash("Error deleting record", "danger");
-// }
-die(header("Location: " . get_url("admin/list_games.php")));
+// die(header("Location: " . get_url("admin/list_games.php")));
+echo "<script>history.back()</script>";
