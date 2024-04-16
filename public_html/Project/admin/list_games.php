@@ -55,11 +55,23 @@ if (count($_GET) > 0) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
     }
+    //name
+    $name = se($_GET, "name", "", false);
+    if (!empty($name)) {
+        $query .= " AND name like :name";
+        $params[":name"] = "%$name%";
+    }
     //publisher
     $publisher = se($_GET, "publisher", "", false);
     if (!empty($publisher)) {
         $query .= " AND publisher like :publisher";
         $params[":publisher"] = "%$publisher%";
+    }
+    //developer
+    $developer = se($_GET, "developer", "", false);
+    if (!empty($developer)) {
+        $query .= " AND developer like :developer";
+        $params[":developer"] = "%$developer%";
     }
     //score range
     $score_min = se($_GET, "score_min", "-1", false);
@@ -76,12 +88,12 @@ if (count($_GET) > 0) {
     //date range
     $date_min = se($_GET, "date_min", "", false);
     if (!empty($date_min) && $date_min != "") {
-        $query .= " AND latest >= :date_min";
+        $query .= " AND firstReleaseDate >= :date_min";
         $params[":date_min"] = $date_min;
     }
     $date_max = se($_GET, "date_max", "-1", false);
     if (!empty($date_max) && $date_max > -1) {
-        $query .= " AND latest <= :date_max";
+        $query .= " AND firstReleaseDate <= :date_max";
         $params[":date_max"] = $date_max;
     }
 
@@ -125,18 +137,19 @@ try {
         $results = $r;
     }
 } catch (PDOException $e) {
-    error_log("Error fetching stocks " . var_export($e, true));
+    error_log("Error fetching games " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
 
 $table = [
-    "data" => $results, "title" => "Latest Stocks", "ignored_columns" => ["id"],
+    "data" => $results, "title" => "Current Games", "ignored_columns" => ["id"],
+    "view_url" => get_url("admin/view_broker.php"),
     "edit_url" => get_url("admin/edit_stock.php"),
     "delete_url" => get_url("admin/delete_stock.php")
 ];
 ?>
 <div class="container-fluid">
-    <h3>List Stocks</h3>
+    <h3>List Games</h3>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
 
