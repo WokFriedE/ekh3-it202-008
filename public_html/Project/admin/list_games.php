@@ -20,7 +20,7 @@ $form = [
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
     ["type" => "date", "name" => "date_max", "placeholder" => "Max Date", "label" => "Max Date", "include_margin" => false],
 
-    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["score" => "Score", "date" => "Date"], "include_margin" => false],
+    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["topCriticScore" => "Score", "firstReleaseDate" => "Date"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
 
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false],
@@ -87,8 +87,8 @@ if (count($_GET) > 0) {
 
     //sort and order
     $sort = se($_GET, "sort", "date", false);
-    if (!in_array($sort, ["Date", "Score"])) {
-        $sort = "date";
+    if (!in_array($sort, ["topCriticScore", "firstReleaseDate"])) {
+        $sort = "firstReleaseDate";
     }
     $order = se($_GET, "order", "desc", false);
     if (!in_array($order, ["asc", "desc"])) {
