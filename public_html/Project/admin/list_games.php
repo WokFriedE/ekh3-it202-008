@@ -11,8 +11,8 @@ if (!has_role("Admin")) {
 $form = [
     ["type" => "text", "name" => "name", "placeholder" => "Game Title", "label" => "Game Name", "include_margin" => false],
 
-    ["type" => "number", "name" => "publisher", "placeholder" => "Publisher", "label" => "Publisher", "include_margin" => false],
-    ["type" => "number", "name" => "developer", "placeholder" => "Developer", "label" => "Developer", "include_margin" => false],
+    ["type" => "text", "name" => "publisher", "placeholder" => "Publisher", "label" => "Publisher", "include_margin" => false],
+    ["type" => "text", "name" => "developer", "placeholder" => "Developer", "label" => "Developer", "include_margin" => false],
 
     ["type" => "number", "name" => "score_min", "placeholder" => "Score Min", "label" => "Score Min", "include_margin" => false],
     ["type" => "number", "name" => "score_max", "placeholder" => "Score Max", "label" => "Score Max", "include_margin" => false],
@@ -20,7 +20,7 @@ $form = [
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
     ["type" => "date", "name" => "date_max", "placeholder" => "Max Date", "label" => "Max Date", "include_margin" => false],
 
-    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["price" => "Price", "per_change" => "Percent", "latest" => "Date", "volume" => "Volume"], "include_margin" => false],
+    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["score" => "Score", "date" => "Date"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
 
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false],
@@ -29,7 +29,7 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT id, symbol, open, low, high, price, per_change, latest, volume, is_api FROM `IT202-S24-Stocks` WHERE 1=1";
+$query = "SELECT id, name, publisher, developer, topCriticScore, firstReleaseDate, is_api, created, modified  FROM `Games` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -55,45 +55,24 @@ if (count($_GET) > 0) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
     }
-    //symbol
-    $symbol = se($_GET, "symbol", "", false);
-    if (!empty($symbol)) {
-        $query .= " AND symbol like :symbol";
-        $params[":symbol"] = "%$symbol%";
+    //publisher
+    $publisher = se($_GET, "publisher", "", false);
+    if (!empty($publisher)) {
+        $query .= " AND publisher like :publisher";
+        $params[":publisher"] = "%$publisher%";
     }
-    //price range
-    $price_min = se($_GET, "price_min", "-1", false);
-    if (!empty($price_min) && $price_min > -1) {
-        $query .= " AND price >= :price_min";
-        $params[":price_min"] = $price_min;
+    //score range
+    $score_min = se($_GET, "score_min", "-1", false);
+    if (!empty($score_min) && $score_min > -1) {
+        $query .= " AND topCriticScore >= :score_min";
+        $params[":score_min"] = $score_min;
     }
-    $price_max = se($_GET, "price_max", "-1", false);
-    if (!empty($price_max) && $price_max > -1) {
-        $query .= " AND price <= :price_max";
-        $params[":price_max"] = $price_max;
+    $score_max = se($_GET, "score_max", "-1", false);
+    if (!empty($score_max) && $score_max > -1) {
+        $query .= " AND topCriticScore <= :score_max";
+        $params[":score_max"] = $score_max;
     }
-    //percent range
-    $per_change_min = se($_GET, "per_change_min", "", false);
-    if (!empty($per_change_min) && $per_change_min != "") {
-        $query .= " AND per_change >= :per_change_min";
-        $params[":per_change_min"] = $per_change_min;
-    }
-    $per_change_max = se($_GET, "per_change_max", "", false);
-    if (!empty($per_change_max) && $per_change_max != "") {
-        $query .= " AND per_change <= :per_change_max";
-        $params[":per_change_max"] = $per_change_max;
-    }
-    //volume range
-    $volume_min = se($_GET, "volume_min", "-1", false);
-    if (!empty($volume_min) && $volume_min > -1) {
-        $query .= " AND volume >= :volume_min";
-        $params[":volume_min"] = $volume_min;
-    }
-    $volume_max = se($_GET, "volume_max", "-1", false);
-    if (!empty($volume_max) && $volume_max > -1) {
-        $query .= " AND per_change <= :volume_max";
-        $params[":volume_max"] = $volume_max;
-    }
+
     //date range
     $date_min = se($_GET, "date_min", "", false);
     if (!empty($date_min) && $date_min != "") {
@@ -105,15 +84,17 @@ if (count($_GET) > 0) {
         $query .= " AND latest <= :date_max";
         $params[":date_max"] = $date_max;
     }
+
     //sort and order
     $sort = se($_GET, "sort", "date", false);
-    if (!in_array($sort, ["price", "per_change", "latest", "volume"])) {
+    if (!in_array($sort, ["Date", "Score"])) {
         $sort = "date";
     }
     $order = se($_GET, "order", "desc", false);
     if (!in_array($order, ["asc", "desc"])) {
         $order = "desc";
     }
+
     //IMPORTANT make sure you fully validate/trust $sort and $order (sql injection possibility)
     $query .= " ORDER BY $sort $order";
     //limit
@@ -133,6 +114,7 @@ if (count($_GET) > 0) {
 
 
 
+echo $query;
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];

@@ -64,9 +64,9 @@ session_start();
                             Game Management
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/refresh_db.php'); ?>">Refresh DB</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/create_stock.php'); ?>">Create Stock</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/list_stocks.php'); ?>">List Stocks</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/refresh_db.php'); ?>">General Management</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/create_game.php'); ?>">Create Game</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/list_games.php'); ?>">List Gamess</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>
