@@ -126,7 +126,6 @@ if (count($_GET) > 0) {
 
 
 
-echo $query;
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];

@@ -16,7 +16,7 @@ if (!has_role("Admin")) {
 // $result = map_game_data($result);
 // $result = insertGame($result);
 
-//TODO handle stock fetch
+//TODO handle game fetch
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $id =  strtoupper(se($_POST, "id", "", false));
@@ -72,10 +72,10 @@ if (isset($_POST["action"])) {
     }
 }
 
-//TODO handle manual create stock
+//TODO handle manual create game
 ?>
 <div class="container-fluid">
-    <h3>Create or Fetch Stock</h3>
+    <h3>Create or Fetch Game</h3>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link bg-primary text-white mx-1" href="#" onclick="switchTab('create')">Fetch</a>
