@@ -239,7 +239,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
 function selectGameGenres($gameId)
 {
     $db = getDB();
-    $query = "SELECT ge.name FROM `Genres` ge, `Games` g, `GameGenre` gg WHERE g.id=gg.gameId AND ge.id=genreId AND g.id=:gameID";
+    $query = "SELECT ge.name FROM `Genres` ge, `Games` g, `GameGenre` gg WHERE g.id=gg.gameId AND ge.id=genreId AND g.id=:gameID AND g.is_active = 1";
     $params[":gameID"] = $gameId;
     error_log("Query: " . $query);
     error_log("Params: " . var_export($params, true));
@@ -267,7 +267,7 @@ function selectGameGenres($gameId)
 function selectGamePlatforms($gameId)
 {
     $db = getDB();
-    $query = "SELECT plat.name FROM `Platforms` plat, `Games` g, `PlatformGame` pg WHERE g.id=pg.gameId AND plat.id=pg.platformId AND g.id=:gameID";
+    $query = "SELECT plat.name FROM `Platforms` plat, `Games` g, `PlatformGame` pg WHERE g.id=pg.gameId AND plat.id=pg.platformId AND g.id=:gameID AND g.is_active = 1";
     $params[":gameID"] = $gameId;
     error_log("Query: " . $query);
     error_log("Params: " . var_export($params, true));

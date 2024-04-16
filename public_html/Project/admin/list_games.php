@@ -61,7 +61,7 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT id, name, publisher, developer, topCriticScore, firstReleaseDate, is_api, created, modified  FROM `Games` WHERE 1=1";
+$query = "SELECT id, name, publisher, developer, topCriticScore, firstReleaseDate, is_api, created, modified, is_active as `Active`  FROM `Games` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -86,6 +86,13 @@ if (count($_GET) > 0) {
         if (in_array($v["name"], $keys)) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
+    }
+
+    // TODO FIX LATER
+    // Lets you show whats on 
+    $viewAll = se($_GET, "viewAll", "", false);
+    if (empty($viewAll) || $viewAll != "") {
+        $query .= " AND is_active=1";
     }
 
     //id
@@ -161,6 +168,7 @@ if (count($_GET) > 0) {
     $query .= " LIMIT $limit";
 }
 
+echo $query;
 
 $db = getDB();
 $stmt = $db->prepare($query);
@@ -198,6 +206,8 @@ $table = [
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
         <a href="?popular" class="btn custBtn">Pull Popular Games</a>
+        <a href="?viewAll" class="btn custBtn">See All Apps</a>
+
     </form>
     <?php render_table($table); ?>
 </div>
