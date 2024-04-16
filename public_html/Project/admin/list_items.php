@@ -9,16 +9,13 @@ if (!has_role("Admin")) {
 
 //build search form
 $form = [
-    ["type" => "text", "name" => "symbol", "placeholder" => "Stock Symbol", "label" => "Stock Symbol", "include_margin" => false],
+    ["type" => "text", "name" => "name", "placeholder" => "Game Title", "label" => "Game Name", "include_margin" => false],
 
-    ["type" => "number", "name" => "price_min", "placeholder" => "Min Price", "label" => "Min Price", "include_margin" => false],
-    ["type" => "number", "name" => "price_max", "placeholder" => "Max Price", "label" => "Max Price", "include_margin" => false],
+    ["type" => "number", "name" => "publisher", "placeholder" => "Publisher", "label" => "Publisher", "include_margin" => false],
+    ["type" => "number", "name" => "developer", "placeholder" => "Developer", "label" => "Developer", "include_margin" => false],
 
-    ["type" => "number", "name" => "per_change_min", "placeholder" => "% Change Min", "label" => "% Change Min", "include_margin" => false],
-    ["type" => "number", "name" => "per_change_max", "placeholder" => "% Change Max", "label" => "% Change Max", "include_margin" => false],
-
-    ["type" => "number", "name" => "volume_min", "placeholder" => "Min Volume", "label" => "Min Volume", "include_margin" => false],
-    ["type" => "number", "name" => "volume_max", "placeholder" => "Max Volume", "label" => "Max Volume", "include_margin" => false],
+    ["type" => "number", "name" => "score_min", "placeholder" => "Score Min", "label" => "Score Min", "include_margin" => false],
+    ["type" => "number", "name" => "score_max", "placeholder" => "Score Max", "label" => "Score Max", "include_margin" => false],
 
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
     ["type" => "date", "name" => "date_max", "placeholder" => "Max Date", "label" => "Max Date", "include_margin" => false],

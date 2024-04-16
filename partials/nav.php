@@ -30,9 +30,9 @@ session_start();
 <!-- include css and js files -->
 <link rel="stylesheet" href="<?php echo get_url('styles.css'); ?>">
 <script src="<?php echo get_url('helpers.js'); ?>"></script>
-<nav class="navbar navbar-expand-lg bg-success">
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid ">
-        <a class="navbar-brand" href="#">Broker Battles</a>
+        <a class="navbar-brand" href="#">Game Guesser</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -61,9 +61,10 @@ session_start();
                 <?php if (has_role("Admin")) : ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Stock Management
+                            Game Management
                         </a>
                         <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/refresh_db.php'); ?>">Refresh DB</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/create_stock.php'); ?>">Create Stock</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/list_stocks.php'); ?>">List Stocks</a></li>
                         </ul>

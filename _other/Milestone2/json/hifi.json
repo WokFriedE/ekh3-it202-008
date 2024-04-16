@@ -1,0 +1,150 @@
+{
+    "images": {
+        "box": {
+            "og": "game/14227/o/YtYpzvpp.jpg",
+            "sm": "game/14227/aEdZRDWi.jpg"
+        },
+        "square": {
+            "og": "game/14227/o/snfmFPm0.jpg",
+            "xs": "game/14227/bj8BsMTP.jpg",
+            "sm": "game/14227/eAVllnHx.jpg",
+            "lg": "game/14227/LKwTJkJz.jpg"
+        },
+        "masthead": {
+            "og": "game/14227/o/g7ujtZzn.jpg",
+            "xs": "game/14227/uUwB2gvl.jpg",
+            "sm": "game/14227/Peg5Tzif.jpg",
+            "md": "game/14227/vglznchC.jpg",
+            "lg": "game/14227/j9gbxFeK.jpg",
+            "xl": "game/14227/h7ylyT3m.jpg"
+        },
+        "banner": {
+            "og": "game/14227/o/b1hnNk54.jpg",
+            "sm": "game/14227/qN8DtK1o.jpg"
+        },
+        "screenshots": [
+            {
+                "_id": "63d29f6f69b2982676e62528",
+                "og": "game/14227/o/z2U6IPlY.jpg",
+                "sm": "game/14227/AI9mdN1P.jpg"
+            },
+            {
+                "_id": "63d29f6f69b2982676e62529",
+                "og": "game/14227/o/Xc3ENb9I.jpg",
+                "sm": "game/14227/H1XQQMwT.jpg"
+            },
+            {
+                "_id": "63d29f6f69b2982676e6252a",
+                "og": "game/14227/o/J0P6AOXO.jpg",
+                "sm": "game/14227/kijhxWHP.jpg"
+            }
+        ]
+    },
+    "mainChannel": {
+        "channelId": "UCvZHe-SP3xC7DdOk4Ri8QBw",
+        "channelTitle": "Bethesda Softworks",
+        "description": "Official channel for Bethesda Softworks! Watch for all things Starfield, Redfall, DOOM, Elder Scrolls, Fallout, DEATHLOOP, ...",
+        "title": "Bethesda Softworks",
+        "image": "https://yt3.ggpht.com/ytc/AL5GRJW-v-nhKocnGA32xKpBJKd3oqaPh7g6qoKtdQfdyA=s88-c-k-c0xffffffff-no-rj-mo",
+        "externalUrl": "https://www.youtube.com/channel/UCvZHe-SP3xC7DdOk4Ri8QBw"
+    },
+    "Rating": {
+        "value": "T"
+    },
+    "imageMigrationComplete": false,
+    "hasLootBoxes": false,
+    "percentRecommended": 95.86776859504133,
+    "numReviews": 127,
+    "numTopCriticReviews": 88,
+    "medianScore": 90,
+    "topCriticScore": 88.75625,
+    "percentile": 98,
+    "tier": "Mighty",
+    "biggestDiscountDollars": 0,
+    "biggestDiscountPercentage": 0,
+    "Platforms": [
+        {
+            "id": 2,
+            "name": "Xbox Series X/S",
+            "shortName": "XBXS",
+            "imageSrc": "https://c.opencritic.com/images/platforms/xbxs.png",
+            "releaseDate": "2023-01-25T00:00:00.000Z"
+        },
+        {
+            "id": 27,
+            "name": "PC",
+            "shortName": "PC",
+            "imageSrc": "https://c.opencritic.com/images/platforms/pc.png",
+            "releaseDate": "2023-01-25T00:00:00.000Z"
+        },
+        {
+            "id": 3,
+            "name": "PlayStation 5",
+            "shortName": "PS5",
+            "imageSrc": "https://c.opencritic.com/images/platforms/ps5.png",
+            "releaseDate": "2024-03-19T00:00:00.000Z"
+        }
+    ],
+    "Genres": [
+        {
+            "id": 27,
+            "name": "Action"
+        }
+    ],
+    "Companies": [
+        {
+            "name": "Tango Gameworks",
+            "type": "DEVELOPER"
+        },
+        {
+            "name": "Bethesda Softworks",
+            "type": "PUBLISHER"
+        }
+    ],
+    "trailers": [
+        {
+            "isOpenCritic": false,
+            "isSpecial": "NO",
+            "publishedDate": "2024-02-21T00:00:00.000Z",
+            "title": "Hi-Fi RUSH | PS5 Announce Trailer",
+            "videoId": "kpAsWZ017tI",
+            "externalUrl": "https://www.youtube.com/watch?v=kpAsWZ017tI",
+            "channelTitle": "Bethesda Softworks",
+            "channelId": "UCvZHe-SP3xC7DdOk4Ri8QBw",
+            "description": "Chai and the gang are on the road and about to rock out a whole new venue: Charge your DualSense controller and crank up the ..."
+        },
+        {
+            "isOpenCritic": false,
+            "isSpecial": "NO",
+            "publishedDate": "2023-01-25T00:00:00.000Z",
+            "title": "Hi-Fi RUSH | Official Gameplay Deep Dive Trailer",
+            "videoId": "0GlkDcf006I",
+            "externalUrl": "https://www.youtube.com/watch?v=0GlkDcf006I",
+            "channelTitle": "Bethesda Softworks",
+            "channelId": "UCvZHe-SP3xC7DdOk4Ri8QBw",
+            "description": "Hi-Fi RUSH puts you in the beat-up sneakers of Chai, a wannabe rocker wrongfully labeled a “defect” by a sinister tech ..."
+        },
+        {
+            "isOpenCritic": false,
+            "isSpecial": "NO",
+            "publishedDate": "2023-01-25T00:00:00.000Z",
+            "title": "Hi-Fi RUSH |  Official Launch Trailer",
+            "videoId": "pgd4aU56Kig",
+            "externalUrl": "https://www.youtube.com/watch?v=pgd4aU56Kig",
+            "channelTitle": "Bethesda Softworks",
+            "channelId": "UCvZHe-SP3xC7DdOk4Ri8QBw",
+            "description": "Get ready to rock with Hi-Fi RUSH, a unique rhythm-action experience where the world moves to the beat, out NOW on Xbox ..."
+        }
+    ],
+    "name": "Hi-Fi Rush",
+    "id": 14227,
+    "firstReleaseDate": "2023-01-25T00:00:00.000Z",
+    "createdAt": "2023-01-26T09:32:53.925Z",
+    "updatedAt": "2024-04-04T16:25:30.777Z",
+    "firstReviewDate": "2023-01-26T00:00:00.000Z",
+    "latestReviewDate": "2024-04-18T00:00:00.000Z",
+    "description": "Feel the beat as wannabe rockstar Chai and his ragtag team of allies rebel against an evil tech megacorp with raucous rhythm combat! From Tango Gameworks, the studio that brought you The Evil Within and Ghostwire: Tokyo (no, really) comes Hi-Fi RUSH, an all-new action game where the characters, world and combat stylishly sync to the music!\n\nCHAI VERSUS THE WORLD\n\nLabeled ‘defective’ after a shady corporate experiment mistakenly fuses a music player to his heart, Chai must now fight for his freedom in a slick animated world where everything – platforming puzzles, enemy attacks and even the colorful gags & banter - are synced to the beat.\n\nOPEN UP THE MOSH PIT!\n\nTake on armies of corporate drones (read: actual robots) in satisfying, rhythm-amplified combat. Time your moves to pull off flashy Beat Hits, hard-hitting special abilities and even combination attacks with your allies! Want to show off? Go further and tap into the beat to amp up your skills and earn those covetous S-rank scores.\n\nROWDY REBELS VS. BADASS BOSSES\n\nLead a squad of colorful teammates and take the fight to the heart of an, er, heartless corporation. Square off with each department’s boss, from Production to Marketing to Finance, each more ready to protect the company’s bottom line than the last in over-the-top battle sequences accompanied by their own music tracks!\n\nGRAB YOUR HEADPHONES\n\nTap your toes to a killer mixtape of original music, as well as songs by Nine Inch Nails, The Prodigy, The Joy Formidable and more! Want to show off your skills to a live streaming audience? Fret not: Hi-Fi RUSH includes a streamer-friendly alternate audio mode to keep you from broadcasting copyrighted music.",
+    "criticalReviewDate": "2023-01-30T13:00:46.435Z",
+    "needsAdminDealReview": true,
+    "url": "https://opencritic.com/game/14227/hi-fi-rush"
+}

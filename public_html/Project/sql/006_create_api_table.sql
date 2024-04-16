@@ -1,3 +1,17 @@
-CREATE TABLE IF NOT EXISTS `IT202-S24-Stocks` (
-    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, `symbol` VARCHAR(6) NOT NULL, `open` DECIMAL(7, 2) NOT NULL, `low` DECIMAL(7, 2) NOT NULL, `high` DECIMAL(7, 2) NOT NULL, `price` DECIMAL(7, 2) NOT NULL, `previous` DECIMAL(7, 2) NOT NULL, `per_change` DECIMAL(3, 2) NOT NULL, `volume` INT NOT NULL, `latest` DATE NOT NULL, `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, UNIQUE (`symbol`, `latest`)
+CREATE TABLE IF NOT EXISTS `Games` (
+    `id` INT NOT NULL PRIMARY KEY,
+    `name` VARCHAR(50) NOT NULL,
+    `publisher` VARCHAR(30),
+    `developer` VARCHAR(30),
+    `description` TEXT,
+    `topCriticScore` FLOAT,
+    `sqrImgURL` VARCHAR(200),
+    `screenshotImgURL` VARCHAR(200),
+    `url` VARCHAR(200),
+    -- ISO-8601 date 
+    `firstReleaseDate` DATE,
+    `is_api` tinyint(1) not null default 0,
+    `is_active` TINYINT(1) default 1,
+    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 )
