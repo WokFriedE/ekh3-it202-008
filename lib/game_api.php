@@ -18,7 +18,7 @@ function fetch_popular()
 function fetch_genres()
 {
     $data = [];
-    $endpoint = "https://opencritic-api.p.rapidapi.com/game/genre";
+    $endpoint = "https://opencritic-api.p.rapidapi.com/genre";
     $isRapidAPI = true;
     $rapidAPIHost = "opencritic-api.p.rapidapi.com";
     $result = get($endpoint, "GAME_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
@@ -33,7 +33,7 @@ function fetch_genres()
 function fetch_platforms()
 {
     $data = [];
-    $endpoint = "https://opencritic-api.p.rapidapi.com/game/platform";
+    $endpoint = "https://opencritic-api.p.rapidapi.com/platform";
     $isRapidAPI = true;
     $rapidAPIHost = "opencritic-api.p.rapidapi.com";
     $result = get($endpoint, "GAME_API_KEY", $data, $isRapidAPI, $rapidAPIHost);

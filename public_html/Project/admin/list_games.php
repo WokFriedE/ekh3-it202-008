@@ -38,6 +38,18 @@ if (isset($_GET['popular'])) {
     }
 }
 
+if (isset($_GET["pullGenre"])) {
+    $temp = fetch_genres();
+    $temp = map_genre_data($temp);
+    defaultInsert($temp, "Genres");
+}
+
+if (isset($_GET["pullPlatform"])) {
+    $temp = fetch_platforms();
+    $temp = map_platform_data($temp);
+    defaultInsert($temp, "Platforms");
+}
+
 //build search form
 $form = [
     ["type" => "number", "name" => "id", "placeholder" => "Game ID", "label" => "Game ID", "include_margin" => false],
@@ -163,7 +175,7 @@ if (count($_GET) > 0) {
     }
     if ($limit < 1 || $limit > 100) {
         $limit = 10;
-        flash("Limit's limit is 100, defaulted 10", "warning");
+        flash("Limit can be 1-100, set to default 10", "warning");
     }
     //IMPORTANT make sure you fully validate/trust $limit (sql injection possibility)
     $query .= " LIMIT $limit";
@@ -209,6 +221,8 @@ $table = [
 
     </form>
     <a href="?popular" class="btn custBtn">Pull Popular Games</a>
+    <a href="?pullGenre" class="btn custBtn">Pull Genres</a>
+    <a href="?pullPlatform" class="btn custBtn">Pull Platforms</a>
     <?php render_table($table); ?>
 </div>
 
