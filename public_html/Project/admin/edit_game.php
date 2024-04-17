@@ -90,6 +90,7 @@ if ($id > -1) {
     if ($r) {
         $game = $r;
     }
+    dump($game);
 } else {
     flash("Invalid id passed", "danger");
     die(header("Location:" . get_url("admin/list_games.php")));
@@ -117,6 +118,7 @@ if ($game) {
         }
     }
 }
+
 
 // Get active platforms
 $platformForm = getRelation("Platforms", $game);

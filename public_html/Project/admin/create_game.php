@@ -72,6 +72,9 @@ if (isset($_POST["action"])) {
     }
 }
 
+// TODO remove if not used 
+dump($_POST);
+
 //attempt to apply
 if (isset($_POST["genres"])) {
     $db = getDB();

@@ -65,3 +65,29 @@ UNION
 -- ORDER BY
 --     Games.name
 --     AND Games.is_active = 1
+-- better query for select info
+SELECT
+    Games.*,
+    Platforms.id as `PlatformID`,
+    Platforms.name as `Platform`,
+    Genres.id as `GenreID`,
+    Genres.name as `Genre`
+FROM
+    (
+        (
+            (
+                (
+                    `Games`
+                    LEFT JOIN `PlatformGame` p ON Games.`id` = p.`gameId`
+                )
+                LEFT JOIN `Platforms` ON `platformId` = Platforms.id
+            )
+            LEFT JOIN `GameGenre` g ON Games.id = g.`gameId`
+        )
+        LEFT JOIN `Genres` ON `genreId` = Genres.id
+    )
+WHERE
+    Games.id = :gameId
+    AND Games.is_active = 1
+ORDER BY
+    Games.name ASC;

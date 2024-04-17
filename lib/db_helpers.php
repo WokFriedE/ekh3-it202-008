@@ -241,23 +241,19 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
 function selectGameInfo($gameId, $returnID = false)
 {
     $db = getDB();
-    $query = "(SELECT Games.*, Platforms.id as `PlatformID`,Platforms.name as `Platform`,Genres.id as `GenreID`,Genres.name as `Genre`
-        FROM
+    $query = "SELECT Games.*,Platforms.id as `PlatformID`,Platforms.name as `Platform`,Genres.id as `GenreID`,Genres.name as `Genre`
+    FROM
+        (
             (
                 (
                     (
-                        (
-                            `Games` INNER JOIN `PlatformGame` p ON Games.`id` = p.`gameId`
-                        ) INNER JOIN `Platforms` ON `platformId` = Platforms.id
-                    ) INNER JOIN `GameGenre` g ON Games.id = g.`gameId`
-                )INNER JOIN `Genres` ON `genreId` = Genres.id
-            )
-        WHERE Games.id = :gameID
-        ORDER BY Games.name ASC
-    ) UNION (
-        SELECT Games.*, null as `PlatformID`, null as `Platform`, null as `GenreID`, null as `Genre`
-        FROM Games
-        WHERE Games.id = :gameID);";
+                        `Games` LEFT JOIN `PlatformGame` p ON Games.`id` = p.`gameID`
+                    ) LEFT JOIN `Platforms` ON `platformId` = Platforms.id
+                ) LEFT JOIN `GameGenre` g ON Games.id = g.`gameID`
+            ) LEFT JOIN `Genres` ON `genreId` = Genres.id
+        )
+    WHERE Games.id = :gameID AND Games.is_active = 1
+    ORDER BY Games.name ASC;";
     $params[":gameID"] = $gameId;
     error_log("Query: " . $query);
     error_log("Params: " . var_export($params, true));
@@ -290,13 +286,13 @@ function selectGameInfo($gameId, $returnID = false)
                 }
             }
 
-            // checks if there is a valid value, removes last as last is the union (unless sorted)
-            if (!is_null($res["Platforms"][array_key_first($res["Platforms"])]) && is_null(end($res["Platforms"]))) {
-                array_pop($res["Platforms"]);
-            }
-            if (!is_null($res["Genres"][array_key_first($res["Genres"])]) && is_null(end($res["Genres"]))) {
-                array_pop($res["Genres"]);
-            }
+            // // checks if there is a valid value, removes last as last is the union (unless sorted)
+            // if (!is_null($res["Platforms"][array_key_first($res["Platforms"])]) && is_null(end($res["Platforms"]))) {
+            //     array_pop($res["Platforms"]);
+            // }
+            // if (!is_null($res["Genres"][array_key_first($res["Genres"])]) && is_null(end($res["Genres"]))) {
+            //     array_pop($res["Genres"]);
+            // }
             return $res;
         } else {
             return [];
@@ -334,7 +330,7 @@ function getRelation($table, $data)
 
     $form = [];
     foreach ($active_items as $k => $v) {
-        if (isset($data[$table])) {
+        if (isset($data[$table]) || !empty($data[$table])) {
             $within = (in_array($v["id"], array_keys($data[$table])));
         } else {
             $within = false;

@@ -20,7 +20,14 @@ $fetch = se($_GET, "fetch", -1, false);
 
 $game = [];
 if ($id > -1) {
-    $game = selectGameInfo($id);
+    $tempGame = selectGameInfo($id);
+    if (empty($tempGame)) {
+        flash("Error: getting game", "danger");
+        error_log("ERROR VIEW_GAME: Game is empty");
+        die(header("Location:" . get_url("admin/list_games.php")));
+    } else {
+        $game = $tempGame;
+    }
 } else {
     flash("Invalid id passed", "danger");
     die(header("Location:" . get_url("admin/list_games.php")));
