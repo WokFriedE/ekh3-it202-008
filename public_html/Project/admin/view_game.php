@@ -8,7 +8,14 @@ if (!has_role("Admin")) {
 }
 ?>
 
+
+
 <?php
+// alerts the user if the URL does not exist 
+if (isset($_GET["NoURL"])) {
+    flash("No URL Exists", "warning");
+}
+
 $id = se($_GET, "id", -1, false);
 $fetch = se($_GET, "fetch", -1, false);
 
@@ -21,7 +28,7 @@ if ($id > -1) {
     die(header("Location:" . get_url("admin/list_games.php")));
 }
 
-if (is_null($game["firstReleaseDate"])) {
+if (is_null($game["firstReleaseDate"]) && $game["is_api"] == 1) {
     die(header("Location: " . get_url("admin/lazy_load_game.php?id=") . $id));
 }
 
@@ -29,6 +36,9 @@ if (is_null($game["firstReleaseDate"])) {
 foreach ($game as $key => $value) {
     if (is_null($value)) {
         $game[$key] = "N/A";
+    }
+    if ($key === "url") {
+        $game[$key] = get_url("admin/view_game.php?id=") . $id . "&NoURL";
     }
 }
 
@@ -45,7 +55,7 @@ foreach ($game as $key => $value) {
         <div class="card mx-3" style="width: 18rem;">
             <img src=<?php se($game, "sqrImgURL", "Unknown"); ?> class="card-img-top" alt="Image of Game">
             <div class="card-body">
-                <h5 class="card-title"><a class="custLink" href=<?php se($game, "url", "Unknown"); ?> target="_blank"> <?php se($game, "name", "Unknown"); ?> </a> </h5>
+                <h5 class="card-title"><a class="custLink" href=<?php se($game, "url", ""); ?> target="_blank"> <?php se($game, "name", "Unknown"); ?> </a> </h5>
                 <div class="card-text">
                     <ul class="list-group">
                         <li class="list-group-item">Publisher: <?php se($game, "publisher", "Unknown"); ?></li>

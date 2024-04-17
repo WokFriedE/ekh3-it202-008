@@ -10,13 +10,13 @@ if (!has_role("Admin")) {
 }
 ?>
 
+
+
 <?php
 $id = se($_GET, "id", -1, false);
-//TODO handle game fetch
-
 if (isset($_POST["id"])) {
     foreach ($_POST as $k => $v) {
-        if (!in_array($k, ["id", "name", "publisher", "developer", "description", "topCriticScore", "firstReleaseDate"])) {
+        if (!in_array($k, ["id", "name", "publisher", "developer", "description", "topCriticScore", "firstReleaseDate", "Platforms", "Genres"])) {
             unset($_POST[$k]);
         }
         $quote = $_POST;
@@ -45,34 +45,47 @@ if (isset($_POST["id"])) {
     error_log("Params: " . var_export($params, true));
     try {
         $stmt = $db->prepare($query);
-        $stmt->execute($params);
-        flash("Updated record ", "success");
+        // $stmt->execute($params);
+        // flash("Updated record ", "success"); TODO REENABLE
     } catch (PDOException $e) {
         error_log("Something broke with the query" . var_export($e, true));
         flash("An error occurred", "danger");
     }
 }
+//attempt to apply
+if (isset($_POST["genres"])) {
+    $genreIDs = $_POST["genres"];
+}
 
+if (isset($_POST["platforms"])) {
+
+    // TODO use the insert function
+    $platformIDs = $_POST["platforms"];
+    $stmt = $db->prepare("INSERT INTO `GameGenre` (genreId, gameId, is_active) VALUES (:genreId, :gameId, 1) 
+    ON DUPLICATE KEY UPDATE is_active = !is_active");
+    foreach ($platformIDs as $genreId) {
+        try {
+            $stmt->execute([":genreId" => $genreId, ":gameId" => $id]);
+            flash("Updated role", "success");
+        } catch (PDOException $e) {
+            flash(var_export($e->errorInfo, true), "danger");
+        }
+    }
+}
+// Get game information
 $game = [];
 if ($id > -1) {
-    //fetch
-    $db = getDB();
-    $query = "SELECT id, name, publisher, developer, description, topCriticScore, firstReleaseDate FROM `Games` WHERE id = :id";
-    try {
-        $stmt = $db->prepare($query);
-        $stmt->execute([":id" => $id]);
-        $r = $stmt->fetch();
-        if ($r) {
-            $game = $r;
-        }
-    } catch (PDOException $e) {
-        error_log("Error fetching record: " . var_export($e, true));
-        flash("Error fetching record", "danger");
+    $r = selectGameInfo($id, true);
+    if ($r) {
+        $game = $r;
     }
 } else {
     flash("Invalid id passed", "danger");
     die(header("Location:" . get_url("admin/list_games.php")));
 }
+
+
+
 if ($game) {
     $form = [
         ["type" => "number", "name" => "id", "placeholder" => "Game ID...", "label" => "Game ID", "rules" => ["required" => "required"]],
@@ -92,6 +105,10 @@ if ($game) {
     }
 }
 
+// Get active platforms
+$platformForm = getRelation("Platforms", $game);
+// Get active Genres
+$genreForm = getRelation("Genres", $game);
 
 ?>
 <div class="container-fluid">
@@ -101,11 +118,30 @@ if ($game) {
     </div>
     <form method="POST" onsubmit="return validate(this)">
         <?php foreach ($form as $k => $v) {
-
             render_input($v);
         } ?>
-        <?php render_button(["text" => "Search", "type" => "submit", "text" => "Update"]); ?>
+
+        <?php render_button(["text" => "Search", "type" => "submit", "text" => "Update Info"]); ?>
     </form>
+
+    <div class="row">
+        <div class="col">
+            <form method="POST" onsubmit="return validate(this)">
+                <?php render_button(["text" => "Search", "type" => "submit", "text" => "Update platforms"]); ?>
+                <?php foreach ($platformForm as $k => $v) {
+                    render_input($v);
+                } ?>
+            </form>
+        </div>
+        <div class="col">
+            <form method="POST" onsubmit="return validate(this)">
+                <?php render_button(["text" => "Search", "type" => "submit", "text" => "Update genres"]); ?>
+                <?php foreach ($genreForm as $k => $v) {
+                    render_input($v);
+                } ?>
+            </form>
+        </div>
+    </div>
 
 </div>
 

@@ -235,11 +235,14 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
     }
 }
 
-function selectGameInfo($gameId)
+
+// returnID: yes => provides genre and platform ID as associative, no => just names
+// maybe use GROUP_CONCAT in the future to improve performance, add a segment for active only ( AND Games.is_active = 1)
+function selectGameInfo($gameId, $returnID = false)
 {
     $db = getDB();
-    $query = "SELECT Games.*, Platforms.id as `PlatID`, Platforms.name as `Platform`, Genres.id as `GenreID`, Genres.name as `Genre`
-            FROM
+    $query = "(SELECT Games.*, Platforms.id as `PlatformID`,Platforms.name as `Platform`,Genres.id as `GenreID`,Genres.name as `Genre`
+        FROM
             (
                 (
                     (
@@ -247,35 +250,52 @@ function selectGameInfo($gameId)
                             `Games` INNER JOIN `PlatformGame` p ON Games.`id` = p.`gameId`
                         ) INNER JOIN `Platforms` ON `platformId` = Platforms.id
                     ) INNER JOIN `GameGenre` g ON Games.id = g.`gameId`
-                ) INNER JOIN `Genres` ON `genreId` = Genres.id
-            ) WHERE Games.id = :gameID ORDER BY Games.name AND Games.is_active=1";
+                )INNER JOIN `Genres` ON `genreId` = Genres.id
+            )
+        WHERE Games.id = :gameID
+        ORDER BY Games.name ASC
+    ) UNION (
+        SELECT Games.*, null as `PlatformID`, null as `Platform`, null as `GenreID`, null as `Genre`
+        FROM Games
+        WHERE Games.id = :gameID);";
     $params[":gameID"] = $gameId;
     error_log("Query: " . $query);
     error_log("Params: " . var_export($params, true));
     try {
         $stmt = $db->prepare($query);
         $stmt->execute($params);
-        $queryRes = $stmt->fetchAll();
+        $queryRes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if ($queryRes) {
             $res = [];
             // take all the queries and ports the genres and platforms into a single output
             foreach ($queryRes as $index => $record) {
                 if ($index == 0) {
                     $res = $record;
-                    $res["Genres"] = [$record["Genre"]];
                     unset($res["Genre"]);
                     unset($res["GenreID"]);
-                    $res["Platforms"] = [$record["Platform"]];
                     unset($res["Platform"]);
                     unset($res["PlatformID"]);
+                    $res["Genres"] = $returnID ? [$record["GenreID"] => $record["Genre"]] : [$record["Genre"]];
+                    $res["Platforms"] = $returnID ? [$record["PlatformID"] => $record["Platform"]] : [$record["Platform"]];
+                } elseif ($returnID) {
+                    if (!in_array($record["GenreID"], $res["Genres"]))
+                        $res["Genres"][$record["GenreID"]] = $record["Genre"];
+                    if (!in_array($record["PlatformID"], $res["Platforms"]))
+                        $res["Platforms"][$record["PlatformID"]] = $record["Platform"];
                 } else {
-                    if (!in_array($record["Genre"], $res["Genres"])) {
+                    if (!in_array($record["Genre"], $res["Genres"]))
                         array_push($res["Genres"], $record["Genre"]);
-                    }
-                    if (!in_array($record["Platform"], $res["Platforms"])) {
+                    if (!in_array($record["Platform"], $res["Platforms"]))
                         array_push($res["Platforms"], $record["Platform"]);
-                    }
                 }
+            }
+
+            // checks if there is a valid value, removes last as last is the union (unless sorted)
+            if (!is_null($res["Platforms"][array_key_first($res["Platforms"])]) && is_null(end($res["Platforms"]))) {
+                array_pop($res["Platforms"]);
+            }
+            if (!is_null($res["Genres"][array_key_first($res["Genres"])]) && is_null(end($res["Genres"]))) {
+                array_pop($res["Genres"]);
             }
             return $res;
         } else {
@@ -287,6 +307,47 @@ function selectGameInfo($gameId)
     }
 }
 
+
+// Function used to generate a list of active, intention is to
+// call is expected to have id and name which correlate to ID of relationship
+function getRelation($table, $data)
+{
+    if (empty($table)) {
+        flash("An error has occured", "danger");
+        error_log("Form generate failed");
+        return [];
+    }
+    $sanitized_table_name = preg_replace('/[^a-zA-Z0-9_-]/', '', $table);
+    // Get active Genres
+    $db = getDB();
+    $active_items = [];
+    $stmt = $db->prepare("SELECT id, name FROM `$sanitized_table_name` WHERE is_active=1");
+    try {
+        $stmt->execute();
+        $results = $stmt->fetchALL(PDO::FETCH_ASSOC);
+        if ($results) {
+            $active_items = $results;
+        }
+    } catch (PDOException $e) {
+        flash(var_export($e->errorInfo, true), "danger");
+    }
+
+    $form = [];
+    foreach ($active_items as $k => $v) {
+        if (isset($data[$table])) {
+            $within = (in_array($v["id"], array_keys($data[$table])));
+        } else {
+            $within = false;
+        }
+        $val = $v["name"] . ($within ? " (active)" : " (inactive)");
+        $checkbox = ["type" => "checkbox", "id" => strtolower($table) . "_" . $v["id"], "name" => strtolower($table) . "[]", "label" => $val, "value" => $v["id"]];
+        array_push($form, $checkbox);
+    }
+
+    return $form;
+}
+
+/*
 // used for testing via the cli (note: normally you'd used something like PHPUnit for proper test cases)
 if (php_sapi_name() == "cli") {
     // Define the cli-only here
@@ -402,3 +463,4 @@ if (php_sapi_name() == "cli") {
     // Call the function to execute
     test_insert();
 }
+*/
