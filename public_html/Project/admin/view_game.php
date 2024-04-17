@@ -104,6 +104,16 @@ foreach ($game as $key => $value) {
             </div>
         <?php endif; ?>
     </div>
+    <div class="row justify-content-md-center">
+        <?php if (isset($game["description"]) && !empty($game["description"])) : ?>
+            <div class="card mx-10">
+                <div class=" card-body">
+                    <h5 class="card-title">Description</h5>
+                    <li class="list-group-item"><?php se($game, "description", "Unknown"); ?></li>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
 
 <?php

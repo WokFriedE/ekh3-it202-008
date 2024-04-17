@@ -45,8 +45,8 @@ if (isset($_POST["id"])) {
     error_log("Params: " . var_export($params, true));
     try {
         $stmt = $db->prepare($query);
-        // $stmt->execute($params);
-        // flash("Updated record ", "success"); TODO REENABLE
+        $stmt->execute($params);
+        flash("Updated record ", "success");
     } catch (PDOException $e) {
         error_log("Something broke with the query" . var_export($e, true));
         flash("An error occurred", "danger");
@@ -99,13 +99,15 @@ if ($id > -1) {
 
 if ($game) {
     $form = [
-        ["type" => "number", "name" => "id", "placeholder" => "Game ID...", "label" => "Game ID", "rules" => ["required" => "required"]],
         ["type" => "text", "name" => "name", "placeholder" => "Name...", "label" => "Name", "rules" => ["required" => "required"]],
         ["type" => "text", "name" => "publisher", "placeholder" => "Publisher...", "label" => "Publisher", "rules" => ["required" => "required"]],
         ["type" => "text", "name" => "developer", "placeholder" => "Developer...", "label" => "Developer", "rules" => ["required" => "required"]],
         ["type" => "text", "name" => "description", "placeholder" => "Description...", "label" => "Description", "rules" => ["required" => "required"]],
         ["type" => "text", "name" => "topCriticScore", "placeholder" => "Critic Score...", "label" => "Critic Score", "rules" => ["required" => "required"]],
-        ["type" => "date", "name" => "firstReleaseDate", "placeholder" => "Release Date...", "label" => "Release Date", "rules" => ["required" => "required"]]
+        ["type" => "date", "name" => "firstReleaseDate", "placeholder" => "Release Date...", "label" => "Release Date", "rules" => ["required" => "required"]],
+        ["type" => "url", "name" => "sqrImgURL", "placeholder" => "Square Image URL (optional)", "label" => "Square Image"],
+        ["type" => "url", "name" => "screenshotImgURL", "placeholder" => "Screenshot Image URL (optional)", "label" => "Screenshot Image"],
+        ["type" => "url", "name" => "url", "placeholder" => "Game Page URL (optional)", "label" => "Game Page URL"]
     ];
     $keys = array_keys($game);
 
