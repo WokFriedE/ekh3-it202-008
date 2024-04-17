@@ -16,7 +16,7 @@ if (!has_role("Admin")) {
 // $result = map_game_data($result);
 // $result = insertGame($result);
 
-//TODO handle stock fetch
+//TODO handle game fetch
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $id =  strtoupper(se($_POST, "id", "", false));
@@ -72,10 +72,47 @@ if (isset($_POST["action"])) {
     }
 }
 
-//TODO handle manual create stock
+//attempt to apply
+if (isset($_POST["genres"])) {
+    $db = getDB();
+    $genreIDs = $_POST["genres"];
+    $stmt = $db->prepare("INSERT INTO `GameGenre` (genreID, gameId, is_active) VALUES (:genreID, :gameId, 1) 
+    ON DUPLICATE KEY UPDATE is_active = !is_active");
+    foreach ($genreIDs as $genreID) {
+        try {
+            $stmt->execute([":genreID" => $genreID, ":gameId" => $id]);
+            flash("Updated role", "success");
+        } catch (PDOException $e) {
+            flash(var_export($e->errorInfo, true), "danger");
+        }
+    }
+}
+
+if (isset($_POST["platforms"])) {
+    $db = getDB();
+    // TODO use the insert function
+    $platformIDs = $_POST["platforms"];
+    $stmt = $db->prepare("INSERT INTO `PlatformGame` (platformId, gameId, is_active) VALUES (:platformId, :gameId, 1) 
+    ON DUPLICATE KEY UPDATE is_active = !is_active");
+    foreach ($platformIDs as $platformId) {
+        try {
+            $stmt->execute([":platformId" => $platformId, ":gameId" => $id]);
+            flash("Updated role", "success");
+        } catch (PDOException $e) {
+            flash(var_export($e->errorInfo, true), "danger");
+        }
+    }
+}
+
+// Get active platforms
+$platformForm = getRelation("Platforms", []);
+// Get active Genres
+$genreForm = getRelation("Genres", []);
+
+//TODO handle manual create game
 ?>
 <div class="container-fluid">
-    <h3>Create or Fetch Stock</h3>
+    <h3>Create or Fetch Game</h3>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link bg-primary text-white mx-1" href="#" onclick="switchTab('create')">Fetch</a>
@@ -95,17 +132,31 @@ if (isset($_POST["action"])) {
         <form method="POST" onsubmit="return validate(this)">
             <?php render_input(["type" => "number", "name" => "id", "placeholder" => "Game ID", "label" => "Game ID", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "name", "placeholder" => "Name", "label" => "Name", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["type" => "text", "name" => "publisher", "placeholder" => "Publisher", "label" => "Publisher", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "publisher", "placeholder" => "Publisher (optional)", "label" => "Publisher"]); ?>
             <?php render_input(["type" => "text", "name" => "developer", "placeholder" => "Developer", "label" => "Developer", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "description", "placeholder" => "Description", "label" => "Description", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "topCriticScore", "placeholder" => "Critic Score", "label" => "Critic Score", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "date", "name" => "firstReleaseDate", "placeholder" => "Release Date", "label" => "Release Date", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "url", "name" => "sqrImgURL", "placeholder" => "Square Image URL (optional)", "label" => "Square Image"]); ?>
+            <?php render_input(["type" => "url", "name" => "screenshotImgURL", "placeholder" => "Screenshot Image URL (optional)", "label" => "Screenshot Image"]); ?>
+            <?php render_input(["type" => "url", "name" => "url", "placeholder" => "Game Page URL (optional)", "label" => "Game Page URL"]); ?>
 
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
+
+            <?php foreach ($platformForm as $k => $v) {
+                render_input($v);
+            } ?>
+
+            <?php foreach ($genreForm as $k => $v) {
+                render_input($v);
+            } ?>
+
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>
         </form>
     </div>
 </div>
+
+
 <script>
     function switchTab(tab) {
         let target = document.getElementById(tab);
@@ -119,14 +170,7 @@ if (isset($_POST["action"])) {
 
     function validate(form) {
         let score = form.topCriticScore.value;
-        let pattern = /^\d{1,3}(\.\d+)?$/;
-
-        if (!(pattern.test(score)) || score == "") {
-            flash("[Client] Invalid score please enter a number", "warning")
-            return false;
-        }
-        return true;
-
+        return verifyScore(score);
     }
 </script>
 

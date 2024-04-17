@@ -7,8 +7,52 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
+// Pull popular games
+if (isset($_GET['popular'])) {
+    $popRes = fetch_popular();
+    // $popRes = fetch_json("popularRes");
+    $popRes = map_popular_data($popRes, 1);
+
+    try {
+        $opts = ["debug" => true, "update_duplicate" => true,  "columns_to_update" => []];
+        $popRes = insert("Games", $popRes, $opts);
+
+        if (!$popRes) {
+            flash("Unhandled Error", "warning");
+        } else {
+            flash("Created record with id " . var_export($popRes, true), "success");
+        }
+    } catch (InvalidArgumentException $e1) {
+        error_log("Invalid arg" . var_export($e1, true));
+        flash("Invalid data passed", "danger");
+    } catch (PDOException $e2) {
+        if ($e2->errorInfo[1] == 1062) {
+            flash("An entry for this game already exists for today", "warning");
+        } else {
+            error_log("Database error" . var_export($e2, true));
+            flash("Database error", "danger");
+        }
+    } catch (Exception $e3) {
+        error_log("Invalid data records" . var_export($e3, true));
+        flash("Invalid data records", "danger");
+    }
+}
+
+if (isset($_GET["pullGenre"])) {
+    $temp = fetch_genres();
+    $temp = map_genre_data($temp);
+    defaultInsert($temp, "Genres");
+}
+
+if (isset($_GET["pullPlatform"])) {
+    $temp = fetch_platforms();
+    $temp = map_platform_data($temp);
+    defaultInsert($temp, "Platforms");
+}
+
 //build search form
 $form = [
+    ["type" => "number", "name" => "id", "placeholder" => "Game ID", "label" => "Game ID", "include_margin" => false],
     ["type" => "text", "name" => "name", "placeholder" => "Game Title", "label" => "Game Name", "include_margin" => false],
 
     ["type" => "text", "name" => "publisher", "placeholder" => "Publisher", "label" => "Publisher", "include_margin" => false],
@@ -22,6 +66,7 @@ $form = [
 
     ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["topCriticScore" => "Score", "firstReleaseDate" => "Date"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
+    ["type" => "select", "name" => "viewAll", "label" => "See Disabled", "options" => ["false" => "No", "true" => "Yes"], "include_margin" => false],
 
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false],
 ];
@@ -29,7 +74,7 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT id, name, publisher, developer, topCriticScore, firstReleaseDate, is_api, created, modified  FROM `Games` WHERE 1=1";
+$query = "SELECT id, name, publisher, developer, topCriticScore, firstReleaseDate, is_api, created, modified, is_active as `Active`  FROM `Games` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -54,6 +99,19 @@ if (count($_GET) > 0) {
         if (in_array($v["name"], $keys)) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
+    }
+
+    // Lets you show whats on 
+    $viewAll = se($_GET, "viewAll", "false", false);
+    if ($viewAll == "false") {
+        $query .= " AND is_active=1";
+    }
+
+    //id
+    $gameId = se($_GET, "id", "", false);
+    if (!empty($gameId)) {
+        $query .= " AND id = :gameId";
+        $params[":gameId"] = (int)"$gameId";
     }
     //name
     $name = se($_GET, "name", "", false);
@@ -117,16 +175,14 @@ if (count($_GET) > 0) {
     }
     if ($limit < 1 || $limit > 100) {
         $limit = 10;
+        flash("Limit can be 1-100, set to default 10", "warning");
     }
     //IMPORTANT make sure you fully validate/trust $limit (sql injection possibility)
     $query .= " LIMIT $limit";
 }
 
+// echo $query;
 
-
-
-
-echo $query;
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
@@ -143,9 +199,9 @@ try {
 
 $table = [
     "data" => $results, "title" => "Current Games", "ignored_columns" => ["id"],
-    "view_url" => get_url("admin/view_broker.php"),
-    "edit_url" => get_url("admin/edit_stock.php"),
-    "delete_url" => get_url("admin/delete_stock.php")
+    "view_url" => get_url("admin/view_game.php"),
+    "edit_url" => get_url("admin/edit_game.php"),
+    "delete_url" => get_url("admin/delete_game.php")
 ];
 ?>
 <div class="container-fluid">
@@ -162,7 +218,11 @@ $table = [
         </div>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
+
     </form>
+    <a href="?popular" class="btn custBtn">Pull Popular Games</a>
+    <a href="?pullGenre" class="btn custBtn">Pull Genres</a>
+    <a href="?pullPlatform" class="btn custBtn">Pull Platforms</a>
     <?php render_table($table); ?>
 </div>
 
