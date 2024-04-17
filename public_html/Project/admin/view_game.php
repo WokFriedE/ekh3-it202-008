@@ -8,8 +8,6 @@ if (!has_role("Admin")) {
 }
 ?>
 
-
-
 <?php
 // alerts the user if the URL does not exist 
 if (isset($_GET["NoURL"])) {
@@ -37,6 +35,7 @@ foreach ($game as $key => $value) {
     if (is_null($value)) {
         $game[$key] = "N/A";
     }
+    // Sets a URL for a null URL
     if ($key === "url") {
         $game[$key] = get_url("admin/view_game.php?id=") . $id . "&NoURL";
     }

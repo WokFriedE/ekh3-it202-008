@@ -54,18 +54,29 @@ if (isset($_POST["id"])) {
 }
 //attempt to apply
 if (isset($_POST["genres"])) {
+    $db = getDB();
     $genreIDs = $_POST["genres"];
+    $stmt = $db->prepare("INSERT INTO `GameGenre` (genreID, gameId, is_active) VALUES (:genreID, :gameId, 1) 
+    ON DUPLICATE KEY UPDATE is_active = !is_active");
+    foreach ($genreIDs as $genreID) {
+        try {
+            $stmt->execute([":genreID" => $genreID, ":gameId" => $id]);
+            flash("Updated role", "success");
+        } catch (PDOException $e) {
+            flash(var_export($e->errorInfo, true), "danger");
+        }
+    }
 }
 
 if (isset($_POST["platforms"])) {
-
+    $db = getDB();
     // TODO use the insert function
     $platformIDs = $_POST["platforms"];
-    $stmt = $db->prepare("INSERT INTO `GameGenre` (genreId, gameId, is_active) VALUES (:genreId, :gameId, 1) 
+    $stmt = $db->prepare("INSERT INTO `PlatformGame` (platformId, gameId, is_active) VALUES (:platformId, :gameId, 1) 
     ON DUPLICATE KEY UPDATE is_active = !is_active");
-    foreach ($platformIDs as $genreId) {
+    foreach ($platformIDs as $platformId) {
         try {
-            $stmt->execute([":genreId" => $genreId, ":gameId" => $id]);
+            $stmt->execute([":platformId" => $platformId, ":gameId" => $id]);
             flash("Updated role", "success");
         } catch (PDOException $e) {
             flash(var_export($e->errorInfo, true), "danger");
