@@ -198,7 +198,7 @@ try {
 }
 
 $table = [
-    "data" => $results, "title" => "Current Games", "ignored_columns" => ["id"],
+    "data" => $results, "title" => "Current Games", // "ignored_columns" => ["id"],
     "view_url" => get_url("admin/view_game.php"),
     "edit_url" => get_url("admin/edit_game.php"),
     "delete_url" => get_url("admin/delete_game.php")
