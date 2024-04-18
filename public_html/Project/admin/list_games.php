@@ -64,7 +64,7 @@ $form = [
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
     ["type" => "date", "name" => "date_max", "placeholder" => "Max Date", "label" => "Max Date", "include_margin" => false],
 
-    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["topCriticScore" => "Score", "firstReleaseDate" => "Date"], "include_margin" => false],
+    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["name" => "Name", "topCriticScore" => "Score", "firstReleaseDate" => "Date", "is_api" => "If API"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
     ["type" => "select", "name" => "viewAll", "label" => "See Disabled", "options" => ["false" => "No", "true" => "Yes"], "include_margin" => false],
 
@@ -91,6 +91,13 @@ if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) {
         $_GET = $session_data;
     }
 }
+
+// Lets you show whats on 
+$viewAll = se($_GET, "viewAll", "false", false);
+if ($viewAll == "false") {
+    $query .= " AND is_active=1";
+}
+
 if (count($_GET) > 0) {
     session_save($session_key, $_GET);
     $keys = array_keys($_GET);
@@ -99,12 +106,6 @@ if (count($_GET) > 0) {
         if (in_array($v["name"], $keys)) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
-    }
-
-    // Lets you show whats on 
-    $viewAll = se($_GET, "viewAll", "false", false);
-    if ($viewAll == "false") {
-        $query .= " AND is_active=1";
     }
 
     //id

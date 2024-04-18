@@ -86,7 +86,11 @@ if (isset($_POST["genres"])) {
             $stmt->execute([":genreID" => $genreID, ":gameId" => $id]);
             flash("Updated role", "success");
         } catch (PDOException $e) {
-            flash(var_export($e->errorInfo, true), "danger");
+            if ($e[1] == 1062) {
+                flash("Game key already exists", "danger");
+            } else {
+                flash(var_export($e->errorInfo, true), "danger");
+            }
         }
     }
 }
@@ -146,13 +150,15 @@ $genreForm = getRelation("Genres", []);
 
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
 
-            <?php foreach ($platformForm as $k => $v) {
-                render_input($v);
-            } ?>
+            <?php //foreach ($platformForm as $k => $v) {
+            //    render_input($v);
+            // } 
+            ?>
 
-            <?php foreach ($genreForm as $k => $v) {
-                render_input($v);
-            } ?>
+            <?php // foreach ($genreForm as $k => $v) {
+            //render_input($v);
+            //} 
+            ?>
 
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>
         </form>
@@ -172,16 +178,23 @@ $genreForm = getRelation("Genres", []);
     }
 
     function validate(form) {
-        let score = form.topCriticScore.value;
+        let sc = form.topCriticScore.value;
         let valid = true;
-        if (!verifyScore(score))
+        if (!verifyScore(sc)) {
             valid = false;
-        if (!form.developer.value)
+        }
+        if (form.developer.value == "") {
+
             valid = false
-        if (!form.description.value)
+            flash("[Client] Developer is required", "warning")
+        }
+        if (form.description.value == "") {
             valid = false
-        if (!verifyDate(form.firstReleaseDate.value))
+            flash("[Client] Description is required", "warning")
+        }
+        if (!verifyDate(form.firstReleaseDate.value)) {
             valid = false
+        }
         return valid;
     }
 </script>
