@@ -73,3 +73,12 @@ function verifyScore(score) {
     }
     return true;
 }
+
+function verifyDate(date) {
+    let pattern = /^[0-9]{4}-(3[01]|[12][0-9]|0[1-9])-(1[0-2]|0[1-9])$/;
+    if (!(pattern.test(score)) || score == "") {
+        flash("[Client] Invalid date please enter one like YYYY-MM-DD", "warning")
+        return false;
+    }
+    return true;
+}

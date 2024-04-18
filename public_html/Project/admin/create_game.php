@@ -173,7 +173,16 @@ $genreForm = getRelation("Genres", []);
 
     function validate(form) {
         let score = form.topCriticScore.value;
-        return verifyScore(score);
+        let valid = true;
+        if (!verifyScore(score))
+            valid = false;
+        if (!form.developer.value)
+            valid = false
+        if (!form.description.value)
+            valid = false
+        if (!verifyDate(form.firstReleaseDate.value))
+            valid = false
+        return valid;
     }
 </script>
 

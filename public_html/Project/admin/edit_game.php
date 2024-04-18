@@ -14,7 +14,7 @@ if (!has_role("Admin")) {
 
 <?php
 $id = se($_GET, "id", -1, false);
-if (isset($_POST["id"])) {
+if (isset($_POST["name"])) {
     foreach ($_POST as $k => $v) {
         if (!in_array($k, ["id", "name", "publisher", "developer", "description", "topCriticScore", "firstReleaseDate", "Platforms", "Genres"])) {
             unset($_POST[$k]);
@@ -173,6 +173,15 @@ require_once(__DIR__ . "/../../../partials/flash.php");
 <script>
     function validate(form) {
         let score = form.topCriticScore.value;
-        return verifyScore(score);
+        let valid = true;
+        if (!verifyScore(score))
+            valid = false;
+        if (!form.developer.value)
+            valid = false
+        if (!form.description.value)
+            valid = false
+        if (!verifyDate(form.firstReleaseDate.value))
+            valid = false
+        return valid;
     }
 </script>

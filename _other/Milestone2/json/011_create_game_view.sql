@@ -161,4 +161,4 @@ FROM
     )
 WHERE
     Games.id = :gameID
-    AND Games.is_active = 1;
+    AND Games.is_active = 1
