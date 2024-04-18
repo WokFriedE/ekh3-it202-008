@@ -172,16 +172,26 @@ require_once(__DIR__ . "/../../../partials/flash.php");
 
 <script>
     function validate(form) {
-        let score = form.topCriticScore.value;
+        let sc = form.topCriticScore.value;
         let valid = true;
-        if (!verifyScore(score))
+        if (!verifyScore(sc)) {
             valid = false;
-        if (!form.developer.value)
+        }
+        if (form.name.value == "") {
             valid = false
-        if (!form.description.value)
+            flash("[Client] Developer is required", "warning")
+        }
+        if (form.developer.value == "") {
             valid = false
-        if (!verifyDate(form.firstReleaseDate.value))
+            flash("[Client] Developer is required", "warning")
+        }
+        if (form.description.value == "") {
             valid = false
+            flash("[Client] Description is required", "warning")
+        }
+        if (!verifyDate(form.firstReleaseDate.value)) {
+            valid = false
+        }
         return valid;
     }
 </script>

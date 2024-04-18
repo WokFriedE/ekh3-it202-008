@@ -10,11 +10,11 @@ if (!has_role("Admin")) {
 $id = se($_GET, "id", -1, false);
 if ($id < 1) {
     flash("Invalid id passed to delete", "danger");
-    die(header("Location: " . get_url("admin/list_platforms.php")));
+    die(header("Location: " . get_url("admin/list_genres.php")));
 }
 
 $db = getDB();
-$query = "UPDATE `Platforms` SET is_active = !is_active  WHERE id = :id";
+$query = "UPDATE `Genres` SET is_active = !is_active  WHERE id = :id";
 try {
     $stmt = $db->prepare($query);
     $stmt->execute([":id" => $id]);
@@ -24,5 +24,5 @@ try {
     flash("Error deleting record", "danger");
 }
 
-// die(header("Location: " . get_url("admin/list_platforms.php")));
+// die(header("Location: " . get_url("admin/list_genres.php")));
 echo "<script>history.back()</script>";

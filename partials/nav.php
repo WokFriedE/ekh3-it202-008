@@ -68,6 +68,7 @@ session_start();
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/create_game.php'); ?>">Create Game</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/list_games.php'); ?>">List Games</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/list_platforms.php'); ?>">List Platforms</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/list_genres.php'); ?>">List Genres</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>

@@ -65,7 +65,7 @@ $form = [
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
     ["type" => "date", "name" => "date_max", "placeholder" => "Max Date", "label" => "Max Date", "include_margin" => false],
 
-    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["name" => "Name", "topCriticScore" => "Score", "firstReleaseDate" => "Date", "is_api" => "If API"], "include_margin" => false],
+    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["name" => "Name", "topCriticScore" => "Score", "firstReleaseDate" => "Date", "is_api" => "If API", "is_active" => "Active"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
     ["type" => "select", "name" => "viewAll", "label" => "See Disabled", "options" => ["false" => "No", "true" => "Yes"], "include_margin" => false],
 
@@ -159,7 +159,7 @@ if (count($_GET) > 0) {
 
     //sort and order
     $sort = se($_GET, "sort", "date", false);
-    if (!in_array($sort, ["topCriticScore", "firstReleaseDate", "name", "is_api"])) {
+    if (!in_array($sort, ["topCriticScore", "firstReleaseDate", "name", "is_api", "is_active"])) {
         $sort = "firstReleaseDate";
     }
     $order = se($_GET, "order", "desc", false);

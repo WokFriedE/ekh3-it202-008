@@ -177,8 +177,11 @@ $genreForm = getRelation("Genres", []);
         if (!verifyScore(sc)) {
             valid = false;
         }
+        if (form.name.value == "") {
+            valid = false
+            flash("[Client] Developer is required", "warning")
+        }
         if (form.developer.value == "") {
-
             valid = false
             flash("[Client] Developer is required", "warning")
         }

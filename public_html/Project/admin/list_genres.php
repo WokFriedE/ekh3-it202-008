@@ -7,17 +7,17 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
-if (isset($_GET["pullPlatform"])) {
-    $temp = fetch_platforms();
+if (isset($_GET["pullGenre"])) {
+    $temp = fetch_genres();
     $temp = map_platform_data($temp);
-    defaultInsert($temp, "Platforms", ["update_duplicate" => true, "api" => true]);
+    defaultInsert($temp, "Genres", ["update_duplicate" => true, "api" => true]);
 }
 
 
 //build search form
 $form = [
-    ["type" => "number", "name" => "id", "placeholder" => "Platform ID", "label" => "Platform ID", "include_margin" => false],
-    ["type" => "text", "name" => "name", "placeholder" => "Platform Title", "label" => "Platform Name", "include_margin" => false],
+    ["type" => "number", "name" => "id", "placeholder" => "Genre ID", "label" => "Genre ID", "include_margin" => false],
+    ["type" => "text", "name" => "name", "placeholder" => "Genre Title", "label" => "Genre Name", "include_margin" => false],
 
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
     ["type" => "date", "name" => "date_max", "placeholder" => "Max Date", "label" => "Max Date", "include_margin" => false],
@@ -32,7 +32,7 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT id, name as `Name`, shortName as `Short Name`, IF(is_api=1, 'Yes', 'No') as `Is API`, IF(is_active=1, 'Active', 'Disabled')  as `Active`, created, modified   FROM `Platforms` WHERE 1=1";
+$query = "SELECT id, name as `Name`,  IF(is_api=1, 'Yes', 'No') as `Is API`, IF(is_active=1, 'Active', 'Disabled')  as `Active`, created, modified   FROM `Genres` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -67,7 +67,7 @@ if (count($_GET) > 0) {
     }
 
     //id
-    $PlatformId = se($_GET, "id", "", false);
+    $GenreId = se($_GET, "id", "", false);
     if (!empty($tempId)) {
         $query .= " AND id = :tempId";
         $params[":tempId"] = (int)"$tempId";
@@ -117,8 +117,6 @@ if (count($_GET) > 0) {
     $query .= " LIMIT $limit";
 }
 
-// echo $query;
-
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
@@ -129,19 +127,19 @@ try {
         $results = $r;
     }
 } catch (PDOException $e) {
-    error_log("Error fetching Platforms " . var_export($e, true));
+    error_log("Error fetching Genres " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
 
 $table = [
-    "data" => $results, "title" => "Current Platforms", // "ignored_columns" => ["id"],
-    "edit_url" => get_url("admin/edit_platform.php"),
-    "delete_url" => get_url("admin/delete_platform.php"),
+    "data" => $results, "title" => "Current Genres", // "ignored_columns" => ["id"],
+    "edit_url" => get_url("admin/edit_genre.php"),
+    "delete_url" => get_url("admin/delete_genre.php"),
     "delete_label" => "Toggle Active"
 ];
 ?>
 <div class="container-fluid">
-    <h3>List Platforms</h3>
+    <h3>List Genres</h3>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
 
@@ -156,7 +154,7 @@ $table = [
         <a href="?clear" class="btn btn-secondary">Clear</a>
 
     </form>
-    <a href="?pullPlatform" class="btn custBtn">Pull Platforms</a>
+    <a href="?pullPlatform" class="btn custBtn">Pull Genres</a>
     <?php render_table($table); ?>
 </div>
 

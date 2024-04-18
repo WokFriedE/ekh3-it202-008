@@ -25,7 +25,7 @@ if (isset($_POST["name"])) {
 
     //insert data
     $db = getDB();
-    $query = "UPDATE `Platforms` SET ";
+    $query = "UPDATE `Genres` SET ";
 
     $params = [];
     //per record
@@ -53,48 +53,41 @@ if (isset($_POST["name"])) {
     }
 }
 
-// Get game information
-$game = [];
+// Get genre information
+$genre = [];
 if ($id > -1) {
-    $r = selectInfo("Platforms", $id, ["id", "name", "shortName"], ["active_only" => false, "debug" => true]);
+    $r = selectInfo("Genres", $id, ["id", "name"], ["active_only" => false, "debug" => true]);
     if ($r) {
-        $game = $r;
+        $genre = $r;
     } else {
-        flash("Invalid Platform passed", "danger");
-        die(header("Location:" . get_url("admin/list_platforms.php")));
+        flash("Invalid genre passed", "danger");
+        die(header("Location:" . get_url("admin/list_genres.php")));
     }
 } else {
     flash("Invalid id passed", "danger");
-    die(header("Location:" . get_url("admin/list_platforms.php")));
+    die(header("Location:" . get_url("admin/list_genres.php")));
 }
 
 
 
-if ($game) {
+if ($genre) {
     $form = [
         ["type" => "text", "name" => "name", "placeholder" => "Name...", "label" => "Name", "rules" => ["required" => "required"]],
-        ["type" => "text", "name" => "shortName", "placeholder" => "Short Name...", "label" => "Short Name", "rules" => ["required" => "required"]]
     ];
-    $keys = array_keys($game);
+    $keys = array_keys($genre);
 
     foreach ($form as $k => $v) {
         if (in_array($v["name"], $keys)) {
-            $form[$k]["value"] = $game[$v["name"]];
+            $form[$k]["value"] = $genre[$v["name"]];
         }
     }
 }
 
-
-// Get active platforms
-$platformForm = getRelation("Platforms", $game);
-// Get active Genres
-$genreForm = getRelation("Genres", $game);
-
 ?>
 <div class="container-fluid">
-    <h3>Edit Game</h3>
+    <h3>Edit genre</h3>
     <div>
-        <a href="<?php echo get_url("admin/list_platforms.php"); ?>" class="btn btn-secondary">Back</a>
+        <a href="<?php echo get_url("admin/list_genres.php"); ?>" class="btn btn-secondary">Back</a>
     </div>
     <form method="POST" onsubmit="return validate(this)">
         <?php foreach ($form as $k => $v) {
@@ -120,13 +113,6 @@ require_once(__DIR__ . "/../../../partials/flash.php");
         if (form.name.value == "") {
             valid = false
             flash("[Client] Name is required", "warning")
-        }
-        if (form.shortName.value == "") {
-            valid = false
-            flash("[Client] Short name is required", "warning")
-        }
-        if (!verifyDate(form.firstReleaseDate.value)) {
-            valid = false
         }
         return valid;
     }
