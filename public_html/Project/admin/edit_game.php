@@ -87,10 +87,13 @@ if (isset($_POST["platforms"])) {
 $game = [];
 if ($id > -1) {
     $r = selectGameInfo($id, true);
+
     if ($r) {
         $game = $r;
+    } else {
+        flash("Invalid Game passed", "danger");
+        die(header("Location:" . get_url("admin/list_games.php")));
     }
-    dump($game);
 } else {
     flash("Invalid id passed", "danger");
     die(header("Location:" . get_url("admin/list_games.php")));
