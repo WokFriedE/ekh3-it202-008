@@ -238,7 +238,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
 
 // returnID: yes => provides genre and platform ID as associative, no => just names
 // maybe use GROUP_CONCAT in the future to improve performance, add a segment for active only ( AND Games.is_active = 1)
-function selectGameInfo($gameId, $returnID = false)
+function selectGameInfo($gameId, $returnID = false, $active_only = false)
 {
     $db = getDB();
     $query = "SELECT Games.*,Platforms.id as `PlatformID`,Platforms.name as `Platform`,Genres.id as `GenreID`,Genres.name as `Genre`
@@ -252,8 +252,9 @@ function selectGameInfo($gameId, $returnID = false)
                 ) LEFT JOIN `GameGenre` g ON Games.id = g.`gameID`
             ) LEFT JOIN `Genres` ON `genreId` = Genres.id
         )
-    WHERE Games.id = :gameID AND Games.is_active = 1
-    ORDER BY Games.name ASC;";
+    WHERE Games.id = :gameID";
+    if ($active_only)
+        $query .= "AND Games.is_active = 1";
     $params[":gameID"] = $gameId;
     error_log("Query: " . $query);
     error_log("Params: " . var_export($params, true));
@@ -286,13 +287,7 @@ function selectGameInfo($gameId, $returnID = false)
                 }
             }
 
-            // // checks if there is a valid value, removes last as last is the union (unless sorted)
-            // if (!is_null($res["Platforms"][array_key_first($res["Platforms"])]) && is_null(end($res["Platforms"]))) {
-            //     array_pop($res["Platforms"]);
-            // }
-            // if (!is_null($res["Genres"][array_key_first($res["Genres"])]) && is_null(end($res["Genres"]))) {
-            //     array_pop($res["Genres"]);
-            // }
+
             return $res;
         } else {
             return [];

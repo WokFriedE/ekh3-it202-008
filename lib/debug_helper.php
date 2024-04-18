@@ -17,6 +17,6 @@ function dump($arr, $dump = true)
         echo var_dump($arr);
         echo "</pre>";
     } else {
-        error_log($arr);
+        error_log("Error: " . $arr);
     }
 }
