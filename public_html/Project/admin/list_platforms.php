@@ -7,65 +7,22 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
-// Pull popular games
-if (isset($_GET['popular'])) {
-    $popRes = fetch_popular();
-    // $popRes = fetch_json("popularRes");
-    $popRes = map_popular_data($popRes, 1);
-
-    try {
-        $opts = ["debug" => true, "update_duplicate" => true,  "columns_to_update" => []];
-        $popRes = insert("Games", $popRes, $opts);
-
-        if (!$popRes) {
-            flash("Unhandled Error", "warning");
-        } else {
-            flash("Created record with id " . var_export($popRes, true), "success");
-        }
-    } catch (InvalidArgumentException $e1) {
-        error_log("Invalid arg" . var_export($e1, true));
-        flash("Invalid data passed", "danger");
-    } catch (PDOException $e2) {
-        if ($e2->errorInfo[1] == 1062) {
-            flash("An entry for this game already exists for today", "warning");
-        } else {
-            error_log("Database error" . var_export($e2, true));
-            flash("Database error", "danger");
-        }
-    } catch (Exception $e3) {
-        error_log("Invalid data records" . var_export($e3, true));
-        flash("Invalid data records", "danger");
-    }
-}
-
-if (isset($_GET["pullGenre"])) {
-    $temp = fetch_genres();
-    $temp = map_genre_data($temp);
-    $opts = ["api" => true];
-    defaultInsert($temp, "Genres", ["update_duplicate" => true, "api" => true]);
-}
-
 if (isset($_GET["pullPlatform"])) {
     $temp = fetch_platforms();
     $temp = map_platform_data($temp);
     defaultInsert($temp, "Platforms", ["update_duplicate" => true, "api" => true]);
 }
 
+
 //build search form
 $form = [
     ["type" => "number", "name" => "id", "placeholder" => "Game ID", "label" => "Game ID", "include_margin" => false],
     ["type" => "text", "name" => "name", "placeholder" => "Game Title", "label" => "Game Name", "include_margin" => false],
 
-    ["type" => "text", "name" => "publisher", "placeholder" => "Publisher", "label" => "Publisher", "include_margin" => false],
-    ["type" => "text", "name" => "developer", "placeholder" => "Developer", "label" => "Developer", "include_margin" => false],
-
-    ["type" => "number", "name" => "score_min", "placeholder" => "Score Min", "label" => "Score Min", "include_margin" => false],
-    ["type" => "number", "name" => "score_max", "placeholder" => "Score Max", "label" => "Score Max", "include_margin" => false],
-
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
     ["type" => "date", "name" => "date_max", "placeholder" => "Max Date", "label" => "Max Date", "include_margin" => false],
 
-    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["name" => "Name", "topCriticScore" => "Score", "firstReleaseDate" => "Date", "is_api" => "If API"], "include_margin" => false],
+    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["name" => "Name", "modified" => "Last Modified Date", "is_api" => "If API"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
     ["type" => "select", "name" => "viewAll", "label" => "See Disabled", "options" => ["false" => "No", "true" => "Yes"], "include_margin" => false],
 
@@ -75,7 +32,7 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT id, name, publisher, developer, topCriticScore as `top score`, firstReleaseDate as `release date`, IF(is_api=1, 'Yes', 'No') as `Is API`, IF(is_active=1, 'Active', 'Disabled') as `Active`, created, modified FROM `Games` WHERE 1=1";
+$query = "SELECT id, name as `Name`, shortName as `Short Name`, IF(is_api=1, 'Yes', 'No') as `Is API`, IF(is_active=1, 'Active', 'Disabled')  as `Active`, created, modified   FROM `Platforms` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -121,45 +78,22 @@ if (count($_GET) > 0) {
         $query .= " AND name like :name";
         $params[":name"] = "%$name%";
     }
-    //publisher
-    $publisher = se($_GET, "publisher", "", false);
-    if (!empty($publisher)) {
-        $query .= " AND publisher like :publisher";
-        $params[":publisher"] = "%$publisher%";
-    }
-    //developer
-    $developer = se($_GET, "developer", "", false);
-    if (!empty($developer)) {
-        $query .= " AND developer like :developer";
-        $params[":developer"] = "%$developer%";
-    }
-    //score range
-    $score_min = se($_GET, "score_min", "-1", false);
-    if (!empty($score_min) && $score_min > -1) {
-        $query .= " AND topCriticScore >= :score_min";
-        $params[":score_min"] = $score_min;
-    }
-    $score_max = se($_GET, "score_max", "-1", false);
-    if (!empty($score_max) && $score_max > -1) {
-        $query .= " AND topCriticScore <= :score_max";
-        $params[":score_max"] = $score_max;
-    }
 
     //date range
     $date_min = se($_GET, "date_min", "", false);
     if (!empty($date_min) && $date_min != "") {
-        $query .= " AND firstReleaseDate >= :date_min";
+        $query .= " AND modified >= :date_min";
         $params[":date_min"] = $date_min;
     }
     $date_max = se($_GET, "date_max", "-1", false);
     if (!empty($date_max) && $date_max > -1) {
-        $query .= " AND firstReleaseDate <= :date_max";
+        $query .= " AND modified <= :date_max";
         $params[":date_max"] = $date_max;
     }
 
     //sort and order
-    $sort = se($_GET, "sort", "date", false);
-    if (!in_array($sort, ["topCriticScore", "firstReleaseDate", "name", "is_api"])) {
+    $sort = se($_GET, "sort", "name", false);
+    if (!in_array($sort, ["name", "modified"])) {
         $sort = "firstReleaseDate";
     }
     $order = se($_GET, "order", "desc", false);
@@ -201,14 +135,13 @@ try {
 
 $table = [
     "data" => $results, "title" => "Current Games", // "ignored_columns" => ["id"],
-    "view_url" => get_url("admin/view_game.php"),
-    "edit_url" => get_url("admin/edit_game.php"),
-    "delete_url" => get_url("admin/delete_game.php"),
+    "edit_url" => get_url("admin/edit_platform.php"),
+    "delete_url" => get_url("admin/delete_platform.php"),
     "delete_label" => "Toggle Active"
 ];
 ?>
 <div class="container-fluid">
-    <h3>List Games</h3>
+    <h3>List Platforms</h3>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
 
@@ -223,8 +156,6 @@ $table = [
         <a href="?clear" class="btn btn-secondary">Clear</a>
 
     </form>
-    <a href="?popular" class="btn custBtn">Pull Popular Games</a>
-    <a href="?pullGenre" class="btn custBtn">Pull Genres</a>
     <a href="?pullPlatform" class="btn custBtn">Pull Platforms</a>
     <?php render_table($table); ?>
 </div>

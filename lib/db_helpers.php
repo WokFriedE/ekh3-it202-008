@@ -134,10 +134,18 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
 }
 
 // Simple insert
-function defaultInsert($data, $table, $update_duplicate = true)
+function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api" => false])
 {
+    $api = $opts["api"];
+    $update_duplicate = $opts["update_duplicate"];
     try {
         $opts = ["debug" => true, "update_duplicate" => $update_duplicate,  "columns_to_update" => []];
+        if ($api) {
+            foreach ($data as $key => $value) {
+                $data[$key]["is_api"] = 1;
+            }
+        }
+        dump($data);
         $result = insert($table, $data, $opts);
 
         if (!$result) {
@@ -162,18 +170,19 @@ function defaultInsert($data, $table, $update_duplicate = true)
 }
 
 // Inserts more game data on load
-function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "addGenre" => false])
+function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "addGenre" => false, "api" => false])
 {
     $addAll = $opts["addAll"];
     $addPlat = $opts["addPlat"];
     $addGenre = $opts["addGenre"];
+    $api = $opts["api"];
 
     // Adds platform relations
     if (isset($gameMap["Platforms"])) {
         $platforms = $gameMap["Platforms"];
         // Lazy load platforms if needed (trades api call for sql call)
         if ($addAll || $addPlat) {
-            defaultInsert($platforms, "Platforms", false);
+            defaultInsert($platforms, "Platforms", ["update_duplicate" => false, "api" => $api]);
         }
         foreach ($platforms as $index => $ent) {
             if (isset($platforms[$index]["id"])) {
@@ -187,7 +196,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
                     unset($platforms[$index][$key]);
             }
         }
-        defaultInsert($platforms, "PlatformGame", false);
+        defaultInsert($platforms, "PlatformGame", ["update_duplicate" => true]);
         unset($gameMap["Platforms"]);
     }
 
@@ -196,7 +205,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
         $Genres = $gameMap["Genres"];
         // Lazy load Genres if needed (trades api call for sql call)
         if ($addPlat || $addGenre) {
-            defaultInsert($Genres, "Genres", false);
+            defaultInsert($Genres, "Genres",  ["update_duplicate" => false, "api" => $api]);
         }
         foreach ($Genres as $index => $ent) {
             if (isset($Genres[$index]["id"])) {
@@ -210,7 +219,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
                     unset($Genres[$index][$key]);
             }
         }
-        defaultInsert($Genres, "GameGenre", false);
+        defaultInsert($Genres, "GameGenre", ["update_duplicate" => true]);
         unset($gameMap["Genres"]);
     }
 
@@ -341,6 +350,39 @@ function getRelation($table, $data)
     }
 
     return $form;
+}
+
+function selectInfo($table, $id = -1, $cols = ["name"], $opts = ["active_only" => false, "debug" => false])
+{
+    $is_debug = $opts["debug"];
+    $active_only = $opts["active_only"];
+    $sanitized_table_name = preg_replace('/[^a-zA-Z0-9_-]/', '', $table);
+    $params = [];
+
+    // Disable if do not use id
+    if (!in_array("id", $cols))
+        array_push($cols, "id");
+    $columns = join(", ", $cols);
+
+    $db = getDB();
+    $query = "SELECT $columns FROM `$sanitized_table_name` WHERE 1=1";
+    if ($active_only)
+        $query .= "AND is_active = 1";
+    if ($id !== -1) {
+        $query .= " AND id=:id";
+        $params[":id"] = $id;
+    }
+    if ($is_debug)
+        error_log("Query: " . $query);
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        $queryRes = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $queryRes;
+    } catch (PDOException $e) {
+        error_log("Something broke with the query" . var_export($e, true));
+        flash("An error occurred", "danger");
+    }
 }
 
 /*

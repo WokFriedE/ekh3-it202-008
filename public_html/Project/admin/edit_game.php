@@ -19,8 +19,8 @@ if (isset($_POST["name"])) {
         if (!in_array($k, ["id", "name", "publisher", "developer", "description", "topCriticScore", "firstReleaseDate", "Platforms", "Genres"])) {
             unset($_POST[$k]);
         }
-        $quote = $_POST;
-        error_log("Cleaned up POST: " . var_export($quote, true));
+        $temps = $_POST;
+        error_log("Cleaned up POST: " . var_export($temps, true));
     }
 
     //insert data
@@ -29,7 +29,7 @@ if (isset($_POST["name"])) {
 
     $params = [];
     //per record
-    foreach ($quote as $k => $v) {
+    foreach ($temps as $k => $v) {
 
         if ($params) {
             $query .= ",";
