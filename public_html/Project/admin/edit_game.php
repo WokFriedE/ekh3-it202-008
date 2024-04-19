@@ -14,13 +14,13 @@ if (!has_role("Admin")) {
 
 <?php
 $id = se($_GET, "id", -1, false);
-if (isset($_POST["id"])) {
+if (isset($_POST["name"])) {
     foreach ($_POST as $k => $v) {
         if (!in_array($k, ["id", "name", "publisher", "developer", "description", "topCriticScore", "firstReleaseDate", "Platforms", "Genres"])) {
             unset($_POST[$k]);
         }
-        $quote = $_POST;
-        error_log("Cleaned up POST: " . var_export($quote, true));
+        $temps = $_POST;
+        error_log("Cleaned up POST: " . var_export($temps, true));
     }
 
     //insert data
@@ -29,7 +29,7 @@ if (isset($_POST["id"])) {
 
     $params = [];
     //per record
-    foreach ($quote as $k => $v) {
+    foreach ($temps as $k => $v) {
 
         if ($params) {
             $query .= ",";
@@ -87,8 +87,12 @@ if (isset($_POST["platforms"])) {
 $game = [];
 if ($id > -1) {
     $r = selectGameInfo($id, true);
+
     if ($r) {
         $game = $r;
+    } else {
+        flash("Invalid Game passed", "danger");
+        die(header("Location:" . get_url("admin/list_games.php")));
     }
 } else {
     flash("Invalid id passed", "danger");
@@ -117,6 +121,7 @@ if ($game) {
         }
     }
 }
+
 
 // Get active platforms
 $platformForm = getRelation("Platforms", $game);
@@ -167,7 +172,26 @@ require_once(__DIR__ . "/../../../partials/flash.php");
 
 <script>
     function validate(form) {
-        let score = form.topCriticScore.value;
-        return verifyScore(score);
+        let sc = form.topCriticScore.value;
+        let valid = true;
+        if (!verifyScore(sc)) {
+            valid = false;
+        }
+        if (form.name.value == "") {
+            valid = false
+            flash("[Client] Developer is required", "warning")
+        }
+        if (form.developer.value == "") {
+            valid = false
+            flash("[Client] Developer is required", "warning")
+        }
+        if (form.description.value == "") {
+            valid = false
+            flash("[Client] Description is required", "warning")
+        }
+        if (!verifyDate(form.firstReleaseDate.value)) {
+            valid = false
+        }
+        return valid;
     }
 </script>

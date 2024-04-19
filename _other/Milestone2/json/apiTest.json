@@ -1,0 +1,143 @@
+{
+    "images": {
+        "box": {
+            "og": "game/7334/o/7P81zBz5.jpg",
+            "sm": "game/7334/AK4Qv2ku.jpg"
+        },
+        "square": {
+            "og": "game/7334/o/tiRmvYBy.jpg",
+            "xs": "game/7334/cQpVu4g3.jpg",
+            "sm": "game/7334/3wy9Tgrv.jpg",
+            "lg": "game/7334/2MpW9XqU.jpg"
+        },
+        "masthead": {
+            "og": "game/7334/o/b3nB69KD.jpg",
+            "xs": "game/7334/LGqmKnP8.jpg",
+            "sm": "game/7334/7fxVihWq.jpg",
+            "md": "game/7334/EWeXFxVq.jpg",
+            "lg": "game/7334/dvijXjPx.jpg",
+            "xl": "game/7334/9lYd9MgY.jpg"
+        },
+        "banner": {
+            "og": "game/7334/o/j4njvKOp.jpg",
+            "sm": "game/7334/6UzVO9Qx.jpg"
+        },
+        "screenshots": [
+            {
+                "_id": "62f471f0c25b595e6c50e4b6",
+                "og": "game/7334/o/MtgKhgwy.jpg",
+                "sm": "game/7334/8g3TdYGa.jpg"
+            },
+            {
+                "_id": "62f471f0c25b595e6c50e4b7",
+                "og": "game/7334/o/fqpyTKrh.jpg",
+                "sm": "game/7334/aoTfs4GA.jpg"
+            },
+            {
+                "_id": "62f471f0c25b595e6c50e4b8",
+                "og": "game/7334/o/mlX11EXS.jpg",
+                "sm": "game/7334/lsfOlnjz.jpg"
+            }
+        ]
+    },
+    "biggestDiscountDollars": 0,
+    "biggestDiscountPercentage": 0,
+    "hasLootBoxes": null,
+    "percentRecommended": 100,
+    "numReviews": 11,
+    "numTopCriticReviews": 10,
+    "medianScore": 90,
+    "topCriticScore": 91.33333333333333,
+    "percentile": 100,
+    "tier": "Mighty",
+    "name": "NieR: Automata Game of the YoRHa Edition",
+    "description": "Humanity has been driven from the Earth by mechanical beings from another world. In a final effort to take back the planet, the human resistance sends a force of android soldiers to destroy the invaders. Now, a war between machines and androids rages on... A war that could soon unveil a long-forgotten truth of the world.",
+    "screenshots": [
+        {
+            "_id": "5c74f691b0ffd14f8dad1d79",
+            "fullRes": "//c.opencritic.com/images/games/7334/aRgwysleuelcDxHfZn.jpg",
+            "thumbnail": "//c.opencritic.com/images/games/7334/aRgwysleuelcDxHfZn_th.jpg"
+        },
+        {
+            "_id": "5c74f691b0ffd14f8dad1d78",
+            "fullRes": "//c.opencritic.com/images/games/7334/GkPle6J4aZ8lRcXTpW.jpg",
+            "thumbnail": "//c.opencritic.com/images/games/7334/GkPle6J4aZ8lRcXTpW_th.jpg"
+        },
+        {
+            "_id": "5c74f691b0ffd14f8dad1d77",
+            "fullRes": "//c.opencritic.com/images/games/7334/6dfNyPGx4OmloVICQo.jpg",
+            "thumbnail": "//c.opencritic.com/images/games/7334/6dfNyPGx4OmloVICQo_th.jpg"
+        }
+    ],
+    "trailers": [],
+    "mastheadScreenshot": {
+        "fullRes": "//c.opencritic.com/images/games/7334/qUeux4P91SGFduMlYD.jpg",
+        "thumbnail": "//c.opencritic.com/images/games/7334/qUeux4P91SGFduMlYD_th.jpg"
+    },
+    "embargoDate": null,
+    "Companies": [
+        {
+            "name": "Square Enix",
+            "type": "PUBLISHER"
+        },
+        {
+            "name": "PlatinumGames",
+            "type": "DEVELOPER"
+        }
+    ],
+    "Platforms": [
+        {
+            "id": 6,
+            "name": "PlayStation 4",
+            "shortName": "PS4",
+            "imageSrc": "https://c.opencritic.com/images/platforms/ps4.png",
+            "releaseDate": "2019-02-26T00:00:00.000Z",
+            "displayRelease": null
+        },
+        {
+            "id": 27,
+            "name": "PC",
+            "shortName": "PC",
+            "imageSrc": "https://c.opencritic.com/images/platforms/pc.png",
+            "releaseDate": "2019-02-26T00:00:00.000Z",
+            "displayRelease": null
+        },
+        {
+            "id": 3,
+            "name": "PlayStation 5",
+            "shortName": "PS5",
+            "imageSrc": "https://c.opencritic.com/images/platforms/ps5.png",
+            "releaseDate": "2020-11-12T00:00:00.000Z"
+        }
+    ],
+    "Genres": [
+        {
+            "id": 27,
+            "name": "Action"
+        },
+        {
+            "id": 77,
+            "name": "RPG"
+        }
+    ],
+    "id": 7334,
+    "firstReleaseDate": "2019-02-26T00:00:00.000Z",
+    "createdAt": "2019-09-21T19:50:51.851Z",
+    "updatedAt": "2023-05-29T13:36:45.338Z",
+    "firstReviewDate": "2017-10-26T04:00:00.000Z",
+    "latestReviewDate": "2023-03-07T00:00:00.000Z",
+    "bannerScreenshot": {
+        "fullRes": "//c.opencritic.com/images/games/7334/banner.jpg"
+    },
+    "verticalLogoScreenshot": {
+        "fullRes": "//c.opencritic.com/images/games/7334/7Puxoc83P28AuvfuYDXL5VWW8mqW3h6g4Qg1OxpJd5CToSIo.jpg",
+        "thumbnail": "//c.opencritic.com/images/games/7334/7Puxoc83P28AuvfuYDXL5VWW8mqW3h6g4Qg1OxpJd5CToSIo_th.jpg"
+    },
+    "squareScreenshot": {
+        "fullRes": "//c.opencritic.com/images/games/7334/0PSjsAo4S0gzVfNDFnDHPHfBEaxWAmVN4ldyUXNnEGMrYxmj.jpg",
+        "thumbnail": "//c.opencritic.com/images/games/7334/0PSjsAo4S0gzVfNDFnDHPHfBEaxWAmVN4ldyUXNnEGMrYxmj_th.jpg"
+    },
+    "imageMigrationComplete": true,
+    "tenthReviewDate": "2019-04-02T04:00:00.000Z",
+    "url": "https://opencritic.com/game/7334/nier-automata-game-of-the-yorha-edition"
+}

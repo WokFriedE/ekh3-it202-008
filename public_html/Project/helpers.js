@@ -73,3 +73,30 @@ function verifyScore(score) {
     }
     return true;
 }
+
+function verifyDate(date) {
+    let pattern = /^[0-9]{4}-(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])$/;
+    if (!(pattern.test(date)) || date == "") {
+        flash("[Client] Invalid date please enter one like YYYY-MM-DD", "warning")
+        return false;
+    }
+    return true;
+}
+
+
+// SQL DB exception would handle the issue
+// function verifySQLName(value, required = false) {
+//     // depedning, may need to limit to hexadecimal
+//     if (value.length <= 50 && (required || value != "")) {
+//         return true;
+//     }
+//     return false;
+// }
+
+// // Used for both developer and publisher
+// function verifyCompanyName(value, required = false) {
+//     if (value.length <= 30 && (required || value != "")) {
+//         return true;
+//     }
+//     return false;
+// }

@@ -35,3 +35,7 @@ require(__DIR__ . "/game_api.php");
 require(__DIR__ . "/game_mapping.php");
 
 require(__DIR__ . "/session_store.php");
+
+require(__DIR__ . "/redirect.php");
+
+require(__DIR__ . "/debug_helper.php");

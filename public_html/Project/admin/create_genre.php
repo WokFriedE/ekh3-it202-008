@@ -174,19 +174,11 @@ $genreForm = getRelation("Genres", []);
     function validate(form) {
         let sc = form.topCriticScore.value;
         let valid = true;
-        let idValidation = /^\d{1,9}$/;
         if (!verifyScore(sc)) {
             valid = false;
         }
-        if (form.name.value == "") {
-            valid = false
-            flash("[Client] Developer is required", "warning")
-        }
-        if (idValidation.test(form.id.value) && parseInt(form.id.value) > 2147483647) {
-            valid = false
-            flash("[Client] ID is required and needs to be positive", "warning")
-        }
         if (form.developer.value == "") {
+
             valid = false
             flash("[Client] Developer is required", "warning")
         }
