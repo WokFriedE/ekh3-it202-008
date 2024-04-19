@@ -144,56 +144,45 @@ $genreForm = getRelation("Genres", []);
 
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
 
-            <?php //foreach ($platformForm as $k => $v) {
-            //    render_input($v);
-            // } 
-            ?>
-
-            <?php // foreach ($genreForm as $k => $v) {
-            //render_input($v);
-            //} 
-            ?>
-
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>
         </form>
     </div>
-</div>
 
 
-<script>
-    function switchTab(tab) {
-        let target = document.getElementById(tab);
-        if (target) {
-            let eles = document.getElementsByClassName("tab-target");
-            for (let ele of eles) {
-                ele.style.display = (ele.id === tab) ? "none" : "block";
+    <script>
+        function switchTab(tab) {
+            let target = document.getElementById(tab);
+            if (target) {
+                let eles = document.getElementsByClassName("tab-target");
+                for (let ele of eles) {
+                    ele.style.display = (ele.id === tab) ? "none" : "block";
+                }
             }
         }
-    }
 
-    function validate(form) {
-        let sc = form.topCriticScore.value;
-        let valid = true;
-        if (!verifyScore(sc)) {
-            valid = false;
-        }
-        if (form.developer.value == "") {
+        function validate(form) {
+            let sc = form.topCriticScore.value;
+            let valid = true;
+            if (!verifyScore(sc)) {
+                valid = false;
+            }
+            if (form.developer.value == "") {
 
-            valid = false
-            flash("[Client] Developer is required", "warning")
+                valid = false
+                flash("[Client] Developer is required", "warning")
+            }
+            if (form.description.value == "") {
+                valid = false
+                flash("[Client] Description is required", "warning")
+            }
+            if (!verifyDate(form.firstReleaseDate.value)) {
+                valid = false
+            }
+            return valid;
         }
-        if (form.description.value == "") {
-            valid = false
-            flash("[Client] Description is required", "warning")
-        }
-        if (!verifyDate(form.firstReleaseDate.value)) {
-            valid = false
-        }
-        return valid;
-    }
-</script>
+    </script>
 
-<?php
-//note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
-?>
+    <?php
+    //note we need to go up 1 more directory
+    require_once(__DIR__ . "/../../../partials/flash.php");
+    ?>

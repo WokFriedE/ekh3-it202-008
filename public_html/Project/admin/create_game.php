@@ -144,15 +144,23 @@ $genreForm = getRelation("Genres", []);
 
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
 
-            <?php //foreach ($platformForm as $k => $v) {
-            //    render_input($v);
-            // } 
-            ?>
 
-            <?php // foreach ($genreForm as $k => $v) {
-            //render_input($v);
-            //} 
-            ?>
+            <div class="row">
+                <div class="col">
+                    <h3>Platforms</h3>
+                    <?php foreach ($platformForm as $k => $v) {
+                        render_input($v);
+                    }
+                    ?>
+                </div>
+                <div class="col">
+                    <h3>Genres</h3>
+                    <?php foreach ($genreForm as $k => $v) {
+                        render_input($v);
+                    }
+                    ?>
+                </div>
+            </div>
 
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>
         </form>
