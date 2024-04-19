@@ -84,3 +84,19 @@ function verifyDate(date) {
 }
 
 
+// SQL DB exception would handle the issue
+// function verifySQLName(value, required = false) {
+//     // depedning, may need to limit to hexadecimal
+//     if (value.length <= 50 && (required || value != "")) {
+//         return true;
+//     }
+//     return false;
+// }
+
+// // Used for both developer and publisher
+// function verifyCompanyName(value, required = false) {
+//     if (value.length <= 30 && (required || value != "")) {
+//         return true;
+//     }
+//     return false;
+// }

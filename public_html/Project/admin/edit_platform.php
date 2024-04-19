@@ -125,9 +125,6 @@ require_once(__DIR__ . "/../../../partials/flash.php");
             valid = false
             flash("[Client] Short name is required", "warning")
         }
-        if (!verifyDate(form.firstReleaseDate.value)) {
-            valid = false
-        }
         return valid;
     }
 </script>
