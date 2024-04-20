@@ -16,7 +16,7 @@ if (!has_role("Admin")) {
 $id = se($_GET, "id", -1, false);
 if (isset($_POST["name"])) {
     foreach ($_POST as $k => $v) {
-        if (!in_array($k, ["id", "name", "publisher", "developer", "description", "topCriticScore", "firstReleaseDate", "Platforms", "Genres"])) {
+        if (!in_array($k, ["id", "name", "publisher", "developer", "description", "topCriticScore", "firstReleaseDate", "platforms", "genres"])) {
             unset($_POST[$k]);
         }
         $temps = $_POST;
@@ -139,27 +139,26 @@ $genreForm = getRelation("Genres", $game);
             render_input($v);
         } ?>
 
-        <?php render_button(["text" => "Search", "type" => "submit", "text" => "Update Info"]); ?>
-    </form>
 
-    <div class="row">
-        <div class="col">
-            <form method="POST" onsubmit="return validate(this)">
-                <?php render_button(["text" => "Search", "type" => "submit", "text" => "Update platforms"]); ?>
+        <div class="row">
+            <div class="col">
+                <h3>Platforms</h3>
                 <?php foreach ($platformForm as $k => $v) {
                     render_input($v);
-                } ?>
-            </form>
-        </div>
-        <div class="col">
-            <form method="POST" onsubmit="return validate(this)">
-                <?php render_button(["text" => "Search", "type" => "submit", "text" => "Update genres"]); ?>
+                }
+                ?>
+            </div>
+            <div class="col">
+                <h3>Genres</h3>
                 <?php foreach ($genreForm as $k => $v) {
                     render_input($v);
-                } ?>
-            </form>
+                }
+                ?>
+            </div>
         </div>
-    </div>
+
+        <?php render_button(["text" => "Search", "type" => "submit", "text" => "Update Info"]); ?>
+    </form>
 
 </div>
 
