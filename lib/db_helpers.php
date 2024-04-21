@@ -182,6 +182,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
         $api = $opts["api"];
     }
 
+    dump($gameMap);
 
     $gameMap["is_api"] = $api ? 1 : 0;
     if (isset($gameMap["Platforms"])) {
@@ -238,8 +239,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
                     unset($platforms[$index][$key]);
             }
         }
-        defaultInsert($platforms, "PlatformGame", ["update_duplicate" => true]);
-        unset($gameMap["Platforms"]);
+        defaultInsert($platforms, "PlatformGame", ["update_duplicate" => true, "api" => $api]);
     }
 
     // Adds genre relations
@@ -260,8 +260,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
                     unset($Genres[$index][$key]);
             }
         }
-        defaultInsert($Genres, "GameGenre", ["update_duplicate" => true]);
-        unset($gameMap["Genres"]);
+        defaultInsert($Genres, "GameGenre", ["update_duplicate" => true, "api" => $api]);
     }
 }
 
