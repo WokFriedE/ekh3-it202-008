@@ -95,7 +95,7 @@ if (isset($_POST["action"])) {
                 flash("Invalid data passed", "danger");
             } catch (PDOException $e2) {
                 if ($e2->errorInfo[1] == 1062) {
-                    flash("An entry for this game already exists for today", "warning");
+                    flash("An entry for this game ID already exists", "warning");
                 } else {
                     error_log("Database error" . var_export($e2, true));
                     flash("Database error", "danger");
