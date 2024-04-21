@@ -68,7 +68,7 @@ function verifyPassword(pw) {
 function verifyScore(score) {
     let pattern = /^\d{1,3}(\.\d+)?$/;
     if (!(pattern.test(score)) || score == "") {
-        flash("[Client] Invalid score please enter a number", "warning")
+        flash("[Client] Invalid score please enter a number thats in 0-100", "warning")
         return false;
     }
     return true;

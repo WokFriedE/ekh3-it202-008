@@ -76,4 +76,3 @@ function fetch_json($jsonName)
     $json_data = json_decode($json, true);
     return $json_data;
 }
-// TODO implement a manage game data --> prob in refresh db and use that to makke request to db and such

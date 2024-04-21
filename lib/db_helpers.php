@@ -133,7 +133,7 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
 
 }
 
-// Simple insert
+// Simple insert // Ethan - ekh3 - 4/22/24
 function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api" => false])
 {
     if (isset($api)) {
@@ -182,8 +182,6 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
         $api = $opts["api"];
     }
 
-    dump($gameMap);
-
     $gameMap["is_api"] = $api ? 1 : 0;
     if (isset($gameMap["Platforms"])) {
         $platforms =  $gameMap["Platforms"];
@@ -220,7 +218,6 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
         flash("Invalid data records", "danger");
         return;
     }
-
     // Adds platform relations
     if (isset($platforms)) {
         // Lazy load platforms if needed (trades api call for sql call)
@@ -241,7 +238,6 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
         }
         defaultInsert($platforms, "PlatformGame", ["update_duplicate" => true, "api" => $api]);
     }
-
     // Adds genre relations
     if (isset($Genres)) {
         // Lazy load Genres if needed (trades api call for sql call)
@@ -264,7 +260,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
     }
 }
 
-
+// Ethan - ekh3 - 4/22/24
 // returnID: yes => provides genre and platform ID as associative, no => just names
 // maybe use GROUP_CONCAT in the future to improve performance, add a segment for active only ( AND Games.is_active = 1)
 function selectGameInfo($gameId, $returnID = false, $active_only = false)

@@ -19,3 +19,7 @@ function is_valid_password($password)
 {
     return strlen($password) >= 8;
 }
+function is_valid_date($date = "")
+{
+    return preg_match('/^[0-9]{4}-(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])$/', $date);
+}

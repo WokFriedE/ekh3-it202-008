@@ -7,7 +7,8 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
-// Pull popular games
+// Ethan Ho - ekh3 - 4/21/24
+// Pull popular games from api
 if (isset($_GET['popular'])) {
     $popRes = fetch_popular();
     // $popRes = fetch_json("popularRes");
@@ -38,6 +39,7 @@ if (isset($_GET['popular'])) {
     }
 }
 
+// Pull genres from api
 if (isset($_GET["pullGenre"])) {
     $temp = fetch_genres();
     $temp = map_genre_data($temp);
@@ -45,6 +47,7 @@ if (isset($_GET["pullGenre"])) {
     defaultInsert($temp, "Genres", ["update_duplicate" => true, "api" => true]);
 }
 
+// Pull platforms from api
 if (isset($_GET["pullPlatform"])) {
     $temp = fetch_platforms();
     $temp = map_platform_data($temp);
@@ -75,7 +78,8 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT id, name, publisher, developer, topCriticScore as `top score`, firstReleaseDate as `release date`, IF(is_api=1, 'Yes', 'No') as `Is API`, IF(is_active=1, 'Active', 'Disabled') as `Active`, created, modified FROM `Games` WHERE 1=1";
+$query = "SELECT id, name, publisher, developer, topCriticScore as `top score`, firstReleaseDate as `release date`, IF(is_api=1, 'Yes', 'No') as `Is API`, 
+IF(is_active=1, 'Active', 'Disabled') as `Active`, created, modified FROM `Games` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -199,6 +203,8 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
+// Ethan Ho - ekh3 - 4/21/24
+// HTML 
 $table = [
     "data" => $results, "title" => "Current Games", // "ignored_columns" => ["id"],
     "view_url" => get_url("admin/view_game.php"),
