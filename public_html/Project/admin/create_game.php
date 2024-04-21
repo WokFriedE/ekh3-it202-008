@@ -24,7 +24,7 @@ if (isset($_POST["action"])) {
             if ($result) {
                 $quote = $result;
                 $quote["is_api"] = 1;
-                $opts = ["addAll" => true, "addPlat" => false, "addGenre" => false];
+                $opts = ["addAll" => true, "addPlat" => false, "addGenre" => false, "api" => true];
                 insertGame($result, $opts);
             }
         } else if ($action === "create") {
