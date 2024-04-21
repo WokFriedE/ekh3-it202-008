@@ -31,6 +31,12 @@ if (isset($_POST["action"])) {
             foreach ($_POST as $k => $v) {
                 if (!in_array($k, ["id", "name", "publisher", "developer", "description", "topCriticScore", "firstReleaseDate", "platforms", "genres"])) {
                     unset($_POST[$k]);
+                } else if ($k === "platforms") {
+                    $platforms = $_POST["platforms"];
+                    unset($_POST["platforms"]);
+                } else if ($k === "genres") {
+                    $genres = $_POST["genres"];
+                    unset($_POST["genres"]);
                 }
                 $quote = $_POST;
                 error_log("Cleaned up POST: " . var_export($quote, true));
@@ -44,12 +50,11 @@ if (isset($_POST["action"])) {
 
 
                 //attempt to apply
-                if (isset($_POST["genres"])) {
+                if (isset($genres)) {
                     $db = getDB();
-                    $genreIDs = $_POST["genres"];
                     $stmt = $db->prepare("INSERT INTO `GameGenre` (genreID, gameId, is_active) VALUES (:genreID, :gameId, 1) 
                                             ON DUPLICATE KEY UPDATE is_active = !is_active");
-                    foreach ($genreIDs as $genreID) {
+                    foreach ($genres as $index => $genreID) {
                         try {
                             $stmt->execute([":genreID" => $genreID, ":gameId" => $id]);
                             flash("Updated role", "success");
@@ -61,15 +66,15 @@ if (isset($_POST["action"])) {
                             }
                         }
                     }
+                    unset($_POST["genres"]);
                 }
 
-                if (isset($_POST["platforms"])) {
+                if (isset($platforms)) {
                     $db = getDB();
                     // TODO use the insert function
-                    $platformIDs = $_POST["platforms"];
                     $stmt = $db->prepare("INSERT INTO `PlatformGame` (platformId, gameId, is_active) VALUES (:platformId, :gameId, 1) 
                                             ON DUPLICATE KEY UPDATE is_active = !is_active");
-                    foreach ($platformIDs as $platformId) {
+                    foreach ($platforms as $index => $platformId) {
                         try {
                             $stmt->execute([":platformId" => $platformId, ":gameId" => $id]);
                             flash("Updated role", "success");
@@ -77,6 +82,7 @@ if (isset($_POST["action"])) {
                             flash(var_export($e->errorInfo, true), "danger");
                         }
                     }
+                    unset($_POST["platforms"]);
                 }
 
                 if (!$result) {
@@ -104,8 +110,6 @@ if (isset($_POST["action"])) {
     }
 }
 
-// TODO remove if not used
-// dump($_POST);
 
 // Get active platforms
 $platformForm = getRelation("Platforms", []);

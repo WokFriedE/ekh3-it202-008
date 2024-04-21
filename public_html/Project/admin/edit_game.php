@@ -30,7 +30,8 @@ if (isset($_POST["name"])) {
     $params = [];
     //per record
     foreach ($temps as $k => $v) {
-
+        if ($k === "platforms" || $k === "genres")
+            continue;
         if ($params) {
             $query .= ",";
         }
@@ -38,6 +39,42 @@ if (isset($_POST["name"])) {
         $query .= "$k=:$k";
         $params[":$k"] = $v;
     }
+
+
+    //attempt to apply
+    if (isset($_POST["genres"])) {
+        $db = getDB();
+        $genreIDs = $_POST["genres"];
+        $stmt = $db->prepare("INSERT INTO `GameGenre` (genreID, gameId, is_active) VALUES (:genreID, :gameId, 1) 
+    ON DUPLICATE KEY UPDATE is_active = !is_active");
+        foreach ($genreIDs as $index => $genreID) {
+            try {
+                $stmt->execute([":genreID" => $genreID, ":gameId" => $id]);
+                flash("Updated role", "success");
+            } catch (PDOException $e) {
+                flash(var_export($e->errorInfo, true), "danger");
+            }
+        }
+        unset($_POST["genres"]);
+    }
+
+    if (isset($_POST["platforms"])) {
+        $db = getDB();
+        // TODO use the insert function
+        $platformIDs = $_POST["platforms"];
+        $stmt = $db->prepare("INSERT INTO `PlatformGame` (platformId, gameId, is_active) VALUES (:platformId, :gameId, 1) 
+    ON DUPLICATE KEY UPDATE is_active = !is_active");
+        foreach ($platformIDs as $index => $platformId) {
+            try {
+                $stmt->execute([":platformId" => $platformId, ":gameId" => $id]);
+                flash("Updated role", "success");
+            } catch (PDOException $e) {
+                flash(var_export($e->errorInfo, true), "danger");
+            }
+        }
+        unset($_POST["platforms"]);
+    }
+
 
     $query .= " WHERE id = :id";
     $params[":id"] = $id;
@@ -52,37 +89,7 @@ if (isset($_POST["name"])) {
         flash("An error occurred", "danger");
     }
 }
-//attempt to apply
-if (isset($_POST["genres"])) {
-    $db = getDB();
-    $genreIDs = $_POST["genres"];
-    $stmt = $db->prepare("INSERT INTO `GameGenre` (genreID, gameId, is_active) VALUES (:genreID, :gameId, 1) 
-    ON DUPLICATE KEY UPDATE is_active = !is_active");
-    foreach ($genreIDs as $genreID) {
-        try {
-            $stmt->execute([":genreID" => $genreID, ":gameId" => $id]);
-            flash("Updated role", "success");
-        } catch (PDOException $e) {
-            flash(var_export($e->errorInfo, true), "danger");
-        }
-    }
-}
 
-if (isset($_POST["platforms"])) {
-    $db = getDB();
-    // TODO use the insert function
-    $platformIDs = $_POST["platforms"];
-    $stmt = $db->prepare("INSERT INTO `PlatformGame` (platformId, gameId, is_active) VALUES (:platformId, :gameId, 1) 
-    ON DUPLICATE KEY UPDATE is_active = !is_active");
-    foreach ($platformIDs as $platformId) {
-        try {
-            $stmt->execute([":platformId" => $platformId, ":gameId" => $id]);
-            flash("Updated role", "success");
-        } catch (PDOException $e) {
-            flash(var_export($e->errorInfo, true), "danger");
-        }
-    }
-}
 // Get game information
 $game = [];
 if ($id > -1) {
@@ -100,11 +107,10 @@ if ($id > -1) {
 }
 
 
-
 if ($game) {
     $form = [
         ["type" => "text", "name" => "name", "placeholder" => "Name...", "label" => "Name", "rules" => ["required" => "required"]],
-        ["type" => "text", "name" => "publisher", "placeholder" => "Publisher...", "label" => "Publisher", "rules" => ["required" => "required"]],
+        ["type" => "text", "name" => "publisher", "placeholder" => "Publisher (optional)", "label" => "Publisher"],
         ["type" => "text", "name" => "developer", "placeholder" => "Developer...", "label" => "Developer", "rules" => ["required" => "required"]],
         ["type" => "text", "name" => "description", "placeholder" => "Description...", "label" => "Description", "rules" => ["required" => "required"]],
         ["type" => "text", "name" => "topCriticScore", "placeholder" => "Critic Score...", "label" => "Critic Score", "rules" => ["required" => "required"]],
@@ -121,7 +127,6 @@ if ($game) {
         }
     }
 }
-
 
 // Get active platforms
 $platformForm = getRelation("Platforms", $game);

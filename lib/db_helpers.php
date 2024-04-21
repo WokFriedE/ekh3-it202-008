@@ -262,11 +262,11 @@ function selectGameInfo($gameId, $returnID = false, $active_only = false)
                 (
                     (
                         `Games` LEFT JOIN `PlatformGame` p ON Games.`id` = p.`gameID`
-                    ) LEFT JOIN `Platforms` ON `platformId` = Platforms.id
+                    ) LEFT JOIN `Platforms` ON `platformId` = Platforms.id  AND p.is_active = 1 AND `Platforms`.is_active = 1 
                 ) LEFT JOIN `GameGenre` g ON Games.id = g.`gameID`
-            ) LEFT JOIN `Genres` ON `genreId` = Genres.id
+            ) LEFT JOIN `Genres` ON `genreId` = Genres.id  AND g.is_active = 1 AND `Genres`.is_active = 1
         )
-    WHERE Games.id = :gameID";
+    WHERE Games.id =:gameID";
     if ($active_only)
         $query .= "AND Games.is_active = 1";
     $params[":gameID"] = $gameId;
