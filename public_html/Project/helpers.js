@@ -84,19 +84,18 @@ function verifyDate(date) {
 }
 
 
-// SQL DB exception would handle the issue
-// function verifySQLName(value, required = false) {
-//     // depedning, may need to limit to hexadecimal
-//     if (value.length <= 50 && (required || value != "")) {
-//         return true;
-//     }
-//     return false;
-// }
+function verifyURL(url) {
+    let pattern = /(http)?s?:?(\/\/[^"']*)/
+    if (!(pattern.test(url)) || url == "") {
+        return false;
+    }
+    return true;
+}
 
-// // Used for both developer and publisher
-// function verifyCompanyName(value, required = false) {
-//     if (value.length <= 30 && (required || value != "")) {
-//         return true;
-//     }
-//     return false;
-// }
+function verifyImageURL(url) {
+    let pattern = /(https):(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/;
+    if (!(pattern.test(url)) || url == "") {
+        return false;
+    }
+    return true;
+}

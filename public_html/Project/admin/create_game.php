@@ -33,17 +33,15 @@ if (isset($_POST["action"])) {
             // PHP validation
             $hasError = false;
             if (isset($_POST["id"]) && isset($_POST["name"]) && isset($_POST["developer"]) && isset($_POST["description"]) && isset($_POST["topCriticScore"]) && isset($_POST["firstReleaseDate"])) {
-                $idTemp = se($_POST, "id", "", false);
                 $nameTemp = se($_POST, "name", "", false);
                 $developerTemp = se($_POST, "developer", "", false);
                 $descriptionTemp = se($_POST, "description", "", false);
                 $topCriticScoreTemp = se($_POST, "topCriticScore", "", false);
                 $firstReleaseDateTemp = se($_POST, "firstReleaseDate", "", false);
+                $ssURL = se($_POST, "screenshotImgURL", false);
+                $squareURL = se($_POST, "sqrImgURL", false);
+                $url = se($_POST, "url", false);
 
-                if (!(is_numeric($idTemp) && (int) ($idTemp) >= 0)) {
-                    flash("ID must be a number and greater than or equal to 0", "danger");
-                    $hasError = true;
-                }
                 if (empty($nameTemp)) {
                     flash("Name cannot be empty", "danger");
                     $hasError = true;
@@ -53,11 +51,23 @@ if (isset($_POST["action"])) {
                     $hasError = true;
                 }
                 if (empty($descriptionTemp)) {
-                    flash("Developer cannot be empty", "danger");
+                    flash("Description cannot be empty", "danger");
                     $hasError = true;
                 }
                 if (!(is_numeric($topCriticScoreTemp) && (float) ($topCriticScoreTemp) >= 0 && (float) ($topCriticScoreTemp) <= 100)) {
                     flash("Score must be a number and between 0 to 100 inclusive", "danger");
+                    $hasError = true;
+                }
+                if (!empty($ssURL) && !is_valid_url($ssURL)) {
+                    flash("Screenshot image URL invalid", "danger");
+                    $hasError = true;
+                }
+                if (!empty($squareURL) && !is_valid_url($squareURL)) {
+                    flash("Square image URL invalid", "danger");
+                    $hasError = true;
+                }
+                if (!empty($url) && !is_valid_url($url)) {
+                    flash("Game URL invalid", "danger");
                     $hasError = true;
                 }
 
@@ -172,7 +182,7 @@ $genreForm = getRelation("Genres", []);
         </form>
     </div>
     <div id="create" style="display: none;" class="tab-target">
-        <form method="POST" onsubmit="return true">
+        <form method="POST" onsubmit="return validate(this)">
             <?php render_input(["type" => "number", "name" => "id", "placeholder" => "Game ID", "label" => "Game ID", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "name", "placeholder" => "Name", "label" => "Name", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "publisher", "placeholder" => "Publisher (optional)", "label" => "Publisher"]); ?>
@@ -229,23 +239,35 @@ $genreForm = getRelation("Genres", []);
             valid = false;
         }
         if (form.name.value == "") {
-            valid = false
-            flash("[Client] Developer is required", "warning")
+            valid = false;
+            flash("[Client] Developer is required", "warning");
         }
         if (idValidation.test(form.id.value) && parseInt(form.id.value) > 2147483647) {
-            valid = false
-            flash("[Client] ID is required and needs to be positive", "warning")
+            valid = false;
+            flash("[Client] ID is required and needs to be positive", "warning");
         }
         if (form.developer.value == "") {
-            valid = false
-            flash("[Client] Developer is required", "warning")
+            valid = false;
+            flash("[Client] Developer is required", "warning");
         }
         if (form.description.value == "") {
-            valid = false
-            flash("[Client] Description is required", "warning")
+            valid = false;
+            flash("[Client] Description is required", "warning");
         }
         if (!verifyDate(form.firstReleaseDate.value)) {
-            valid = false
+            valid = false;
+        }
+        if (ssURL != "" && !verifyImageURL(ssURL)) {
+            flash("[Client] Screenshot URL is not an image link", "warning");
+            valid = false;
+        }
+        if (squareURL != "" && !verifyImageURL(squareURL)) {
+            flash("[Client] Square URL is not an image link", "warning");
+            valid = false;
+        }
+        if (url != "" && !verifyURL(url)) {
+            flash("[Client] Game URL is not a link", "warning");
+            valid = false;
         }
         return valid;
     }
