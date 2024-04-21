@@ -237,6 +237,7 @@ $genreForm = getRelation("Genres", []);
     }
 
     function validate(form) {
+        return true;
         let sc = form.topCriticScore.value;
         let valid = true;
         let idValidation = /^\d{1,9}$/;
