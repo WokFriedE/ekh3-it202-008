@@ -214,7 +214,7 @@ require_once(__DIR__ . "/../../../partials/flash.php");
 
 <script>
     function validate(form) {
-        return true;
+        // return true;
 
         let sc = form.topCriticScore.value;
         let ssURL = form.screenshotImgURL.value;
