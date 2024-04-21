@@ -136,7 +136,11 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
 // Simple insert
 function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api" => false])
 {
-    $api = $opts["api"];
+    if (isset($api)) {
+        $api = $opts["api"];
+    } else {
+        $api = false;
+    }
     $update_duplicate = $opts["update_duplicate"];
     try {
         $opts = ["debug" => true, "update_duplicate" => $update_duplicate,  "columns_to_update" => []];
@@ -145,7 +149,6 @@ function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api"
                 $data[$key]["is_api"] = 1;
             }
         }
-        dump($data);
         $result = insert($table, $data, $opts);
 
         if (!$result) {
@@ -172,10 +175,12 @@ function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api"
 // Inserts more game data on load
 function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "addGenre" => false, "api" => false])
 {
-    $addAll = $opts["addAll"];
-    $addPlat = $opts["addPlat"];
-    $addGenre = $opts["addGenre"];
-    $api = $opts["api"];
+    if (isset($opts)) {
+        $addAll = $opts["addAll"];
+        $addPlat = $opts["addPlat"];
+        $addGenre = $opts["addGenre"];
+        $api = $opts["api"];
+    }
 
     // Adds platform relations
     if (isset($gameMap["Platforms"])) {
