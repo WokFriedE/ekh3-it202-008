@@ -33,15 +33,20 @@ if (isset($_POST["action"])) {
             // PHP validation
             $hasError = false;
             if (isset($_POST["id"]) && isset($_POST["name"]) && isset($_POST["developer"]) && isset($_POST["description"]) && isset($_POST["topCriticScore"]) && isset($_POST["firstReleaseDate"])) {
+                $idTemp = se($_POST, "id", "", false);
                 $nameTemp = se($_POST, "name", "", false);
                 $developerTemp = se($_POST, "developer", "", false);
                 $descriptionTemp = se($_POST, "description", "", false);
                 $topCriticScoreTemp = se($_POST, "topCriticScore", "", false);
                 $firstReleaseDateTemp = se($_POST, "firstReleaseDate", "", false);
-                $ssURL = se($_POST, "screenshotImgURL", false);
-                $squareURL = se($_POST, "sqrImgURL", false);
-                $url = se($_POST, "url", false);
+                $ssURL = se($_POST, "screenshotImgURL", "", false);
+                $squareURL = se($_POST, "sqrImgURL", "", false);
+                $url = se($_POST, "url", "", false);
 
+                if (!(is_int($idTemp) && (int) ($idTemp) >= 0)) {
+                    flash("ID must be a postive int", "danger");
+                    $hasError = true;
+                }
                 if (empty($nameTemp)) {
                     flash("Name cannot be empty", "danger");
                     $hasError = true;
