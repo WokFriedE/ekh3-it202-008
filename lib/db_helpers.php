@@ -260,7 +260,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
     }
 }
 
-// Ethan - ekh3 - 4/22/24
+// Ethan - ekh3 - 4/21/24
 // returnID: yes => provides genre and platform ID as associative, no => just names
 // maybe use GROUP_CONCAT in the future to improve performance, add a segment for active only ( AND Games.is_active = 1)
 function selectGameInfo($gameId, $returnID = false, $active_only = false)
