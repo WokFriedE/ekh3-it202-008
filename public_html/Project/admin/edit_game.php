@@ -62,7 +62,7 @@ if (isset($_POST["name"])) {
             $hasError = true;
         }
 
-        if (!$hasError && false) {
+        if (!$hasError) {
             //insert data
             $db = getDB();
             $query = "UPDATE `Games` SET ";
