@@ -216,7 +216,7 @@ require_once(__DIR__ . "/../../../partials/flash.php");
         }
         if (form.name.value == "") {
             valid = false
-            flash("[Client] Developer is required", "warning")
+            flash("[Client] Name is required", "warning")
         }
         if (form.developer.value == "") {
             valid = false
