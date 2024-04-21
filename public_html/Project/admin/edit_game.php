@@ -29,9 +29,9 @@ if (isset($_POST["name"])) {
         $descriptionTemp = se($_POST, "description", "", false);
         $topCriticScoreTemp = se($_POST, "topCriticScore", "", false);
         $firstReleaseDateTemp = se($_POST, "firstReleaseDate", "", false);
-        $ssURL = se($_POST, "screenshotImgURL", false);
-        $squareURL = se($_POST, "sqrImgURL", false);
-        $url = se($_POST, "url", false);
+        $ssURL = se($_POST, "screenshotImgURL", "", false);
+        $squareURL = se($_POST, "sqrImgURL", "", false);
+        $url = se($_POST, "url", "", false);
 
         if (empty($nameTemp)) {
             flash("Name cannot be empty", "danger");
@@ -62,7 +62,7 @@ if (isset($_POST["name"])) {
             $hasError = true;
         }
 
-        if (!$hasError) {
+        if (!$hasError && false) {
             //insert data
             $db = getDB();
             $query = "UPDATE `Games` SET ";
@@ -214,7 +214,6 @@ require_once(__DIR__ . "/../../../partials/flash.php");
 
 <script>
     function validate(form) {
-        return true;
         let sc = form.topCriticScore.value;
         let ssURL = form.screenshotImgURL.value;
         let squareURL = form.sqrImgURL.value;
@@ -248,7 +247,7 @@ require_once(__DIR__ . "/../../../partials/flash.php");
             valid = false;
         }
         if (url != "" && !verifyURL(url)) {
-            flash("[Client] URL is not a link", "warning");
+            flash("[Client] Game URL is not a link", "warning");
             valid = false;
         }
         return valid;
