@@ -9,6 +9,7 @@ if (!has_role("Admin")) {
 ?>
 
 <?php
+// Ethan Ho - ekh3 - 4/21/24
 // alerts the user if the URL does not exist 
 if (isset($_GET["NoURL"])) {
     flash("No URL Exists", "warning");
@@ -20,7 +21,14 @@ $fetch = se($_GET, "fetch", -1, false);
 
 $game = [];
 if ($id > -1) {
-    $game = selectGameInfo($id);
+    $tempGame = selectGameInfo($id);
+    if (empty($tempGame)) {
+        flash("Error: getting game", "danger");
+        error_log("ERROR VIEW_GAME: Game is empty");
+        die(header("Location:" . get_url("admin/list_games.php")));
+    } else {
+        $game = $tempGame;
+    }
 } else {
     flash("Invalid id passed", "danger");
     die(header("Location:" . get_url("admin/list_games.php")));

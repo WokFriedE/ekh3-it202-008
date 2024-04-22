@@ -18,3 +18,5 @@ foreach ($env_keys as $key) {
     }
     unset($API_KEY);
 }
+
+// Ethan - ekh3 - 4/21/24

@@ -7,7 +7,8 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
-// Pull popular games
+// Ethan Ho - ekh3 - 4/21/24
+// Pull popular games from api
 if (isset($_GET['popular'])) {
     $popRes = fetch_popular();
     // $popRes = fetch_json("popularRes");
@@ -38,16 +39,19 @@ if (isset($_GET['popular'])) {
     }
 }
 
+// Pull genres from api
 if (isset($_GET["pullGenre"])) {
     $temp = fetch_genres();
     $temp = map_genre_data($temp);
-    defaultInsert($temp, "Genres");
+    $opts = ["api" => true];
+    defaultInsert($temp, "Genres", ["update_duplicate" => true, "api" => true]);
 }
 
+// Pull platforms from api
 if (isset($_GET["pullPlatform"])) {
     $temp = fetch_platforms();
     $temp = map_platform_data($temp);
-    defaultInsert($temp, "Platforms");
+    defaultInsert($temp, "Platforms", ["update_duplicate" => true, "api" => true]);
 }
 
 //build search form
@@ -64,7 +68,7 @@ $form = [
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
     ["type" => "date", "name" => "date_max", "placeholder" => "Max Date", "label" => "Max Date", "include_margin" => false],
 
-    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["topCriticScore" => "Score", "firstReleaseDate" => "Date"], "include_margin" => false],
+    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["name" => "Name", "topCriticScore" => "Score", "firstReleaseDate" => "Date", "is_api" => "If API", "is_active" => "Active"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
     ["type" => "select", "name" => "viewAll", "label" => "See Disabled", "options" => ["false" => "No", "true" => "Yes"], "include_margin" => false],
 
@@ -74,7 +78,8 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT id, name, publisher, developer, topCriticScore, firstReleaseDate, is_api, created, modified, is_active as `Active`  FROM `Games` WHERE 1=1";
+$query = "SELECT id, name, publisher, developer, topCriticScore as `top score`, firstReleaseDate as `release date`, IF(is_api=1, 'Yes', 'No') as `Is API`, 
+IF(is_active=1, 'Active', 'Disabled') as `Active`, created, modified FROM `Games` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -91,6 +96,13 @@ if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) {
         $_GET = $session_data;
     }
 }
+
+// Lets you show whats on 
+$viewAll = se($_GET, "viewAll", "false", false);
+if ($viewAll == "false") {
+    $query .= " AND is_active=1";
+}
+
 if (count($_GET) > 0) {
     session_save($session_key, $_GET);
     $keys = array_keys($_GET);
@@ -99,12 +111,6 @@ if (count($_GET) > 0) {
         if (in_array($v["name"], $keys)) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
-    }
-
-    // Lets you show whats on 
-    $viewAll = se($_GET, "viewAll", "false", false);
-    if ($viewAll == "false") {
-        $query .= " AND is_active=1";
     }
 
     //id
@@ -157,7 +163,7 @@ if (count($_GET) > 0) {
 
     //sort and order
     $sort = se($_GET, "sort", "date", false);
-    if (!in_array($sort, ["topCriticScore", "firstReleaseDate"])) {
+    if (!in_array($sort, ["topCriticScore", "firstReleaseDate", "name", "is_api", "is_active"])) {
         $sort = "firstReleaseDate";
     }
     $order = se($_GET, "order", "desc", false);
@@ -197,11 +203,14 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
+// Ethan Ho - ekh3 - 4/21/24
+// HTML 
 $table = [
     "data" => $results, "title" => "Current Games", // "ignored_columns" => ["id"],
     "view_url" => get_url("admin/view_game.php"),
     "edit_url" => get_url("admin/edit_game.php"),
-    "delete_url" => get_url("admin/delete_game.php")
+    "delete_url" => get_url("admin/delete_game.php"),
+    "delete_label" => "Toggle Active"
 ];
 ?>
 <div class="container-fluid">

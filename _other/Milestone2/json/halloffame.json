@@ -1,0 +1,202 @@
+[
+    {
+        "name": "Final Fantasy VII Rebirth",
+        "id": 15136,
+        "firstReleaseDate": "2024-02-29T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/15136/o/Jb5ouFD8.jpg",
+                "sm": "game/15136/ajFPmCb2.jpg"
+            },
+            "banner": {
+                "og": "game/15136/o/lNZ6cYSc.jpg",
+                "sm": "game/15136/iTX8SNU3.jpg"
+            }
+        },
+        "topCriticScore": 93
+    },
+    {
+        "name": "Balatro",
+        "id": 16300,
+        "firstReleaseDate": "2024-02-20T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/16300/o/G7F2TGxX.jpg",
+                "sm": "game/16300/MjhOYlnM.jpg"
+            },
+            "banner": {
+                "og": "game/undefined/o/SQabiNCo.jpg",
+                "sm": "game/undefined/uBbUmgTM.jpg"
+            }
+        },
+        "topCriticScore": 91
+    },
+    {
+        "name": "Tekken 8",
+        "id": 15734,
+        "firstReleaseDate": "2024-01-25T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/15734/o/lyqq6YEx.jpg",
+                "sm": "game/15734/VCkOarU0.jpg"
+            },
+            "banner": {
+                "og": "game/15734/o/HwKBuYw8.jpg",
+                "sm": "game/15734/4Sx3Oox2.jpg"
+            }
+        },
+        "topCriticScore": 90
+    },
+    {
+        "name": "Like A Dragon: Infinite Wealth",
+        "id": 15906,
+        "firstReleaseDate": "2024-01-26T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/15906/o/ZM7a2GrE.jpg",
+                "sm": "game/15906/CseB9yEE.jpg"
+            },
+            "banner": {
+                "og": "game/15906/o/c4Cz2toH.jpg",
+                "sm": "game/15906/rFTQram7.jpg"
+            }
+        },
+        "topCriticScore": 90
+    },
+    {
+        "name": "Solium Infernum",
+        "id": 16336,
+        "firstReleaseDate": "2024-02-22T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "banner": {
+                "og": "game/16336/o/YGEtBIR8.jpg",
+                "sm": "game/16336/93wiJh5B.jpg"
+            }
+        },
+        "topCriticScore": 88
+    },
+    {
+        "name": "Unicorn Overlord",
+        "id": 16408,
+        "firstReleaseDate": "2024-03-08T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/16408/o/ooJ1gCco.jpg",
+                "sm": "game/16408/hSIbjSyh.jpg"
+            },
+            "banner": {
+                "og": "game/16408/o/liGLLCnf.jpg",
+                "sm": "game/16408/cOFOXUyc.jpg"
+            }
+        },
+        "topCriticScore": 88
+    },
+    {
+        "name": "Persona 3 Reload",
+        "id": 16094,
+        "firstReleaseDate": "2024-02-02T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/16094/o/Bq605JYt.jpg",
+                "sm": "game/16094/3ZcRWbq4.jpg"
+            },
+            "banner": {
+                "og": "game/16094/o/inaLVPg4.jpg",
+                "sm": "game/16094/o9HarGcE.jpg"
+            }
+        },
+        "topCriticScore": 88
+    },
+    {
+        "name": "Dragon's Dogma 2",
+        "id": 16051,
+        "firstReleaseDate": "2024-03-22T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/16051/o/aosx8uw2.jpg",
+                "sm": "game/16051/lpxbeSmw.jpg"
+            },
+            "banner": {
+                "og": "game/16051/o/aALeoXxz.jpg",
+                "sm": "game/16051/MnI6h5EA.jpg"
+            }
+        },
+        "topCriticScore": 87
+    },
+    {
+        "name": "Minishoot' Adventures",
+        "id": 16527,
+        "firstReleaseDate": "2024-04-02T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/16527/o/8H3qeUHP.jpg",
+                "sm": "game/16527/m0MXcKJ3.jpg"
+            },
+            "banner": {
+                "og": "game/16527/o/dxGULrH2.jpg",
+                "sm": "game/16527/ni11Hyow.jpg"
+            }
+        },
+        "topCriticScore": 87
+    },
+    {
+        "name": "Prince of Persia: The Lost Crown",
+        "id": 15867,
+        "firstReleaseDate": "2024-01-18T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/15867/o/1bAeS3pm.jpg",
+                "sm": "game/15867/2A09cjgQ.jpg"
+            },
+            "banner": {
+                "og": "game/15867/o/yafN7Fgw.jpg",
+                "sm": "game/15867/sY7LJx31.jpg"
+            }
+        },
+        "topCriticScore": 87
+    },
+    {
+        "name": "Lil Guardsman",
+        "id": 16104,
+        "firstReleaseDate": "2024-01-23T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/undefined/o/5LR7h8fA.jpg",
+                "sm": "game/undefined/0TkhX5sP.jpg"
+            },
+            "banner": {
+                "og": "game/16104/o/pD7COXFk.jpg",
+                "sm": "game/16104/yXlA34LR.jpg"
+            }
+        },
+        "topCriticScore": 84
+    },
+    {
+        "name": "Anomaly Agent",
+        "id": 16108,
+        "firstReleaseDate": "2024-01-24T00:00:00.000Z",
+        "tier": "Mighty",
+        "images": {
+            "box": {
+                "og": "game/16108/o/WchHfPYl.jpg",
+                "sm": "game/16108/5UuLKEut.jpg"
+            },
+            "banner": {
+                "og": "game/16108/o/nYM4V4Fr.jpg",
+                "sm": "game/16108/42Y5amxb.jpg"
+            }
+        },
+        "topCriticScore": 84
+    }
+]

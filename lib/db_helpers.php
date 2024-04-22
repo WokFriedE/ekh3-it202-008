@@ -7,15 +7,14 @@
  *
  * @param string $table_name The sanitized name of the database table.
  * @param array $data An associative array for a single record or an array of associative arrays for multiple records.
- * @param array $opts Options including 'debug' flag, 'ignore_duplicate', and 'columns_to_update'.
- * @return mixed The last insert ID for single insert or number of rows affected for bulk insert.
+ * @param array $opts Options including 'debug' flag, 'update_duplicate', and 'columns_to_update'.
+ * @return array The last insert ID and number of rows affected for insert.
  * @throws InvalidArgumentException If input data is not valid.
  * @throws Exception For database-related errors.
  * 
  * @author Matt Toegel
- * @version 0.1 04/11/2024
+ * @version 0.2 04/17/2024
  */
-
 // wants indexed array of associative array --> transform data to proper form first
 function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate" => false, "columns_to_update" => []])
 {
@@ -31,6 +30,7 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
     if (!is_string($table_name)) {
         throw new InvalidArgumentException("Table name must be a string");
     }
+
     $is_debug = isset($opts["debug"]) && $opts["debug"];
     $update_duplicate = isset($opts["update_duplicate"]) && $opts["update_duplicate"];
     $columns_to_update = isset($opts["columns_to_update"]) ? $opts["columns_to_update"] : [];
@@ -61,17 +61,22 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
         }
     }
 
-    // Columns and placeholder setup
-    $columns = join(", ", array_keys($is_indexed ? $data[0] : $data));
+    // Sort keys and prepare columns and values clause
+    $firstItem = $is_indexed ? $data[0] : $data;
+    $sortedKeys = array_keys($firstItem);
+    sort($sortedKeys); // Sort keys to ensure consistency
+    $columns = join(", ", $sortedKeys);
     $valuesClause = [];
     $updateClause = [];
 
     if ($is_indexed) {
         foreach ($data as $index => $entity) {
+            ksort($entity); // Sort array by key to match column order
             $placeholders = join(", ", array_map(fn ($key) => ":{$key}_{$index}", array_keys($entity)));
             $valuesClause[] = "($placeholders)";
         }
     } else {
+        ksort($data); // Sort array by key to ensure correct order
         $placeholders = join(", ", array_map(fn ($key) => ":$key", array_keys($data)));
         $valuesClause[] = "($placeholders)";
     }
@@ -81,7 +86,7 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
     // allows for duplicating data, treat any duplicates as an update 
     if ($update_duplicate) {
         if (empty($columns_to_update)) {
-            $columns_to_update = array_keys($data[0] ?? $data);
+            $columns_to_update = $sortedKeys; // Use sorted keys if no specific columns provided
         }
         foreach ($columns_to_update as $column) {
             $column = preg_replace('/[^a-zA-Z0-9_]/', '', $column);
@@ -90,7 +95,7 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
         $query .= " ON DUPLICATE KEY UPDATE " . join(", ", $updateClause);
     }
 
-    $db = getDB();
+    $db = getDB(); // Assume getDB is a function that returns your PDO instance
     $stmt = $db->prepare($query);
     if ($is_debug) {
         error_log("Query: " . $query);
@@ -109,7 +114,6 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
             }
         } else {
             foreach ($data as $key => $value) {
-                // bind value, so single insert and multi insert 
                 $stmt->bindValue(":$key", $value);
                 if ($is_debug) {
                     error_log("Binding value for :$key: $value");
@@ -126,18 +130,25 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
         throw $e;
     }
     // what ever calls this must handle these exceptions 
+
 }
 
-<<<<<<< Updated upstream
-// Simple insert
-function defaultInsert($data, $table, $update_duplicate = true)
-=======
-// Simple insert // Ethan - ekh3 - 4/21/24
+// Simple insert // Ethan - ekh3 - 4/22/24
 function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api" => false])
->>>>>>> Stashed changes
 {
+    if (isset($api)) {
+        $api = $opts["api"];
+    } else {
+        $api = false;
+    }
+    $update_duplicate = $opts["update_duplicate"];
     try {
         $opts = ["debug" => true, "update_duplicate" => $update_duplicate,  "columns_to_update" => []];
+        if ($api) {
+            foreach ($data as $key => $value) {
+                $data[$key]["is_api"] = 1;
+            }
+        }
         $result = insert($table, $data, $opts);
 
         if (!$result) {
@@ -162,58 +173,24 @@ function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api"
 }
 
 // Inserts more game data on load
-function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "addGenre" => false])
+function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "addGenre" => false, "api" => false])
 {
-    $addAll = $opts["addAll"];
-    $addPlat = $opts["addPlat"];
-    $addGenre = $opts["addGenre"];
+    if (isset($opts)) {
+        $addAll = $opts["addAll"];
+        $addPlat = $opts["addPlat"];
+        $addGenre = $opts["addGenre"];
+        $api = $opts["api"];
+    }
 
-    // Adds platform relations
+    $gameMap["is_api"] = $api ? 1 : 0;
     if (isset($gameMap["Platforms"])) {
-        $platforms = $gameMap["Platforms"];
-        // Lazy load platforms if needed (trades api call for sql call)
-        if ($addAll || $addPlat) {
-            defaultInsert($platforms, "Platforms", false);
-        }
-        foreach ($platforms as $index => $ent) {
-            if (isset($platforms[$index]["id"])) {
-                $platforms[$index]["platformId"] = $ent["id"];
-                $platforms[$index]["gameId"] = $gameMap["id"];
-            } else {
-                continue;
-            }
-            foreach ($ent as $key => $val) {
-                if (!in_array($key, ["platformId", "gameId"]))
-                    unset($platforms[$index][$key]);
-            }
-        }
-        defaultInsert($platforms, "PlatformGame", false);
+        $platforms =  $gameMap["Platforms"];
         unset($gameMap["Platforms"]);
     }
-
-    // Adds genre relations
     if (isset($gameMap["Genres"])) {
         $Genres = $gameMap["Genres"];
-        // Lazy load Genres if needed (trades api call for sql call)
-        if ($addPlat || $addGenre) {
-            defaultInsert($Genres, "Genres", false);
-        }
-        foreach ($Genres as $index => $ent) {
-            if (isset($Genres[$index]["id"])) {
-                $Genres[$index]["genreId"] = $ent["id"];
-                $Genres[$index]["gameId"] = $gameMap["id"];
-            } else {
-                continue;
-            }
-            foreach ($ent as $key => $val) {
-                if (!in_array($key, ["genreId", "gameId"]))
-                    unset($Genres[$index][$key]);
-            }
-        }
-        defaultInsert($Genres, "GameGenre", false);
         unset($gameMap["Genres"]);
     }
-
 
     try {
         $opts = ["debug" => true, "update_duplicate" => true,  "columns_to_update" => []];
@@ -227,6 +204,7 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
     } catch (InvalidArgumentException $e1) {
         error_log("Invalid arg" . var_export($e1, true));
         flash("Invalid data passed", "danger");
+        return;
     } catch (PDOException $e2) {
         if ($e2->errorInfo[1] == 1062) {
             flash("An entry for this game already exists for today", "warning");
@@ -234,35 +212,74 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
             error_log("Database error" . var_export($e2, true));
             flash("Database error", "danger");
         }
+        return;
     } catch (Exception $e3) {
         error_log("Invalid data records" . var_export($e3, true));
         flash("Invalid data records", "danger");
+        return;
+    }
+    // Adds platform relations
+    if (isset($platforms)) {
+        // Lazy load platforms if needed (trades api call for sql call)
+        if ($addAll || $addPlat) {
+            defaultInsert($platforms, "Platforms", ["update_duplicate" => false, "api" => $api]);
+        }
+        foreach ($platforms as $index => $ent) {
+            if (isset($platforms[$index]["id"])) {
+                $platforms[$index]["platformId"] = $ent["id"];
+                $platforms[$index]["gameId"] = $gameMap["id"];
+            } else {
+                continue;
+            }
+            foreach ($ent as $key => $val) {
+                if (!in_array($key, ["platformId", "gameId"]))
+                    unset($platforms[$index][$key]);
+            }
+        }
+        defaultInsert($platforms, "PlatformGame", ["update_duplicate" => true, "api" => $api]);
+    }
+    // Adds genre relations
+    if (isset($Genres)) {
+        // Lazy load Genres if needed (trades api call for sql call)
+        if ($addPlat || $addGenre) {
+            defaultInsert($Genres, "Genres",  ["update_duplicate" => false, "api" => $api]);
+        }
+        foreach ($Genres as $index => $ent) {
+            if (isset($Genres[$index]["id"])) {
+                $Genres[$index]["genreId"] = $ent["id"];
+                $Genres[$index]["gameId"] = $gameMap["id"];
+            } else {
+                continue;
+            }
+            foreach ($ent as $key => $val) {
+                if (!in_array($key, ["genreId", "gameId"]))
+                    unset($Genres[$index][$key]);
+            }
+        }
+        defaultInsert($Genres, "GameGenre", ["update_duplicate" => true, "api" => $api]);
     }
 }
 
-
+// Ethan - ekh3 - 4/21/24
 // returnID: yes => provides genre and platform ID as associative, no => just names
 // maybe use GROUP_CONCAT in the future to improve performance, add a segment for active only ( AND Games.is_active = 1)
-function selectGameInfo($gameId, $returnID = false)
+function selectGameInfo($gameId, $returnID = false, $active_only = false)
 {
     $db = getDB();
-    $query = "(SELECT Games.*, Platforms.id as `PlatformID`,Platforms.name as `Platform`,Genres.id as `GenreID`,Genres.name as `Genre`
-        FROM
+    $query = "SELECT Games.*,Platforms.id as `PlatformID`,Platforms.name as `Platform`,Genres.id as `GenreID`,Genres.name as `Genre`
+    FROM
+        (
             (
                 (
                     (
-                        (
-                            `Games` INNER JOIN `PlatformGame` p ON Games.`id` = p.`gameId`
-                        ) INNER JOIN `Platforms` ON `platformId` = Platforms.id
-                    ) INNER JOIN `GameGenre` g ON Games.id = g.`gameId`
-                )INNER JOIN `Genres` ON `genreId` = Genres.id
-            )
-        WHERE Games.id = :gameID
-        ORDER BY Games.name ASC
-    ) UNION (
-        SELECT Games.*, null as `PlatformID`, null as `Platform`, null as `GenreID`, null as `Genre`
-        FROM Games
-        WHERE Games.id = :gameID);";
+                        `Games` LEFT JOIN `PlatformGame` p ON Games.`id` = p.`gameID`
+                    ) LEFT JOIN `Platforms` ON `platformId` = Platforms.id  AND p.is_active = 1 AND `Platforms`.is_active = 1 
+                ) LEFT JOIN `GameGenre` g ON Games.id = g.`gameID`
+            ) LEFT JOIN `Genres` ON `genreId` = Genres.id  AND g.is_active = 1 AND `Genres`.is_active = 1
+        )
+    WHERE Games.id =:gameID";
+    if ($active_only)
+        $query .= "AND Games.is_active = 1";
     $params[":gameID"] = $gameId;
     error_log("Query: " . $query);
     error_log("Params: " . var_export($params, true));
@@ -295,13 +312,7 @@ function selectGameInfo($gameId, $returnID = false)
                 }
             }
 
-            // checks if there is a valid value, removes last as last is the union (unless sorted)
-            if (!is_null($res["Platforms"][array_key_first($res["Platforms"])]) && is_null(end($res["Platforms"]))) {
-                array_pop($res["Platforms"]);
-            }
-            if (!is_null($res["Genres"][array_key_first($res["Genres"])]) && is_null(end($res["Genres"]))) {
-                array_pop($res["Genres"]);
-            }
+
             return $res;
         } else {
             return [];
@@ -339,7 +350,7 @@ function getRelation($table, $data)
 
     $form = [];
     foreach ($active_items as $k => $v) {
-        if (isset($data[$table])) {
+        if (isset($data[$table]) || !empty($data[$table])) {
             $within = (in_array($v["id"], array_keys($data[$table])));
         } else {
             $within = false;
@@ -350,6 +361,39 @@ function getRelation($table, $data)
     }
 
     return $form;
+}
+
+function selectInfo($table, $id = -1, $cols = ["name"], $opts = ["active_only" => false, "debug" => false])
+{
+    $is_debug = $opts["debug"];
+    $active_only = $opts["active_only"];
+    $sanitized_table_name = preg_replace('/[^a-zA-Z0-9_-]/', '', $table);
+    $params = [];
+
+    // Disable if do not use id
+    if (!in_array("id", $cols))
+        array_push($cols, "id");
+    $columns = join(", ", $cols);
+
+    $db = getDB();
+    $query = "SELECT $columns FROM `$sanitized_table_name` WHERE 1=1";
+    if ($active_only)
+        $query .= "AND is_active = 1";
+    if ($id !== -1) {
+        $query .= " AND id=:id";
+        $params[":id"] = $id;
+    }
+    if ($is_debug)
+        error_log("Query: " . $query);
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        $queryRes = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $queryRes;
+    } catch (PDOException $e) {
+        error_log("Something broke with the query" . var_export($e, true));
+        flash("An error occurred", "danger");
+    }
 }
 
 /*

@@ -25,6 +25,7 @@ function fetch_genres()
     if (se($result, "status", 400, false) == 200 && isset($result["response"])) {
         $result = json_decode($result["response"], true);
     } else {
+        error_log("Fetch_genres failed pull");
         $result = [];
     }
     return $result;
@@ -40,6 +41,7 @@ function fetch_platforms()
     if (se($result, "status", 400, false) == 200 && isset($result["response"])) {
         $result = json_decode($result["response"], true);
     } else {
+        error_log("Fetch_platforms failed pull");
         $result = [];
     }
     return $result;
@@ -55,7 +57,14 @@ function fetch_game($gameID)
     $result = get($endpoint, "GAME_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
     if (se($result, "status", 400, false) == 200 && isset($result["response"])) {
         $result = json_decode($result["response"], true);
+        if (!(isset($result["Platforms"]) && count($result["Platforms"]) > 0)) {
+            unset($result["Platforms"]);
+        }
+        if (!(isset($result["Genres"]) && count($result["Genres"]) > 0)) {
+            unset($result["Genres"]);
+        }
     } else {
+        error_log("Fetch_game failed pull");
         $result = [];
     }
     return $result;
@@ -67,4 +76,3 @@ function fetch_json($jsonName)
     $json_data = json_decode($json, true);
     return $json_data;
 }
-// TODO implement a manage game data --> prob in refresh db and use that to makke request to db and such

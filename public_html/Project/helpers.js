@@ -68,8 +68,36 @@ function verifyPassword(pw) {
 function verifyScore(score) {
     let pattern = /^\d{1,3}(\.\d+)?$/;
     if (!(pattern.test(score)) || score == "") {
-        flash("[Client] Invalid score please enter a number", "warning")
+        flash("[Client] Invalid score please enter a number thats in 0-100", "warning")
         return false;
     }
     return true;
 }
+
+function verifyDate(date) {
+    let pattern = /^[0-9]{4}-(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])$/;
+    if (!(pattern.test(date)) || date == "") {
+        flash("[Client] Invalid date please enter one like YYYY-MM-DD", "warning")
+        return false;
+    }
+    return true;
+}
+
+
+function verifyURL(url) {
+    let pattern = /(http)s?:(\/\/[^"']*)/
+    if (!(pattern.test(url)) || url == "") {
+        return false;
+    }
+    return true;
+}
+
+function verifyImageURL(url) {
+    let pattern = /(https):(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/;
+    if (!(pattern.test(url)) || url == "") {
+        return false;
+    }
+    return true;
+}
+
+// Ethan Ho - ekh3 - 4/21/24
