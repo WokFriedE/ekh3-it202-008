@@ -10,7 +10,7 @@ if (!has_role("Admin")) {
 
 <?php
 
-//TODO handle game fetch
+// Ethan - ekh3 - 4/22/24
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $id =  strtoupper(se($_POST, "id", "", false));
@@ -24,41 +24,136 @@ if (isset($_POST["action"])) {
             if ($result) {
                 $quote = $result;
                 $quote["is_api"] = 1;
-                $opts = ["addAll" => true, "addPlat" => false, "addGenre" => false];
+                $opts = ["addAll" => true, "addPlat" => false, "addGenre" => false, "api" => true];
                 insertGame($result, $opts);
             }
+
+            // create game // Ethan - ekh3 - 4/22/24
         } else if ($action === "create") {
-            foreach ($_POST as $k => $v) {
-                if (!in_array($k, ["id", "name", "publisher", "developer", "description", "topCriticScore", "firstReleaseDate"])) {
-                    unset($_POST[$k]);
+            // PHP validation
+            $hasError = false;
+            if (isset($_POST["id"]) && isset($_POST["name"]) && isset($_POST["developer"]) && isset($_POST["description"]) && isset($_POST["topCriticScore"]) && isset($_POST["firstReleaseDate"])) {
+                $idTemp = se($_POST, "id", "", false);
+                $nameTemp = se($_POST, "name", "", false);
+                $developerTemp = se($_POST, "developer", "", false);
+                $descriptionTemp = se($_POST, "description", "", false);
+                $topCriticScoreTemp = se($_POST, "topCriticScore", "", false);
+                $firstReleaseDateTemp = se($_POST, "firstReleaseDate", "", false);
+                $ssURL = se($_POST, "screenshotImgURL", "", false);
+                $squareURL = se($_POST, "sqrImgURL", "", false);
+                $url = se($_POST, "url", "", false);
+
+                if (!(is_int($idTemp) && (int) ($idTemp) >= 0)) {
+                    flash("ID must be a postive int", "danger");
+                    $hasError = true;
                 }
-                $quote = $_POST;
-                error_log("Cleaned up POST: " . var_export($quote, true));
-            }
-            try {
-                //insert data
-                //optional options for debugging and duplicate handling
-                $opts =
-                    ["debug" => true, "update_duplicate" => false, "columns_to_update" => []];
-                $result = insert("Games", $quote, $opts);
-                if (!$result) {
-                    flash("Unhandled error", "warning");
-                } else {
-                    flash("Created record with id " . var_export($result, true), "success");
+                if (empty($nameTemp)) {
+                    flash("Name cannot be empty", "danger");
+                    $hasError = true;
                 }
-            } catch (InvalidArgumentException $e1) {
-                error_log("Invalid arg" . var_export($e1, true));
-                flash("Invalid data passed", "danger");
-            } catch (PDOException $e2) {
-                if ($e2->errorInfo[1] == 1062) {
-                    flash("An entry for this game already exists for today", "warning");
-                } else {
-                    error_log("Database error" . var_export($e2, true));
-                    flash("Database error", "danger");
+                if (empty($developerTemp)) {
+                    flash("Developer cannot be empty", "danger");
+                    $hasError = true;
                 }
-            } catch (Exception $e3) {
-                error_log("Invalid data records" . var_export($e3, true));
-                flash("Invalid data records", "danger");
+                if (empty($descriptionTemp)) {
+                    flash("Description cannot be empty", "danger");
+                    $hasError = true;
+                }
+                if (!(is_numeric($topCriticScoreTemp) && (float) ($topCriticScoreTemp) >= 0 && (float) ($topCriticScoreTemp) <= 100)) {
+                    flash("Score must be a number and between 0 to 100 inclusive", "danger");
+                    $hasError = true;
+                }
+                if (!empty($ssURL) && !is_valid_url($ssURL)) {
+                    flash("Screenshot image URL invalid", "danger");
+                    $hasError = true;
+                }
+                if (!empty($squareURL) && !is_valid_url($squareURL)) {
+                    flash("Square image URL invalid", "danger");
+                    $hasError = true;
+                }
+                if (!empty($url) && !is_valid_url($url)) {
+                    flash("Game URL invalid", "danger");
+                    $hasError = true;
+                }
+
+                if (!$hasError) {
+                    foreach ($_POST as $k => $v) {
+                        if (!in_array($k, ["id", "name", "publisher", "developer", "description", "topCriticScore", "firstReleaseDate", "platforms", "genres"])) {
+                            unset($_POST[$k]);
+                        } else if ($k === "platforms") {
+                            $platforms = $_POST["platforms"];
+                            unset($_POST["platforms"]);
+                        } else if ($k === "genres") {
+                            $genres = $_POST["genres"];
+                            unset($_POST["genres"]);
+                        }
+                        $quote = $_POST;
+                        error_log("Cleaned up POST: " . var_export($quote, true));
+                    }
+                    try {
+                        //insert data
+                        //optional options for debugging and duplicate handling
+                        $opts =
+                            ["debug" => true, "update_duplicate" => false, "columns_to_update" => []];
+                        $result = insert("Games", $quote, $opts);
+                        //attempt to apply genre / platforms
+                        if (isset($genres)) {
+                            $db = getDB();
+                            $stmt = $db->prepare("INSERT INTO `GameGenre` (genreID, gameId, is_active) VALUES (:genreID, :gameId, 1) 
+                                            ON DUPLICATE KEY UPDATE is_active = !is_active");
+                            foreach ($genres as $index => $genreID) {
+                                try {
+                                    $stmt->execute([":genreID" => $genreID, ":gameId" => $id]);
+                                    flash("Updated role", "success");
+                                } catch (PDOException $e) {
+                                    if ($e[1] == 1062) {
+                                        flash("Game key already exists", "danger");
+                                    } else {
+                                        flash(var_export($e->errorInfo, true), "danger");
+                                    }
+                                }
+                            }
+                            unset($_POST["genres"]);
+                        }
+
+                        if (isset($platforms)) {
+                            $db = getDB();
+                            // TODO use the insert function
+                            $stmt = $db->prepare("INSERT INTO `PlatformGame` (platformId, gameId, is_active) VALUES (:platformId, :gameId, 1) 
+                                            ON DUPLICATE KEY UPDATE is_active = !is_active");
+                            foreach ($platforms as $index => $platformId) {
+                                try {
+                                    $stmt->execute([":platformId" => $platformId, ":gameId" => $id]);
+                                    flash("Updated role", "success");
+                                } catch (PDOException $e) {
+                                    flash(var_export($e->errorInfo, true), "danger");
+                                }
+                            }
+                            unset($_POST["platforms"]);
+                        }
+
+                        if (!$result) {
+                            flash("Unhandled error", "warning");
+                        } else {
+                            flash("Created record with id " . var_export($result, true), "success");
+                        }
+                    } catch (InvalidArgumentException $e1) {
+                        error_log("Invalid arg" . var_export($e1, true));
+                        flash("Invalid data passed", "danger");
+                    } catch (PDOException $e2) {
+                        if ($e2->errorInfo[1] == 1062) {
+                            flash("An entry for this game ID already exists", "warning");
+                        } else {
+                            error_log("Database error" . var_export($e2, true));
+                            flash("Database error", "danger");
+                        }
+                    } catch (Exception $e3) {
+                        error_log("Invalid data records" . var_export($e3, true));
+                        flash("Invalid data records", "danger");
+                    }
+                }
+            } else {
+                flash("Missing valid fields", "danger");
             }
         }
     } else {
@@ -66,51 +161,13 @@ if (isset($_POST["action"])) {
     }
 }
 
-// TODO remove if not used
-// dump($_POST);
-
-//attempt to apply
-if (isset($_POST["genres"])) {
-    $db = getDB();
-    $genreIDs = $_POST["genres"];
-    $stmt = $db->prepare("INSERT INTO `GameGenre` (genreID, gameId, is_active) VALUES (:genreID, :gameId, 1) 
-    ON DUPLICATE KEY UPDATE is_active = !is_active");
-    foreach ($genreIDs as $genreID) {
-        try {
-            $stmt->execute([":genreID" => $genreID, ":gameId" => $id]);
-            flash("Updated role", "success");
-        } catch (PDOException $e) {
-            if ($e[1] == 1062) {
-                flash("Game key already exists", "danger");
-            } else {
-                flash(var_export($e->errorInfo, true), "danger");
-            }
-        }
-    }
-}
-
-if (isset($_POST["platforms"])) {
-    $db = getDB();
-    // TODO use the insert function
-    $platformIDs = $_POST["platforms"];
-    $stmt = $db->prepare("INSERT INTO `PlatformGame` (platformId, gameId, is_active) VALUES (:platformId, :gameId, 1) 
-    ON DUPLICATE KEY UPDATE is_active = !is_active");
-    foreach ($platformIDs as $platformId) {
-        try {
-            $stmt->execute([":platformId" => $platformId, ":gameId" => $id]);
-            flash("Updated role", "success");
-        } catch (PDOException $e) {
-            flash(var_export($e->errorInfo, true), "danger");
-        }
-    }
-}
 
 // Get active platforms
 $platformForm = getRelation("Platforms", []);
 // Get active Genres
 $genreForm = getRelation("Genres", []);
 
-//TODO handle manual create game
+//TODO handle manual create game // Ethan - ekh3 - 4/22/24
 ?>
 <div class="container-fluid">
     <h3>Create or Fetch Game</h3>
@@ -144,15 +201,23 @@ $genreForm = getRelation("Genres", []);
 
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
 
-            <?php //foreach ($platformForm as $k => $v) {
-            //    render_input($v);
-            // } 
-            ?>
 
-            <?php // foreach ($genreForm as $k => $v) {
-            //render_input($v);
-            //} 
-            ?>
+            <div class="row">
+                <div class="col">
+                    <h3>Platforms</h3>
+                    <?php foreach ($platformForm as $k => $v) {
+                        render_input($v);
+                    }
+                    ?>
+                </div>
+                <div class="col">
+                    <h3>Genres</h3>
+                    <?php foreach ($genreForm as $k => $v) {
+                        render_input($v);
+                    }
+                    ?>
+                </div>
+            </div>
 
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>
         </form>
@@ -172,6 +237,7 @@ $genreForm = getRelation("Genres", []);
     }
 
     function validate(form) {
+        // return true;
         let sc = form.topCriticScore.value;
         let valid = true;
         let idValidation = /^\d{1,9}$/;
@@ -179,23 +245,35 @@ $genreForm = getRelation("Genres", []);
             valid = false;
         }
         if (form.name.value == "") {
-            valid = false
-            flash("[Client] Developer is required", "warning")
+            valid = false;
+            flash("[Client] Developer is required", "warning");
         }
         if (idValidation.test(form.id.value) && parseInt(form.id.value) > 2147483647) {
-            valid = false
-            flash("[Client] ID is required and needs to be positive", "warning")
+            valid = false;
+            flash("[Client] ID is required and needs to be positive", "warning");
         }
         if (form.developer.value == "") {
-            valid = false
-            flash("[Client] Developer is required", "warning")
+            valid = false;
+            flash("[Client] Developer is required", "warning");
         }
         if (form.description.value == "") {
-            valid = false
-            flash("[Client] Description is required", "warning")
+            valid = false;
+            flash("[Client] Description is required", "warning");
         }
         if (!verifyDate(form.firstReleaseDate.value)) {
-            valid = false
+            valid = false;
+        }
+        if (ssURL != "" && !verifyImageURL(ssURL)) {
+            flash("[Client] Screenshot URL is not an image link", "warning");
+            valid = false;
+        }
+        if (squareURL != "" && !verifyImageURL(squareURL)) {
+            flash("[Client] Square URL is not an image link", "warning");
+            valid = false;
+        }
+        if (url != "" && !verifyURL(url)) {
+            flash("[Client] Game URL is not a link", "warning");
+            valid = false;
         }
         return valid;
     }

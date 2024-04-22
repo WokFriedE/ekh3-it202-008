@@ -66,49 +66,6 @@ if (isset($_POST["action"])) {
     }
 }
 
-// TODO remove if not used
-// dump($_POST);
-
-//attempt to apply
-if (isset($_POST["genres"])) {
-    $db = getDB();
-    $genreIDs = $_POST["genres"];
-    $stmt = $db->prepare("INSERT INTO `GameGenre` (genreID, gameId, is_active) VALUES (:genreID, :gameId, 1) 
-    ON DUPLICATE KEY UPDATE is_active = !is_active");
-    foreach ($genreIDs as $genreID) {
-        try {
-            $stmt->execute([":genreID" => $genreID, ":gameId" => $id]);
-            flash("Updated role", "success");
-        } catch (PDOException $e) {
-            if ($e[1] == 1062) {
-                flash("Game key already exists", "danger");
-            } else {
-                flash(var_export($e->errorInfo, true), "danger");
-            }
-        }
-    }
-}
-
-if (isset($_POST["platforms"])) {
-    $db = getDB();
-    // TODO use the insert function
-    $platformIDs = $_POST["platforms"];
-    $stmt = $db->prepare("INSERT INTO `PlatformGame` (platformId, gameId, is_active) VALUES (:platformId, :gameId, 1) 
-    ON DUPLICATE KEY UPDATE is_active = !is_active");
-    foreach ($platformIDs as $platformId) {
-        try {
-            $stmt->execute([":platformId" => $platformId, ":gameId" => $id]);
-            flash("Updated role", "success");
-        } catch (PDOException $e) {
-            flash(var_export($e->errorInfo, true), "danger");
-        }
-    }
-}
-
-// Get active platforms
-$platformForm = getRelation("Platforms", []);
-// Get active Genres
-$genreForm = getRelation("Genres", []);
 
 //TODO handle manual create game
 ?>
@@ -144,56 +101,45 @@ $genreForm = getRelation("Genres", []);
 
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
 
-            <?php //foreach ($platformForm as $k => $v) {
-            //    render_input($v);
-            // } 
-            ?>
-
-            <?php // foreach ($genreForm as $k => $v) {
-            //render_input($v);
-            //} 
-            ?>
-
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>
         </form>
     </div>
-</div>
 
 
-<script>
-    function switchTab(tab) {
-        let target = document.getElementById(tab);
-        if (target) {
-            let eles = document.getElementsByClassName("tab-target");
-            for (let ele of eles) {
-                ele.style.display = (ele.id === tab) ? "none" : "block";
+    <script>
+        function switchTab(tab) {
+            let target = document.getElementById(tab);
+            if (target) {
+                let eles = document.getElementsByClassName("tab-target");
+                for (let ele of eles) {
+                    ele.style.display = (ele.id === tab) ? "none" : "block";
+                }
             }
         }
-    }
 
-    function validate(form) {
-        let sc = form.topCriticScore.value;
-        let valid = true;
-        if (!verifyScore(sc)) {
-            valid = false;
-        }
-        if (form.developer.value == "") {
+        function validate(form) {
+            let sc = form.topCriticScore.value;
+            let valid = true;
+            if (!verifyScore(sc)) {
+                valid = false;
+            }
+            if (form.developer.value == "") {
 
-            valid = false
-            flash("[Client] Developer is required", "warning")
+                valid = false
+                flash("[Client] Developer is required", "warning")
+            }
+            if (form.description.value == "") {
+                valid = false
+                flash("[Client] Description is required", "warning")
+            }
+            if (!verifyDate(form.firstReleaseDate.value)) {
+                valid = false
+            }
+            return valid;
         }
-        if (form.description.value == "") {
-            valid = false
-            flash("[Client] Description is required", "warning")
-        }
-        if (!verifyDate(form.firstReleaseDate.value)) {
-            valid = false
-        }
-        return valid;
-    }
-</script>
+    </script>
 
-<?php
-//note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
-?>
+    <?php
+    //note we need to go up 1 more directory
+    require_once(__DIR__ . "/../../../partials/flash.php");
+    ?>

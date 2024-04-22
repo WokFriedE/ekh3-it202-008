@@ -9,6 +9,7 @@ if (!has_role("Admin")) {
 ?>
 
 <?php
+// Ethan Ho - ekh3 - 4/21/24
 // alerts the user if the URL does not exist 
 if (isset($_GET["NoURL"])) {
     flash("No URL Exists", "warning");

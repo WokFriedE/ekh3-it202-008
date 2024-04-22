@@ -133,10 +133,14 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
 
 }
 
-// Simple insert
+// Simple insert // Ethan - ekh3 - 4/22/24
 function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api" => false])
 {
-    $api = $opts["api"];
+    if (isset($api)) {
+        $api = $opts["api"];
+    } else {
+        $api = false;
+    }
     $update_duplicate = $opts["update_duplicate"];
     try {
         $opts = ["debug" => true, "update_duplicate" => $update_duplicate,  "columns_to_update" => []];
@@ -145,7 +149,6 @@ function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api"
                 $data[$key]["is_api"] = 1;
             }
         }
-        dump($data);
         $result = insert($table, $data, $opts);
 
         if (!$result) {
@@ -172,14 +175,51 @@ function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api"
 // Inserts more game data on load
 function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "addGenre" => false, "api" => false])
 {
-    $addAll = $opts["addAll"];
-    $addPlat = $opts["addPlat"];
-    $addGenre = $opts["addGenre"];
-    $api = $opts["api"];
+    if (isset($opts)) {
+        $addAll = $opts["addAll"];
+        $addPlat = $opts["addPlat"];
+        $addGenre = $opts["addGenre"];
+        $api = $opts["api"];
+    }
 
-    // Adds platform relations
+    $gameMap["is_api"] = $api ? 1 : 0;
     if (isset($gameMap["Platforms"])) {
-        $platforms = $gameMap["Platforms"];
+        $platforms =  $gameMap["Platforms"];
+        unset($gameMap["Platforms"]);
+    }
+    if (isset($gameMap["Genres"])) {
+        $Genres = $gameMap["Genres"];
+        unset($gameMap["Genres"]);
+    }
+
+    try {
+        $opts = ["debug" => true, "update_duplicate" => true,  "columns_to_update" => []];
+        $result = insert("Games", $gameMap, $opts);
+
+        if (!$result) {
+            flash("Unhandled Error", "warning");
+        } else {
+            flash("Created record with id " . var_export($result, true), "success");
+        }
+    } catch (InvalidArgumentException $e1) {
+        error_log("Invalid arg" . var_export($e1, true));
+        flash("Invalid data passed", "danger");
+        return;
+    } catch (PDOException $e2) {
+        if ($e2->errorInfo[1] == 1062) {
+            flash("An entry for this game already exists for today", "warning");
+        } else {
+            error_log("Database error" . var_export($e2, true));
+            flash("Database error", "danger");
+        }
+        return;
+    } catch (Exception $e3) {
+        error_log("Invalid data records" . var_export($e3, true));
+        flash("Invalid data records", "danger");
+        return;
+    }
+    // Adds platform relations
+    if (isset($platforms)) {
         // Lazy load platforms if needed (trades api call for sql call)
         if ($addAll || $addPlat) {
             defaultInsert($platforms, "Platforms", ["update_duplicate" => false, "api" => $api]);
@@ -196,13 +236,10 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
                     unset($platforms[$index][$key]);
             }
         }
-        defaultInsert($platforms, "PlatformGame", ["update_duplicate" => true]);
-        unset($gameMap["Platforms"]);
+        defaultInsert($platforms, "PlatformGame", ["update_duplicate" => true, "api" => $api]);
     }
-
     // Adds genre relations
-    if (isset($gameMap["Genres"])) {
-        $Genres = $gameMap["Genres"];
+    if (isset($Genres)) {
         // Lazy load Genres if needed (trades api call for sql call)
         if ($addPlat || $addGenre) {
             defaultInsert($Genres, "Genres",  ["update_duplicate" => false, "api" => $api]);
@@ -219,37 +256,11 @@ function insertGame($gameMap, $opts = ["addAll" => false, "addPlat" => false, "a
                     unset($Genres[$index][$key]);
             }
         }
-        defaultInsert($Genres, "GameGenre", ["update_duplicate" => true]);
-        unset($gameMap["Genres"]);
-    }
-
-
-    try {
-        $opts = ["debug" => true, "update_duplicate" => true,  "columns_to_update" => []];
-        $result = insert("Games", $gameMap, $opts);
-
-        if (!$result) {
-            flash("Unhandled Error", "warning");
-        } else {
-            flash("Created record with id " . var_export($result, true), "success");
-        }
-    } catch (InvalidArgumentException $e1) {
-        error_log("Invalid arg" . var_export($e1, true));
-        flash("Invalid data passed", "danger");
-    } catch (PDOException $e2) {
-        if ($e2->errorInfo[1] == 1062) {
-            flash("An entry for this game already exists for today", "warning");
-        } else {
-            error_log("Database error" . var_export($e2, true));
-            flash("Database error", "danger");
-        }
-    } catch (Exception $e3) {
-        error_log("Invalid data records" . var_export($e3, true));
-        flash("Invalid data records", "danger");
+        defaultInsert($Genres, "GameGenre", ["update_duplicate" => true, "api" => $api]);
     }
 }
 
-
+// Ethan - ekh3 - 4/21/24
 // returnID: yes => provides genre and platform ID as associative, no => just names
 // maybe use GROUP_CONCAT in the future to improve performance, add a segment for active only ( AND Games.is_active = 1)
 function selectGameInfo($gameId, $returnID = false, $active_only = false)
@@ -262,11 +273,11 @@ function selectGameInfo($gameId, $returnID = false, $active_only = false)
                 (
                     (
                         `Games` LEFT JOIN `PlatformGame` p ON Games.`id` = p.`gameID`
-                    ) LEFT JOIN `Platforms` ON `platformId` = Platforms.id
+                    ) LEFT JOIN `Platforms` ON `platformId` = Platforms.id  AND p.is_active = 1 AND `Platforms`.is_active = 1 
                 ) LEFT JOIN `GameGenre` g ON Games.id = g.`gameID`
-            ) LEFT JOIN `Genres` ON `genreId` = Genres.id
+            ) LEFT JOIN `Genres` ON `genreId` = Genres.id  AND g.is_active = 1 AND `Genres`.is_active = 1
         )
-    WHERE Games.id = :gameID";
+    WHERE Games.id =:gameID";
     if ($active_only)
         $query .= "AND Games.is_active = 1";
     $params[":gameID"] = $gameId;
