@@ -1,15 +1,26 @@
-SELECT id, name, publisher, developer, topCriticScore, firstReleaseDate, is_api, created, modified FROM `Games` WHERE 1=1 ORDER BY date asc LIMIT 5
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();
 ?>
 <div class="container-fluid">
     <form onsubmit="return validate(this)" method="POST">
-        <?php render_input(["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "rules" => ["required" => true]]); ?>
-        <?php render_input(["type" => "text", "id" => "username", "name" => "username", "label" => "Username", "rules" => ["required" => true, "maxlength" => 30]]); ?>
-        <?php render_input(["type" => "password", "id" => "password", "name" => "password", "label" => "Password", "rules" => ["required" => true, "minlength" => 8]]); ?>
-        <?php render_input(["type" => "password", "id" => "confirm", "name" => "confirm", "label" => "Confirm Password", "rules" => ["required" => true, "minlength" => 8]]); ?>
-        <?php render_button(["text" => "Register", "type" => "submit"]); ?>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" required class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" name="username" required maxlength="30" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="pw" class="form-label">Password</label>
+            <input type="password" id="pw" name="password" required minlength="8" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="confirm" class="form-label">Confirm</label>
+            <input type="password" name="confirm" required minlength="8" class="form-control" />
+        </div>
+        <input type="submit" value="Register" class="btn btn-primary" />
     </form>
 </div>
 <script>
@@ -17,32 +28,12 @@ reset_session();
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
 
-        // ekh3 - 4/1/24
-        let pw = form.password.value;
-        let con = form.confirm.value;
-        let isValid = true;
-
-        if (!verifyUsername(form.username.value))
-            isValid = false;
-        if (!verifyEmail(form.email.value))
-            isValid = false;
-        if (!verifyPassword(pw))
-            isValid = false;
-
-        // validation end
-
-        if (pw != con) {
-            flash("[Client] Password and Confirm password must match", "warning");
-            isValid = false;
-        }
-
-        return isValid;
+        return true;
     }
 </script>
 <?php
 //TODO 2: add PHP Code
-// ekh3 - 4/1/24
-if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"])) {
+if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"]) && isset($_POST["username"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
     $confirm = se($_POST, "confirm", "", false);
