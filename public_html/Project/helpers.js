@@ -85,7 +85,7 @@ function verifyDate(date) {
 
 
 function verifyURL(url) {
-    let pattern = /(http)?s?:?(\/\/[^"']*)/
+    let pattern = /(http)s?:(\/\/[^"']*)/
     if (!(pattern.test(url)) || url == "") {
         return false;
     }
@@ -99,3 +99,5 @@ function verifyImageURL(url) {
     }
     return true;
 }
+
+// Ethan Ho - ekh3 - 4/21/24
