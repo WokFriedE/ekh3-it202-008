@@ -1,5 +1,3 @@
-<!-- TODO passing the post seems to be broken -->
-
 <?php
 //note we need to go up 1 more directory
 require(__DIR__ . "/../../../partials/nav.php");
@@ -10,7 +8,7 @@ if (!has_role("Admin")) {
 }
 ?>
 
-
+<!-- Ethan Ho - ekh3 - 4/21/24 -->
 
 <?php
 $id = se($_GET, "id", -1, false);
@@ -214,8 +212,6 @@ require_once(__DIR__ . "/../../../partials/flash.php");
 
 <script>
     function validate(form) {
-        // return true;
-
         let sc = form.topCriticScore.value;
         let ssURL = form.screenshotImgURL.value;
         let squareURL = form.sqrImgURL.value;
