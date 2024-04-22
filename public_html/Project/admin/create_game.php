@@ -1,16 +1,12 @@
-<?php
-//note we need to go up 1 more directory
+<?php //note we need to go up 1 more directory
 require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
     die(header("Location: $BASE_PATH" . "/home.php"));
-}
-?>
-
+} ?>
 <?php
-
-// Ethan - ekh3 - 4/22/24
+// Ethan - ekh3 - 4/21/24
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $id =  strtoupper(se($_POST, "id", "", false));
@@ -19,7 +15,6 @@ if (isset($_POST["action"])) {
         if ($action === "fetch") {
             $result = fetch_game($id);
             $result = map_game_data($result);
-
             error_log("Data from API" . var_export($result, true));
             if ($result) {
                 $quote = $result;
@@ -27,12 +22,14 @@ if (isset($_POST["action"])) {
                 $opts = ["addAll" => true, "addPlat" => false, "addGenre" => false, "api" => true];
                 insertGame($result, $opts);
             }
-
-            // create game // Ethan - ekh3 - 4/22/24
+            // create game
         } else if ($action === "create") {
             // PHP validation
             $hasError = false;
-            if (isset($_POST["id"]) && isset($_POST["name"]) && isset($_POST["developer"]) && isset($_POST["description"]) && isset($_POST["topCriticScore"]) && isset($_POST["firstReleaseDate"])) {
+            if (
+                isset($_POST["id"]) && isset($_POST["name"]) && isset($_POST["developer"]) &&
+                isset($_POST["description"]) && isset($_POST["topCriticScore"]) && isset($_POST["firstReleaseDate"])
+            ) {
                 $idTemp = se($_POST, "id", "", false);
                 $nameTemp = se($_POST, "name", "", false);
                 $developerTemp = se($_POST, "developer", "", false);
@@ -42,8 +39,7 @@ if (isset($_POST["action"])) {
                 $ssURL = se($_POST, "screenshotImgURL", "", false);
                 $squareURL = se($_POST, "sqrImgURL", "", false);
                 $url = se($_POST, "url", "", false);
-
-                if (!(is_int($idTemp) && (int) ($idTemp) >= 0)) {
+                if (!(is_numeric($idTemp) && (int) ($idTemp) >= 0)) {
                     flash("ID must be a postive int", "danger");
                     $hasError = true;
                 }
@@ -167,7 +163,7 @@ $platformForm = getRelation("Platforms", []);
 // Get active Genres
 $genreForm = getRelation("Genres", []);
 
-//TODO handle manual create game // Ethan - ekh3 - 4/22/24
+//TODO handle manual create game // Ethan - ekh3 - 4/21/24
 ?>
 <div class="container-fluid">
     <h3>Create or Fetch Game</h3>
@@ -200,31 +196,24 @@ $genreForm = getRelation("Genres", []);
             <?php render_input(["type" => "url", "name" => "url", "placeholder" => "Game Page URL (optional)", "label" => "Game Page URL"]); ?>
 
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
-
-
             <div class="row">
                 <div class="col">
                     <h3>Platforms</h3>
                     <?php foreach ($platformForm as $k => $v) {
                         render_input($v);
-                    }
-                    ?>
+                    } ?>
                 </div>
                 <div class="col">
                     <h3>Genres</h3>
                     <?php foreach ($genreForm as $k => $v) {
                         render_input($v);
-                    }
-                    ?>
+                    } ?>
                 </div>
             </div>
-
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>
         </form>
     </div>
 </div>
-
-
 <script>
     function switchTab(tab) {
         let target = document.getElementById(tab);
@@ -237,7 +226,6 @@ $genreForm = getRelation("Genres", []);
     }
 
     function validate(form) {
-        // return true;
         let sc = form.topCriticScore.value;
         let valid = true;
         let idValidation = /^\d{1,9}$/;
@@ -278,7 +266,6 @@ $genreForm = getRelation("Genres", []);
         return valid;
     }
 </script>
-
 <?php
 //note we need to go up 1 more directory
 require_once(__DIR__ . "/../../../partials/flash.php");
