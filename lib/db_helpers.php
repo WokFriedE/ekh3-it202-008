@@ -128,8 +128,13 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
     // what ever calls this must handle these exceptions 
 }
 
+<<<<<<< Updated upstream
 // Simple insert
 function defaultInsert($data, $table, $update_duplicate = true)
+=======
+// Simple insert // Ethan - ekh3 - 4/21/24
+function defaultInsert($data, $table, $opts = ["update_duplicate" => true, "api" => false])
+>>>>>>> Stashed changes
 {
     try {
         $opts = ["debug" => true, "update_duplicate" => $update_duplicate,  "columns_to_update" => []];
