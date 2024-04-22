@@ -26,3 +26,6 @@ try {
 
 // die(header("Location: " . get_url("admin/list_games.php")));
 echo "<script>history.back()</script>";
+
+
+// ekh3 - 4/21/24
