@@ -20,12 +20,17 @@
     }, array_keys($_rules), $_rules);
     //convert array to a space separate string
     $_rules = implode(" ", $_rules);
+
+    $_options = isset($data["options"]) ? $data["options"] : [];
+    if (!is_array($_options)) {
+        $_options = [];
+    }
     ?>
     <?php /* Include margin open tag */ ?>
     <?php if ($_include_margin) : ?>
         <div class="mb-3">
         <?php endif; ?>
-        <?php if ($_label) : ?>
+        <?php if ($_label && !in_array($_type, ["checkbox"])) : ?>
             <?php /* label field */ ?>
             <label class="form-label" for="<?php se($_id); ?>"><?php se($_label); ?></label>
         <?php endif; ?>
@@ -35,6 +40,19 @@
             <input type="<?php se($_type); ?>" name="<?php se($_name); ?>" class="form-control" id="<?php se($_id); ?>" value="<?php se($_value); ?>" placeholder="<?php se($_placeholder); ?>" <?php echo $_rules; ?> />
         <?php elseif ($_type === "textarea") : ?>
             <textarea class="form-control" name="<?php se($_name); ?>" id="<?php se($_id); ?>" placeholder="<?php se($_placeholder); ?>" <?php echo $_rules; ?>><?php se($_value); ?></textarea>
+        <?php elseif ($_type === "checkbox") : ?>
+            <div class="form-check">
+                <input class="form-check-input" name="<?php se($_name); ?>" type="checkbox" value="<?php se($_value); ?>" id="<?php se($_id); ?>">
+                <label class="form-check-label" for="<?php se($_id); ?>">
+                    <?php se($_label); ?>
+                </label>
+            </div>
+        <?php elseif ($_type == "select") : ?>
+            <select class="form-select" name="<?php se($_name); ?>" value="<?php se($_value); ?>" id="<?php se($_id); ?>">
+                <?php foreach ($_options as $k => $v) : ?>
+                    <option <?php echo (isset($_value) && $_value === $k ? "selected" : ""); ?> value="<?php se($k); ?>"><?php se($v); ?></option>
+                <?php endforeach; ?>
+            </select>
         <?php elseif ($_type === "TBD type") : ?>
             <?php /* TODO other non-form-control elements */ ?>
         <?php endif; ?>
@@ -54,3 +72,8 @@
     unset($_name);
     ?>
 <?php endif; ?>
+
+<!-- for the option, value is what the server sees but whats in the option html, it is what the user sees
+    prefill dropdowns -> use js in the end to set the values in the end 
+    if serverside then iterate through and check if the value is the same as the key 
+-->

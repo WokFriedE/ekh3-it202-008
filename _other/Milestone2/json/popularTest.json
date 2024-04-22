@@ -1,0 +1,152 @@
+{
+    "images": {
+        "box": {
+            "og": "game/12226/o/D0qN48xU.jpg",
+            "sm": "game/12226/bpwhw7lH.jpg"
+        },
+        "square": {
+            "og": "game/12226/o/TpNePWIV.jpg",
+            "xs": "game/12226/ne5Y7GxM.jpg",
+            "sm": "game/12226/fn3vSL3T.jpg",
+            "lg": "game/12226/7b5mmXuD.jpg"
+        },
+        "masthead": {
+            "og": "game/12226/o/jdUiqk51.jpg",
+            "xs": "game/12226/u0sHllzO.jpg",
+            "sm": "game/12226/IIvN2AQV.jpg",
+            "md": "game/12226/xScg7Mb3.jpg",
+            "lg": "game/12226/4ldiikZE.jpg",
+            "xl": "game/12226/lpanEFoE.jpg"
+        },
+        "banner": {
+            "og": "game/12226/o/eLbDMcWo.jpg",
+            "sm": "game/12226/t3xvRbym.jpg"
+        },
+        "screenshots": [
+            {
+                "_id": "62f442037dca76a00579417d",
+                "og": "game/12226/o/qQpDT3yf.jpg",
+                "sm": "game/12226/W3eYAWCn.jpg"
+            },
+            {
+                "_id": "62f442037dca76a00579417e",
+                "og": "game/12226/o/O86RZ0vL.jpg",
+                "sm": "game/12226/aYUCFfze.jpg"
+            },
+            {
+                "_id": "62f442037dca76a00579417f",
+                "og": "game/12226/o/D8ZgvDgT.jpg",
+                "sm": "game/12226/r9NZXqAY.jpg"
+            }
+        ]
+    },
+    "Rating": {
+        "value": "E"
+    },
+    "biggestDiscountDollars": 0,
+    "biggestDiscountPercentage": 0,
+    "hasLootBoxes": false,
+    "percentRecommended": 50,
+    "numReviews": 33,
+    "numTopCriticReviews": 17,
+    "medianScore": 70,
+    "topCriticScore": 67,
+    "percentile": 34,
+    "tier": "Fair",
+    "Platforms": [
+        {
+            "id": 2,
+            "name": "Xbox Series X/S",
+            "shortName": "XBXS",
+            "imageSrc": "https://c.opencritic.com/images/platforms/xbxs.png",
+            "releaseDate": "2021-10-26T00:00:00.000Z"
+        },
+        {
+            "id": 7,
+            "name": "Xbox One",
+            "shortName": "XB1",
+            "imageSrc": "https://c.opencritic.com/images/platforms/xb1.png",
+            "releaseDate": "2021-10-26T00:00:00.000Z"
+        },
+        {
+            "id": 27,
+            "name": "PC",
+            "shortName": "PC",
+            "imageSrc": "https://c.opencritic.com/images/platforms/pc.png",
+            "releaseDate": "2021-10-26T00:00:00.000Z"
+        }
+    ],
+    "Genres": [
+        {
+            "id": 77,
+            "name": "RPG"
+        },
+        {
+            "id": 75,
+            "name": "Simulation"
+        },
+        {
+            "id": 76,
+            "name": "Adventure"
+        }
+    ],
+    "Companies": [
+        {
+            "name": "Coatsink Software",
+            "type": "PUBLISHER"
+        },
+        {
+            "name": "Bunnyhug",
+            "type": "DEVELOPER"
+        }
+    ],
+    "trailers": [],
+    "screenshots": [
+        {
+            "_id": "617a18886b41276525a7c332",
+            "fullRes": "//c.opencritic.com/images/games/12226/HjLtYhqSqI4RLS5jVOZM7yw14XjPimkLdpLhBguAzYfYjSrK.jpg",
+            "thumbnail": "//c.opencritic.com/images/games/12226/HjLtYhqSqI4RLS5jVOZM7yw14XjPimkLdpLhBguAzYfYjSrK_th.jpg"
+        },
+        {
+            "_id": "617a18886b41276525a7c333",
+            "fullRes": "//c.opencritic.com/images/games/12226/6GCwb6c9UypN9l4OfvypNuKcODFop5fi9ybwcahsAnFAb2sy.jpg",
+            "thumbnail": "//c.opencritic.com/images/games/12226/6GCwb6c9UypN9l4OfvypNuKcODFop5fi9ybwcahsAnFAb2sy_th.jpg"
+        },
+        {
+            "_id": "617a18886b41276525a7c334",
+            "fullRes": "//c.opencritic.com/images/games/12226/ARuQbV8c97BVgRiQ2dYf1rInNUEo2Zdcu9R6DjQ4NFrPSpOb.jpg",
+            "thumbnail": "//c.opencritic.com/images/games/12226/ARuQbV8c97BVgRiQ2dYf1rInNUEo2Zdcu9R6DjQ4NFrPSpOb_th.jpg"
+        },
+        {
+            "_id": "617a18886b41276525a7c335",
+            "fullRes": "//c.opencritic.com/images/games/12226/QhnqaLG4fMehGWPoqlgtPjdmJyh6oEUHVrU5PqMJmYhar3uG.jpg",
+            "thumbnail": "//c.opencritic.com/images/games/12226/QhnqaLG4fMehGWPoqlgtPjdmJyh6oEUHVrU5PqMJmYhar3uG_th.jpg"
+        }
+    ],
+    "name": "Moonglow Bay",
+    "description": "HOME IS WHERE OUR STORY BEGINS...\nMoonglow Bay is set along the Eastern Canadian coastline during the 1980s and offers players a diverse and emotionally charged story, complemented by a relaxing, slice-of-life fishing RPG.\n\nYou play as a rookie angler, struggling to fulfil your partner’s final wish by keeping a business afloat in the face of impending bankruptcy.\n\nWhether playing solo or with a friend in drop-in-drop-out local co-op, you’ll need to cook your catch of the day, then sell a variety of recipes to upgrade your shop, gear, and fishing boat. \n\nCombining a playful voxel art style with a sumptuous soundtrack, your journey is split into several distinct story arcs featuring a fully-inhabited town to traverse and the potential for epic encounters with the rumoured Mystical Monsters of Moonglow. \n\nWith your journal and rod in hand, explore the furthest reaches of the ocean, from frigid glaciers to boiling geysers, and learn to cast nets, set traps and fish through ice, documenting over 100 varied aquatic species while uncovering the secrets of Moonglow Bay.",
+    "id": 12226,
+    "firstReleaseDate": "2021-10-26T00:00:00.000Z",
+    "createdAt": "2021-10-25T18:00:58.388Z",
+    "updatedAt": "2024-04-14T20:17:16.846Z",
+    "firstReviewDate": "2017-10-08T00:00:00.000Z",
+    "latestReviewDate": "2024-04-11T00:00:00.000Z",
+    "bannerScreenshot": {
+        "fullRes": "//c.opencritic.com/images/games/12226/jjvIG4PgN3QGjxJJQZKmaoDtf1MM8VIK3vYodg8xQa3OU3eN.jpg"
+    },
+    "squareScreenshot": {
+        "fullRes": "//c.opencritic.com/images/games/12226/1MoC7up985MkOqOeLDyRWV4klWdHYnASbEYf9U5pLeHcVSJ7.jpg",
+        "thumbnail": "//c.opencritic.com/images/games/12226/1MoC7up985MkOqOeLDyRWV4klWdHYnASbEYf9U5pLeHcVSJ7_th.jpg"
+    },
+    "verticalLogoScreenshot": {
+        "fullRes": "//c.opencritic.com/images/games/12226/1id4FEDYAbkOHa6GEhrYaszOl57atzhl9gJEQIPsPhWiwsQQ.jpg",
+        "thumbnail": "//c.opencritic.com/images/games/12226/1id4FEDYAbkOHa6GEhrYaszOl57atzhl9gJEQIPsPhWiwsQQ_th.jpg"
+    },
+    "mastheadScreenshot": {
+        "fullRes": "//c.opencritic.com/images/games/12226/TynAjISmKdDRkHKUldytN6VK12d1uz0dX39yUILdXCkWXRpI.png"
+    },
+    "imageMigrationComplete": true,
+    "tenthReviewDate": "2021-10-30T00:00:00.000Z",
+    "criticalReviewDate": "2021-12-03T00:00:00.000Z",
+    "url": "https://opencritic.com/game/12226/moonglow-bay"
+}

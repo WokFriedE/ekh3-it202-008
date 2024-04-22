@@ -26,22 +26,14 @@
 /* Nav bar */
 nav {
     padding-bottom: 10px;
+    background-color: rgba(46, 159, 235, 0.822);
 }
 
 nav ul {
-    background-color: rgba(46, 159, 235, 0.822);
+    background-color: bisque;
     height: auto;
     margin: 0;
     padding: 0;
-    list-style-type: none;
-    overflow: hidden;
-}
-
-nav li {
-    display: inline;
-    padding: 1%;
-    float: left;
-
 }
 
 nav li a {
@@ -76,7 +68,8 @@ input {
     font-size: large;
 }
 
-form input[type="submit"] {
+form input[type="submit"],
+.custBtn {
     font-size: large;
     padding: 5px;
     padding-inline: 15px;
@@ -85,13 +78,30 @@ form input[type="submit"] {
     color: wheat;
 }
 
-form input[type="submit"]:hover {
+form input[type="submit"]:hover,
+.custBtn:hover {
     font-size: large;
     padding: 5px;
     padding-inline: 15px;
     background-color: cadetblue;
     border-style: none;
     color: wheat;
+}
+
+/* Links */
+
+.custLink:link {
+    color: cornflowerblue;
+    text-decoration: none;
+}
+
+.custLink:hover {
+    color: orange;
+    text-decoration: underline;
+}
+
+.custLink:visited {
+    color: cornflowerblue;
 }
 
 /* Admin pages */

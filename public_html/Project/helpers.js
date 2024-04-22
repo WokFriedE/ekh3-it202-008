@@ -58,12 +58,43 @@ function comparePass(pw, con) {
 function verifyPassword(pw) {
     let passwdPattern = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwdPattern.test(pw)) {
-<<<<<<< HEAD
-        flash("[Client] Password must be 8 characters and have 1 lowercase, 1 number, and 1 sepcial character", "warning");
-=======
         flash("[Client] Password must be 8 characters, have 1 lowercase, 1 number, and 1 special character",
             "warning");
->>>>>>> e9552049d8c3fdf2d7214989ccd455ecbe130cca
+        return false;
+    }
+    return true;
+}
+
+function verifyScore(score) {
+    let pattern = /^\d{1,3}(\.\d+)?$/;
+    if (!(pattern.test(score)) || score == "") {
+        flash("[Client] Invalid score please enter a number thats in 0-100", "warning")
+        return false;
+    }
+    return true;
+}
+
+function verifyDate(date) {
+    let pattern = /^[0-9]{4}-(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])$/;
+    if (!(pattern.test(date)) || date == "") {
+        flash("[Client] Invalid date please enter one like YYYY-MM-DD", "warning")
+        return false;
+    }
+    return true;
+}
+
+
+function verifyURL(url) {
+    let pattern = /(http)?s?:?(\/\/[^"']*)/
+    if (!(pattern.test(url)) || url == "") {
+        return false;
+    }
+    return true;
+}
+
+function verifyImageURL(url) {
+    let pattern = /(https):(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/;
+    if (!(pattern.test(url)) || url == "") {
         return false;
     }
     return true;
