@@ -22,5 +22,4 @@ try {
     flash("Error adding data", "danger");
 }
 
-die(header("Location: " . get_url("admin/view_game.php?id=") . $id));
 redirect("view_game.php?id=" . $id);

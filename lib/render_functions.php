@@ -14,3 +14,8 @@ function render_table($data = array())
 {
     include(__DIR__ . "/../partials/table.php");
 }
+
+function render_game_card($game = array())
+{
+    include(__DIR__ . "/../partials/game_card.php");
+}
