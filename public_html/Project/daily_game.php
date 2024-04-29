@@ -60,20 +60,11 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT d.id, d.gameId, dailyDate as `date`, g.name, c.attempts, c.timeTaken, g.sqrImgURL, v.Completed
-FROM (
-        (
-            `DailyGame` d
-            JOIN `Games` g on d.`gameId` = g.id
-        ) LEFT JOIN `Completed_Games` c on c.`DailyGameID` = d.id
-    ) LEFT JOIN (
-        SELECT cv.`userId`, IF(cv.`userId` = :currUser AND cv.is_active = 1, 1, 0) AS `Completed`
-        FROM `Completed_Games` cv
-    ) v on c.`userId` = v.`userId`
-WHERE 1 = 1";
+$query = "SELECT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, IF(cg.`userId` is not NULL, 1, 0) AS `Completed`, cg.attempts, cg.timeTaken
+FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE `userId`=:uid and is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE 1=1";
 
 $params = [];
-$params[":currUser"] = get_user_id();
+$params[":uid"] = get_user_id();
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
 if ($is_clear) {
@@ -90,11 +81,8 @@ if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) {
     }
 }
 
+// Used to determine if only completed should be shown
 $viewDone = se($_GET, "completed", "false", false);
-if ($viewDone == "true") {
-    $query .= " AND Completed=1";
-}
-
 
 if (count($_GET) > 0) {
     session_save($session_key, $_GET);
@@ -135,10 +123,6 @@ if (count($_GET) > 0) {
     if (!in_array($sort, ["name", "date", "attempts", "timeTaken", "completed"])) {
         $sort = "date";
     }
-    //tell mysql I care about the data from table "b"
-    if ($sort === "created" || $sort === "modified") {
-        $sort = "g." . $sort;
-    }
     $order = se($_GET, "order", "desc", false);
     if (!in_array($order, ["asc", "desc"])) {
         $order = "desc";
@@ -166,6 +150,13 @@ try {
     $r = $stmt->fetchAll();
     if ($r) {
         $results = $r;
+        if ($viewDone == "true") {
+            foreach ($results as $key => $value) {
+                if ($value["Completed"] == 0) {
+                    unset($results[$key]);
+                }
+            }
+        }
     }
 } catch (PDOException $e) {
     error_log("Error fetching stocks " . var_export($e, true));
