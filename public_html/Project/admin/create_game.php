@@ -2,7 +2,7 @@
 require(__DIR__ . "/../../../partials/nav.php");
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    redirect("home.php");
 } ?>
 <?php
 // Ethan - ekh3 - 4/21/24

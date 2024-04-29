@@ -4,13 +4,13 @@ session_start();
 require(__DIR__ . "/../../../lib/functions.php");
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    redirect("home.php");
 }
 
 $id = se($_GET, "id", -1, false);
 if ($id < 1) {
     flash("Invalid id passed to delete", "danger");
-    die(header("Location: " . get_url("admin/list_games.php")));
+    redirect("/admin/list_games.php");
 }
 
 try {
@@ -22,4 +22,4 @@ try {
     flash("Error adding data", "danger");
 }
 
-die(header("Location: " . get_url("admin/view_game.php?id=") . $id));
+redirect("/admin/view_game.php?id=" . $id);
