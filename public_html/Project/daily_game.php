@@ -107,26 +107,30 @@ if (count($_GET) > 0) {
     }
     //name
     $name = se($_GET, "name", "", false);
-    if (!empty($name)) {
+    if (!empty($name) && $viewDone === "false") {
+        flash("Cannot search by name with unknowns", "warning");
+        $name = "";
+    } else if (!empty($name)) {
         $query .= " AND name like :name";
         $params[":name"] = "%$name%";
     }
     //date range
     $date_min = se($_GET, "date_min", "", false);
     if (!empty($date_min) && $date_min != "") {
-        $query .= " AND firstReleaseDate >= :date_min";
+        $query .= " AND dailyDate >= :date_min";
         $params[":date_min"] = $date_min;
     }
     $date_max = se($_GET, "date_max", "-1", false);
     if (!empty($date_max) && $date_max > -1) {
-        $query .= " AND firstReleaseDate <= :date_max";
+        $query .= " AND dailyDate <= :date_max";
         $params[":date_max"] = $date_max;
     }
 
     //sort and order
     $sort = se($_GET, "sort", "date", false);
-    if ($sort == "name" && $viewDone === "true") {
+    if ($sort == "name" && $viewDone === "false") {
         flash("Cannot sort by name with unknowns", "warning");
+        $sort = "date";
     }
     if (!in_array($sort, ["name", "date", "attempts", "timeTaken", "completed"])) {
         $sort = "date";
@@ -167,6 +171,7 @@ try {
     error_log("Error fetching stocks " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
+
 foreach ($results as $index => $Game) {
     foreach ($Game as $key => $value) {
         if (is_null($value) && $key === "sqrImgURL") {
@@ -177,6 +182,9 @@ foreach ($results as $index => $Game) {
     }
 }
 
+// Used for making the count
+$tableTotal = get_total_count("DailyGame");
+
 $table = [
     "data" => $results, "title" => "Games", "ignored_columns" => ["id"],
     "view_url" => get_url("Game.php"),
@@ -186,7 +194,6 @@ $table = [
     <h3>Games</h3>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
-
             <?php foreach ($form as $k => $v) : ?>
                 <div class="col">
                     <?php render_input($v); ?>
@@ -198,8 +205,14 @@ $table = [
     </form>
     <?php if ($is_admin) : ?>
         <a href="?generate" class="btn custBtn">Pull Popular Games</a>
+        <br>
     <?php endif; ?>
+    <?php
+    // Sets up the counter
+    echo "<h5>" . count($results) . "/" . $tableTotal . "</h5>";
+    ?>
     <div class="row w-100 row-cols-auto row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-4">
+
         <?php foreach ($results as $Game) : ?>
             <div class="col">
 
