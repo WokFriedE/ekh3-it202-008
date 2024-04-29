@@ -10,7 +10,7 @@ if (!has_role("Admin")) {
 $id = se($_GET, "id", -1, false);
 if ($id < 1) {
     flash("Invalid id passed to delete", "danger");
-    redirect("list_games.php");
+    redirect("/admin/list_games.php");
 }
 
 $db = getDB();

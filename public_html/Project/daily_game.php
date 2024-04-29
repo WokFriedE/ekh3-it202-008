@@ -23,6 +23,7 @@ if (isset($_GET["generate"])) {
                     $stmt = $db->prepare($insertQuery);
                     $stmt->execute($params);
                     flash("Daily Created", "success");
+                    unset($_GET["generate"]);
                     break;
                 } catch (PDOException $e) {
                     if ($e->errorInfo[1] == 1062) {
@@ -48,7 +49,9 @@ $form = [
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
     ["type" => "date", "name" => "date_max", "placeholder" => "Max Date", "label" => "Max Date", "include_margin" => false],
 
-    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["name" => "Name", "rarity" => "Rarity", "life" => "Life", "power" => "Power", "defense" => "Defense", "stonks" => "Stonks (Combat Effectiveness)", "created" => "Created", "modified" => "Modified"], "include_margin" => false],
+    ["type" => "select", "name" => "completed", "label" => "Completed?", "options" => ["false" => "All Challenges", "true" => "Only Done"], "include_margin" => false],
+
+    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["date" => "Date", "attempts" => "Attempts ", "timeTaken" => "Time Taken", "completed" => "Completed", "name" => "Name"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
 
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false],
@@ -57,8 +60,18 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT d.id, dailyDate as `date`, g.name, IF(c.`userId`=:currUser, 1,0) AS `Completed`, c.attempts, c.timeTaken, g.sqrImgURL FROM 
-        ((`DailyGame` d JOIN `Games` g on d.`gameId`=g.id) LEFT JOIN `Completed_Games` c on c.`DailyGameID`=d.id) WHERE 1=1";
+$query = "SELECT d.id, d.gameId, dailyDate as `date`, g.name, c.attempts, c.timeTaken, g.sqrImgURL, v.Completed
+FROM (
+        (
+            `DailyGame` d
+            JOIN `Games` g on d.`gameId` = g.id
+        ) LEFT JOIN `Completed_Games` c on c.`DailyGameID` = d.id
+    ) LEFT JOIN (
+        SELECT cv.`userId`, IF(cv.`userId` = :currUser AND cv.is_active = 1, 1, 0) AS `Completed`
+        FROM `Completed_Games` cv
+    ) v on c.`userId` = v.`userId`
+WHERE 1 = 1";
+
 $params = [];
 $params[":currUser"] = get_user_id();
 $session_key = $_SERVER["SCRIPT_NAME"];
@@ -76,6 +89,13 @@ if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) {
         $_GET = $session_data;
     }
 }
+
+$viewDone = se($_GET, "completed", "false", false);
+if ($viewDone == "true") {
+    $query .= " AND Completed=1";
+}
+
+
 if (count($_GET) > 0) {
     session_save($session_key, $_GET);
     $keys = array_keys($_GET);
@@ -104,9 +124,12 @@ if (count($_GET) > 0) {
     }
 
     //sort and order
-    $sort = se($_GET, "sort", "name", false);
-    if (!in_array($sort, ["name", "date"])) {
-        $sort = "name";
+    $sort = se($_GET, "sort", "date", false);
+    if ($sort == "name" && $viewDone === "true") {
+        flash("Cannot sort by name with unknowns", "warning");
+    }
+    if (!in_array($sort, ["name", "date", "attempts", "timeTaken", "completed"])) {
+        $sort = "date";
     }
     //tell mysql I care about the data from table "b"
     if ($sort === "created" || $sort === "modified") {
@@ -130,10 +153,6 @@ if (count($_GET) > 0) {
     //IMPORTANT make sure you fully validate/trust $limit (sql injection possibility)
     $query .= " LIMIT $limit";
 }
-
-
-
-
 
 $db = getDB();
 $stmt = $db->prepare($query);

@@ -139,11 +139,11 @@ if ($id > -1) {
         $game = $r;
     } else {
         flash("Invalid Game passed", "danger");
-        redirect("list_games.php");
+        redirect("/admin/list_games.php");
     }
 } else {
     flash("Invalid id passed", "danger");
-    redirect("list_games.php");
+    redirect("/admin/list_games.php");
 }
 
 

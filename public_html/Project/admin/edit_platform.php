@@ -61,11 +61,11 @@ if ($id > -1) {
         $game = $r;
     } else {
         flash("Invalid Platform passed", "danger");
-        redirect("list_platforms.php");
+        redirect("/admin/list_platforms.php");
     }
 } else {
     flash("Invalid id passed", "danger");
-    redirect("list_platforms.php");
+    redirect("/admin/list_platforms.php");
 }
 
 

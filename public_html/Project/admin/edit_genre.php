@@ -61,11 +61,11 @@ if ($id > -1) {
         $genre = $r;
     } else {
         flash("Invalid genre passed", "danger");
-        redirect("list_genres.php");
+        redirect("/admin/list_genres.php");
     }
 } else {
     flash("Invalid id passed", "danger");
-    redirect("list_genres.php");
+    redirect("/admin/list_genres.php");
 }
 
 

@@ -25,13 +25,13 @@ if ($id > -1) {
     if (empty($tempGame)) {
         flash("Error: getting game", "danger");
         error_log("ERROR VIEW_GAME: Game is empty");
-        redirect("list_games.php");
+        redirect("/admin/list_games.php");
     } else {
         $game = $tempGame;
     }
 } else {
     flash("Invalid id passed", "danger");
-    redirect("list_games.php");
+    redirect("/admin/list_games.php");
 }
 
 if (is_null($game["firstReleaseDate"]) && $game["is_api"] == 1) {
