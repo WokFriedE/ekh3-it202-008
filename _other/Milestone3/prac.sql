@@ -56,3 +56,38 @@ FROM
     )
 WHERE
     1 = 1
+SELECT
+    Users.id,
+    Users.username,
+    (
+        SELECT
+            GROUP_CONCAT(
+                "Challenge ",
+                ur.id,
+                ' (',
+                IF(ur.is_active = 1, 'active', 'inactive'),
+                ')'
+            )
+        from
+            Completed_Games ur
+            JOIN DailyGame on ur.DailyGameID = DailyGame.id
+        WHERE
+            ur.userId = Users.id
+    ) as challenges
+from
+    Users
+SELECT
+    DailyGame.id,
+    Games.name
+FROM
+    (
+        DailyGame
+        LEFT JOIN Games on Games.id = DailyGame.gameId
+    )
+UPDATE
+    `Completed_Games`
+SET
+    is_active = ! is_active
+WHERE
+    userId = :uid
+    AND DailyGameID = :challengeID -- 4, 2
