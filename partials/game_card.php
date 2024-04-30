@@ -5,7 +5,18 @@ if (!isset($game)) {
 }
 ?>
 
-<?php if (isset($game)) :
+<?php
+$is_admin = false;
+if (has_role("Admin")) {
+    $is_admin = true;
+}
+
+$is_active = false;
+if (isset($game["is_active"]) && $game["is_active"] == 1) {
+    $is_active = true;
+}
+
+if (isset($game)) :
     $solved = false;
     if ($game["Completed"] == 1) {
         $solved = true;
@@ -14,7 +25,9 @@ if (!isset($game)) {
     <div class="card mx-auto" style="width: 18rem;">
         <img src="<?php echo ($solved ? se($game, "sqrImgURL", missingURL()) : missingURL()); ?>" class="card-img-top" alt="..." height="285">
         <div class="card-body">
+            <?php if (!$is_active) echo "<s>"; ?>
             <h5 class="card-title">Challenge <?php se($game, "id", "Unknown"); ?></h5>
+            <?php if (!$is_active) echo "</s>"; ?>
             <div class="card-text">
                 <ul class="list-group">
                     <li class="list-group-item">For Date: <?php echo se($game, "date", "Unknown") ?></li>
@@ -27,9 +40,20 @@ if (!isset($game)) {
 
             <?php if (!isset($game["user_id"]) || $game["user_id"] === "N/A") : ?>
                 <div class="card-body">
-                    <a href="<?php echo get_url('play_challenge.php?id=' . $game["id"]); ?>" class="card-link">Try Challenge <?php $solved ? " again" : "" ?></a>
-                    <?php if ($solved) : ?>
-                        <a href="<?php echo get_url('game_details.php?id=' . $game["gameId"]); ?>" class="card-link">Game Info</a>
+                    <?php if ($is_active) : ?>
+                        <div class="row">
+                            <a href="<?php echo get_url('play_challenge.php?id=' . $game["id"]); ?>" class="card-link mx-1">Try Challenge <?php $solved ? " again" : "" ?></a>
+                        </div>
+                        <?php if ($solved) : ?>
+                            <div class="row">
+                                <a href="<?php echo get_url('game_details.php?id=' . $game["gameId"]); ?>" class="card-link mx-1">Game Info</a>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <?php if ($is_admin) : ?>
+                        <div class="row">
+                            <a href="<?php echo get_url('admin/delete_daily.php?id=' . $game["id"]); ?>" class="card-link mx-1"><?php echo $is_active ? "Disable" : "Enable"; ?> Challenge</a>
+                        </div>
                     <?php endif; ?>
                 </div>
             <?php else : ?>

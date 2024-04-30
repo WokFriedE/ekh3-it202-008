@@ -9,7 +9,6 @@ if (!has_role("Admin")) {
 ?>
 
 <!-- Ethan Ho - ekh3 - 4/21/24 -->
-
 <?php
 $id = se($_GET, "id", -1, false);
 if (isset($_POST["name"])) {
