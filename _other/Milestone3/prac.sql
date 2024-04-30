@@ -106,4 +106,25 @@ FROM
             ) cg ON d.id = cg.DailyGameID
         )
         LEFT JOIN `Games` g on d.gameId = g.id
+    ) -- Get us the total count
+SELECT
+    *
+FROM
+    `DailyGame`
+WHERE
+    id not in (
+        SELECT
+            DISTINCT DailyGameID
+        FROM
+            Completed_Games
+        WHERE
+            is_active = 1
+    )
+    AND is_active = 1 (
+        SELECT
+            DISTINCT DailyGameID
+        FROM
+            Completed_Games
+        WHERE
+            is_active = 1
     )

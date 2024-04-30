@@ -11,16 +11,23 @@ if (has_role("Admin")) {
     $is_admin = true;
 }
 
+$solved = false;
+if (isset($game["Completed"]) && $game["Completed"] == 1) {
+    $solved = true;
+}
+
+$is_admin_view = false;
+if (isset($game["adminView"]) && $game["adminView"] == "true") {
+    $is_admin_view = true;
+    $solved = true;
+}
+
 $is_active = false;
 if (isset($game["is_active"]) && $game["is_active"] == 1) {
     $is_active = true;
 }
 
 if (isset($game)) :
-    $solved = false;
-    if ($game["Completed"] == 1) {
-        $solved = true;
-    }
 ?>
     <div class="card mx-auto" style="width: 18rem;">
         <img src="<?php echo ($solved ? se($game, "sqrImgURL", missingURL()) : missingURL()); ?>" class="card-img-top" alt="..." height="285">
@@ -32,8 +39,11 @@ if (isset($game)) :
                 <ul class="list-group">
                     <li class="list-group-item">For Date: <?php echo se($game, "date", "Unknown") ?></li>
                     <li class="list-group-item">Name: <?php echo ($solved ? se($game, "name", "Unknown") : "Unsolved"); ?></li>
-                    <li class="list-group-item">Attempts: <?php echo ($solved ? se($game, "attempts", "Unknown") : "Unsolved"); ?></li>
-                    <li class="list-group-item">Time: <?php echo ($solved ? se($game, "timeTaken", "Unknown") : "Unsolved"); ?></li>
+                    <?php if (!$is_admin_view) : ?>
+                        <li class="list-group-item">Attempts: <?php echo ($solved ? se($game, "attempts", "Unknown") : "Unsolved"); ?></li>
+                        <li class="list-group-item">Time: <?php echo ($solved ? se($game, "timeTaken", "Unknown") : "Unsolved"); ?></li>
+                    <?php endif; ?>
+
                 </ul>
 
             </div>
@@ -44,7 +54,11 @@ if (isset($game)) :
                         <div class="row">
                             <a href="<?php echo get_url('play_challenge.php?id=' . $game["id"]); ?>" class="card-link mx-1">Try Challenge <?php $solved ? " again" : "" ?></a>
                         </div>
-                        <?php if ($solved) : ?>
+                        <?php if ($is_admin_view) : ?>
+                            <div class="row">
+                                <a href="<?php echo get_url('admin/view_game.php?id=' . $game["gameId"]); ?>&card" class="card-link mx-1">Game Info</a>
+                            </div>
+                        <?php elseif ($solved) : ?>
                             <div class="row">
                                 <a href="<?php echo get_url('game_details.php?id=' . $game["gameId"]); ?>" class="card-link mx-1">Game Info</a>
                             </div>

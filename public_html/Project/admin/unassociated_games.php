@@ -1,10 +1,11 @@
 <?php
-require(__DIR__ . "/../../partials/nav.php");
+require(__DIR__ . "/../../../partials/nav.php");
 
-$is_admin = false;
-if (has_role("Admin")) {
-    $is_admin = true;
+if (!has_role("Admin")) {
+    flash("You don't have permission to view this page", "warning");
+    redirect("home.php");
 }
+
 
 $uid = get_user_id();
 if (isset($_GET["id"])) {
@@ -46,12 +47,25 @@ if (isset($_GET["generate"])) {
 }
 
 if (isset($_GET["reset"])) {
-    redirect("admin/clear_user_associations.php?id=" . $uid);
+    $query = "UPDATE Completed_Games SET is_active = 0";
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        error_log("Reset fail: " . var_export($e, true));
+        flash("An error occurred", "danger");
+    }
 }
 if (isset($_GET["enable"])) {
-    redirect("admin/enable_user_associations.php?id=" . $uid);
+    $query = "UPDATE Completed_Games SET is_active = 1";
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        error_log("Re-enable fail: " . var_export($e, true));
+        flash("An error occurred", "danger");
+    }
 }
-
 
 //build search form
 $form = [
@@ -60,8 +74,6 @@ $form = [
 
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
     ["type" => "date", "name" => "date_max", "placeholder" => "Max Date", "label" => "Max Date", "include_margin" => false],
-
-    ["type" => "select", "name" => "completed", "label" => "Completed?", "options" => ["false" => "All Challenges", "true" => "Only Done"], "include_margin" => false],
 
     ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["date" => "Date", "attempts" => "Attempts ", "timeTaken" => "Time Taken", "completed" => "Completed", "name" => "Name"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
@@ -72,8 +84,8 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, IF(cg.`userId` is not NULL, 1, 0) AS `Completed`, cg.attempts, cg.timeTaken, d.is_active
-FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE `userId`=:uid and is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE 1=1";
+$query = "SELECT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, d.is_active
+FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE `userId`=:uid and is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE cg.`userId` is NULL AND 1=1";
 
 $params = [];
 $params[":uid"] = $uid;
@@ -93,9 +105,6 @@ if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) {
     }
 }
 
-// Used to determine if only completed should be shown
-$viewDone = se($_GET, "completed", "false", false);
-
 if (count($_GET) > 0) {
     session_save($session_key, $_GET);
     $keys = array_keys($_GET);
@@ -107,10 +116,7 @@ if (count($_GET) > 0) {
     }
     //name
     $name = se($_GET, "name", "", false);
-    if (!empty($name) && $viewDone === "false") {
-        flash("Cannot search by name with unknowns", "warning");
-        $name = "";
-    } else if (!empty($name)) {
+    if (!empty($name)) {
         $query .= " AND name like :name";
         $params[":name"] = "%$name%";
     }
@@ -128,10 +134,6 @@ if (count($_GET) > 0) {
 
     //sort and order
     $sort = se($_GET, "sort", "date", false);
-    if ($sort == "name" && $viewDone === "false") {
-        flash("Cannot sort by name with unknowns", "warning");
-        $sort = "date";
-    }
     if (!in_array($sort, ["name", "date", "attempts", "timeTaken", "completed"])) {
         $sort = "date";
     }
@@ -163,13 +165,6 @@ try {
     $r = $stmt->fetchAll();
     if ($r) {
         $results = $r;
-        if ($viewDone == "true") {
-            foreach ($results as $key => $value) {
-                if ($value["Completed"] == 0) {
-                    unset($results[$key]);
-                }
-            }
-        }
     }
 } catch (PDOException $e) {
     error_log("Error fetching stocks " . var_export($e, true));
@@ -186,8 +181,19 @@ foreach ($results as $index => $Game) {
     }
 }
 
-// Used for making the count
-$tableTotal = get_total_count("DailyGame");
+// Used to get total count of non associated data
+$query = "SELECT count(1) as `totalCount` FROM `DailyGame` WHERE id not in (SELECT DISTINCT DailyGameID FROM Completed_Games WHERE is_active = 1)";
+try {
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+    $r = $stmt->fetch();
+    if ($r) {
+        $tableTotal = (int)$r["totalCount"];
+    }
+} catch (PDOException $e) {
+    error_log("Error fetching stocks " . var_export($e, true));
+    flash("Unhandled error occurred", "danger");
+}
 
 $table = [
     "data" => $results, "title" => "Games", "ignored_columns" => ["id"],
@@ -207,12 +213,9 @@ $table = [
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form>
-    <?php if ($is_admin) : ?>
-        <a href="?generate" class="btn custBtn">Generate New Challenge</a>
-        <a href="?reset&id=<?php echo $uid ?>" class="btn custBtn">Reset</a>
-        <a href="?enable&id=<?php echo $uid ?>" class="btn custBtn">Enable All</a>
-        <br>
-    <?php endif; ?>
+    <a href="?generate" class="btn custBtn">Generate New Challenge</a>
+    <a href="?reset" class="btn custBtn">Reset All Associations</a>
+    <a href="?enable" class="btn custBtn">Reenable All Associations</a>
     <?php
     // Sets up the counter
     echo "<h5>" . count($results) . "/" . $tableTotal . "</h5>";
@@ -224,7 +227,10 @@ $table = [
 
         <?php foreach ($results as $Game) : ?>
             <div class="col">
-                <?php render_game_card($Game); ?>
+                <?php
+                $Game["adminView"] = true;
+                render_game_card($Game);
+                ?>
             </div>
         <?php endforeach; ?>
     </div>
@@ -232,5 +238,5 @@ $table = [
 
 
 <?php
-require_once(__DIR__ . "/../../partials/flash.php");
+require_once(__DIR__ . "/../../../partials/flash.php");
 ?>
