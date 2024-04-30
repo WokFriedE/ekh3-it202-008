@@ -56,7 +56,7 @@ session_start();
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/create_role.php'); ?>">Create Role</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/list_roles.php'); ?>">List Roles</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign Roles</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/leaderboard.php'); ?>">Basic Leaderboard</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/user_association.php'); ?>">Game Association</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>
@@ -72,7 +72,7 @@ session_start();
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/list_platforms.php'); ?>">List Platforms</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/list_genres.php'); ?>">List Genres</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/unassociated_games.php'); ?>">Unassociated Challeneges</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/all_users_association.php'); ?>">All Associations</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/all_user_associations.php'); ?>">Basic Leaderboard</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>

@@ -169,3 +169,6 @@ FROM
     JOIN `Completed_Games` cgt ON u.id = cgt.userId
 WHERE
     `DailyGameID` = 3
+
+-- used for getting totalCount
+SELECT count(1) as `totalCount` FROM `DailyGame` WHERE `id` in (SELECT `DailyGameID` FROM `Completed_Games` WHERE is_active=1);

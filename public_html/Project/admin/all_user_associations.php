@@ -71,11 +71,14 @@ $form = [
 error_log("Form data: " . var_export($form, true));
 
 
-
-$query = "SELECT DISTINCT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, d.is_active, (SELECT GROUP_CONCAT(u.username, '#', u.id) FROM Users u JOIN `Completed_Games` cgt ON u.id = cgt.userId WHERE cgt.`DailyGameID`=d.id AND cgt.is_active=1) as Users
-FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE 1=1";
+// Useful query for a leaderboard
+// $query = "SELECT DISTINCT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, d.is_active, (SELECT GROUP_CONCAT(u.username, '#', u.id) FROM Users u JOIN `Completed_Games` cgt ON u.id = cgt.userId WHERE cgt.`DailyGameID`=d.id AND cgt.is_active=1) as Users
+// FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE 1=1";
+$query = "SELECT DISTINCT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, d.is_active, (SELECT GROUP_CONCAT(u.username, '#', u.id) FROM Users u JOIN `Completed_Games` cgt ON u.id = cgt.userId WHERE cgt.`DailyGameID`=d.id AND cgt.is_active=1 AND u.username like :userPattern) as Users
+FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE cg.userID is not null and 1=1";
 
 $params = [];
+$params[":userPattern"] = "%%";
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
 if ($is_clear) {
@@ -104,8 +107,7 @@ if (count($_GET) > 0) {
     //name
     $name = se($_GET, "name", "", false);
     if (!empty($name)) {
-        $query .= " AND name like :name";
-        $params[":name"] = "%$name%";
+        $params[":userPattern"] = "%$name%";
     }
     //date range
     $date_min = se($_GET, "date_min", "", false);
@@ -162,6 +164,9 @@ try {
             }
             $results[$index]["UserDone"] = $recordUsers;
             unset($results[$index]["Users"]);
+            if (count($results[$index]["UserDone"]) === 0) {
+                unset($results[$index]);
+            }
         }
     }
 } catch (PDOException $e) {
@@ -179,8 +184,19 @@ foreach ($results as $index => $Game) {
     }
 }
 
-// Used for making the count
-$tableTotal = get_total_count("DailyGame");
+// Used to get total count of associated data
+$query = "SELECT count(1) as `totalCount` FROM `DailyGame` WHERE `id` in (SELECT `DailyGameID` FROM `Completed_Games` WHERE is_active=1)"; //id not in (SELECT DISTINCT DailyGameID FROM Completed_Games WHERE is_active = 1)";
+try {
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+    $r = $stmt->fetch();
+    if ($r) {
+        $tableTotal = (int)$r["totalCount"];
+    }
+} catch (PDOException $e) {
+    error_log("Error fetching stocks " . var_export($e, true));
+    flash("Unhandled error occurred", "danger");
+}
 
 $table = [
     "data" => $results, "title" => "Games", "ignored_columns" => ["id"],

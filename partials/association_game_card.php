@@ -69,7 +69,7 @@ if (isset($game)) :
 
         <div class="card">
             <?php if (isset($game["UserDone"])) : ?>
-                <h5 class="mx-1">Successful Users</h5>
+                <h5 class="mx-1">Successful Users (<?php echo count($game["UserDone"]); ?>)</h5>
                 <!-- The overflow was used to add scrollable -->
                 <ul class="list-group overflow-auto">
                     <?php foreach ($game["UserDone"] as $uid => $username) : ?>
