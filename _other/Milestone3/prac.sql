@@ -108,7 +108,7 @@ FROM
         LEFT JOIN `Games` g on d.gameId = g.id
     ) -- Get us the total count
 SELECT
-    *
+    count(1)
 FROM
     `DailyGame`
 WHERE
@@ -119,12 +119,53 @@ WHERE
             Completed_Games
         WHERE
             is_active = 1
-    )
-    AND is_active = 1 (
+    ) (
         SELECT
             DISTINCT DailyGameID
         FROM
             Completed_Games
         WHERE
             is_active = 1
+    );
+
+SELECT
+    DISTINCT d.id,
+    d.gameId,
+    dailyDate as `date`,
+    g.name,
+    g.`sqrImgURL`,
+    d.is_active,
+    (
+        SELECT
+            GROUP_CONCAT(u.username, "-;-", u.id)
+        FROM
+            Users u
+            JOIN `Completed_Games` cgt ON u.id = cgt.userId
+        WHERE
+            cgt.`DailyGameID` = d.id
+            AND cgt.is_active = 1
+    ) as Users
+FROM
+    (
+        (
+            `DailyGame` d
+            LEFT JOIN (
+                SELECT
+                    *
+                FROM
+                    `Completed_Games`
+                WHERE
+                    is_active = 1
+            ) cg ON d.id = cg.DailyGameID
+        )
+        LEFT JOIN `Games` g on d.gameId = g.id
     )
+WHERE
+    1 = 1
+SELECT
+    GROUP_CONCAT(u.username)
+FROM
+    Users u
+    JOIN `Completed_Games` cgt ON u.id = cgt.userId
+WHERE
+    `DailyGameID` = 3
