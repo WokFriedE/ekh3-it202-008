@@ -201,12 +201,14 @@ $table = [
     <?php
     // Sets up the counter
     echo "<h5>" . count($results) . "/" . $tableTotal . "</h5>";
+    if (count($results) == 0) {
+        echo "<h4>No Results Available</h4>";
+    }
     ?>
     <div class="row w-100 row-cols-auto row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-4">
 
         <?php foreach ($results as $Game) : ?>
             <div class="col">
-
                 <?php render_game_card($Game); ?>
             </div>
         <?php endforeach; ?>
