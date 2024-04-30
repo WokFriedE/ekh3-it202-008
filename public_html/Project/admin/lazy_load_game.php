@@ -10,7 +10,8 @@ if (!has_role("Admin")) {
 $id = se($_GET, "id", -1, false);
 if ($id < 1) {
     flash("Invalid id passed to delete", "danger");
-    redirect("/admin/list_games.php");
+    // redirect("/admin/view_game.php?id=" . $id);
+    echo "<script>history.back()</script>";
 }
 
 try {
@@ -22,4 +23,5 @@ try {
     flash("Error adding data", "danger");
 }
 
-redirect("/admin/view_game.php?id=" . $id);
+// redirect("/admin/view_game.php?id=" . $id);
+echo "<script>history.back()</script>";

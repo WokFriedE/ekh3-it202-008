@@ -54,7 +54,7 @@ foreach ($game as $key => $value) {
 <div class="container-fluid center">
     <h3>Game: <?php se($game, "name", "Unknown"); ?> </h3>
     <div>
-        <a href=" <?php echo get_url("admin/list_games.php"); ?>" class="btn btn-secondary mb-3">Back</a>
+        <a href="javascript:history.go(-1)" class="btn btn-secondary mb-3">Back</a>
         <a href=" <?php echo get_url("admin/edit_game.php?id=") . $id; ?>" class="btn btn-secondary mb-3">Edit</a>
         <a href=" <?php echo get_url("admin/delete_game.php?id=") . $id; ?>" class="btn btn-secondary mb-3">Delete</a>
     </div>
