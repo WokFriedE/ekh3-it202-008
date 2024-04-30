@@ -75,7 +75,7 @@ if (isset($game)) :
                     <?php foreach ($game["UserDone"] as $uid => $username) : ?>
                         <li class="list-group-item">
                             <a class="btn custBtn" href="<?php echo get_url("admin/delete_user_associations.php?id=" . $uid . "&dailyGame=" . $game["id"]) ?>">Remove</a>
-                            <a class="card-link" href="<?php echo get_url("profile.php?id=" . $uid) ?>"><?php echo $username ?> </a>
+                            <a class="card-link" style="font-size: 1.25em;" href="<?php echo get_url("profile.php?id=" . $uid) ?>"><?php echo $username ?> </a>
                         </li>
                     <?php endforeach; ?>
                 </ul>

@@ -45,13 +45,21 @@ if (isset($_GET["generate"])) {
     }
 }
 
-if (isset($_GET["reset"])) {
-    redirect("admin/clear_user_associations.php?id=" . $uid);
-}
-if (isset($_GET["enable"])) {
-    redirect("admin/enable_user_associations.php?id=" . $uid);
-}
 
+// Used to reenable all relations
+if (isset($_GET["enable"])) {
+    $db = getDB();
+    $query = "UPDATE `Completed_Games` SET is_active = 1 WHERE 1=1";
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        unset($_GET["enable"]);
+        flash("All records enabled for all items", "success");
+    } catch (PDOException $e) {
+        error_log("Error enabling " . var_export($e, true));
+        flash("Unhandled error occurred", "danger");
+    }
+}
 
 //build search form
 $form = [
@@ -80,11 +88,14 @@ FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE is_active=
 $params = [];
 $params[":userPattern"] = "%%";
 $session_key = $_SERVER["SCRIPT_NAME"];
+$is_reset = isset($_GET["reset"]);
 $is_clear = isset($_GET["clear"]);
 if ($is_clear) {
     session_delete($session_key);
     unset($_GET["clear"]);
     redirect($session_key);
+} elseif (isset($_GET["reset"])) {
+    unset($_GET["reset"]);
 } else {
     $session_data = session_load($session_key);
 }
@@ -174,6 +185,7 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
+// Used to set the images to missing if there is no images
 foreach ($results as $index => $Game) {
     foreach ($Game as $key => $value) {
         if (is_null($value) && $key === "sqrImgURL") {
@@ -198,6 +210,37 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
+// Used to reset / remove all relations
+if ($is_reset) {
+    $query = "UPDATE `Completed_Games` SET is_active = 0 WHERE 1=1";
+    $paramIndex = 0;
+    if (count($results) > 0) {
+        foreach ($results as $index => $record) {
+            foreach ($record["UserDone"] as $uid => $username) {
+                $query .= " OR (userId=:uid" . $paramIndex . " AND DailyGameID=:gid" . $paramIndex . ")";
+                $paramsReset[":uid" . $paramIndex] = $uid;
+                $paramsReset[":gid" . $paramIndex] = $record["id"];
+                $paramIndex++;
+            }
+        }
+        try {
+            $stmt = $db->prepare($query);
+            $stmt->execute($paramsReset);
+            flash("All records removed for " . $paramIndex . " items", "success");
+            unset($_GET["reset"]);
+            unset($session_data["reset"]);
+            redirect("admin/all_user_associations.php");
+        } catch (PDOException $e) {
+            error_log("Error enabling " . var_export($e, true));
+            flash("Unhandled error occurred", "danger");
+        }
+    } else {
+        flash("No associations", "warning");
+    }
+}
+
+
+
 $table = [
     "data" => $results, "title" => "Games", "ignored_columns" => ["id"],
     "view_url" => get_url("Game.php"),
@@ -218,8 +261,8 @@ $table = [
     </form>
     <?php if ($is_admin) : ?>
         <a href="?generate" class="btn custBtn">Generate New Challenge</a>
-        <a href="?reset&id=<?php echo $uid ?>" class="btn custBtn">Reset</a>
-        <a href="?enable&id=<?php echo $uid ?>" class="btn custBtn">Enable All</a>
+        <a href="?reset" class="btn custBtn">Reset</a>
+        <a href="?enable" class="btn custBtn">Enable All</a>
         <br>
     <?php endif; ?>
     <?php
@@ -243,3 +286,5 @@ $table = [
 <?php
 require_once(__DIR__ . "/../../../partials/flash.php");
 ?>
+
+<!-- TODO make a button to remove all the users that are within the loaded list -> use the UserDone list -->
