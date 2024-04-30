@@ -6,6 +6,11 @@ if (has_role("Admin")) {
     $is_admin = true;
 }
 
+$uid = get_user_id();
+if (isset($_GET["id"])) {
+    $uid = se($_GET, "id", get_user_id(), false);
+}
+
 // Generate a new daily
 if (isset($_GET["generate"])) {
     $db = getDB();
@@ -41,6 +46,14 @@ if (isset($_GET["generate"])) {
 }
 
 
+if (isset($_GET["reset"])) {
+    redirect("admin/clear_user_associations.php?id=" . $uid);
+}
+if (isset($_GET["enable"])) {
+    redirect("admin/enable_user_associations.php?id=" . $uid);
+}
+
+
 //build search form
 $form = [
     ["type" => "text", "name" => "name", "placeholder" => "Game Name", "label" => "Game Name", "include_margin" => false],
@@ -64,7 +77,7 @@ $query = "SELECT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, IF(
 FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE `userId`=:uid and is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE 1=1";
 
 $params = [];
-$params[":uid"] = get_user_id();
+$params[":uid"] = $uid;
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
 if ($is_clear) {
@@ -195,7 +208,9 @@ $table = [
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form>
     <?php if ($is_admin) : ?>
-        <a href="?generate" class="btn custBtn">Pull Popular Games</a>
+        <a href="?generate" class="btn custBtn">Generate New Challenge</a>
+        <a href="?reset&id=<?php echo $uid ?>" class="btn custBtn">Reset</a>
+        <a href="?enable&id=<?php echo $uid ?>" class="btn custBtn">Enable All</a>
         <br>
     <?php endif; ?>
     <?php

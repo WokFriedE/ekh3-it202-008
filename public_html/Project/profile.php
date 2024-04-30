@@ -1,14 +1,17 @@
 <?php
 require_once(__DIR__ . "/../../partials/nav.php");
-// is_logged_in(true);
-
-$user_id = (int)se($_GET, "id", -1, false);
+//is_logged_in(true);
+$user_id = -1;
+try {
+    $user_id = (int)se($_GET, "id", -1, false);
+} catch (Exception $e) {
+    //we know it's a data format issue
+}
 if ($user_id < 1) {
-    $user_id = get_user_id();
+    $user_id = get_user_id(); //get our id if we're logged in
 }
 $is_me = $user_id == get_user_id();
 $is_edit = isset($_GET["edit"]);
-
 ?>
 <?php
 if ($is_me && $is_edit && isset($_POST["save"])) {
@@ -83,14 +86,11 @@ if ($is_me && $is_edit && isset($_POST["save"])) {
 
                             flash("Password reset", "success");
                         } else {
-
                             flash("Current password is invalid", "warning");
                         }
                     }
                 } catch (PDOException $e) {
-                    flash("An unexpected error occurred, please try again", "danger");
-                    error_log("Profile pwd change: " . var_export($e->errorInfo, true));
-                    // echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
+                    echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
                 }
             } else {
                 flash("New passwords don't match", "warning");
@@ -98,6 +98,10 @@ if ($is_me && $is_edit && isset($_POST["save"])) {
         }
     }
 }
+?>
+
+<?php
+$user = [];
 if ($user_id > 0) {
     $db = getDB();
     $query = "SELECT email, username, created FROM Users where id = :user_id";
@@ -111,22 +115,17 @@ if ($user_id > 0) {
             flash("Couldn't find user profile", "warning");
         }
     } catch (PDOException $e) {
+        error_log("Error fetching user: " . var_export($e, true));
+        flash("Error fetching user", "danger");
     }
 }
-
-?>
-
-<!-- <?php
-        //$email = get_user_email();
-        //$username = get_username();
-        ?> -->
 ?>
 <div class="container-fluid">
-    <?php if ($is_edit && $is_me) : ?>
-        <a href="?view">View</a>
+    <?php if ($is_me && $is_edit) : ?>
+        <a class="btn btn-secondary my-3" href="?">View</a>
         <form method="POST" onsubmit="return validate(this);">
-            <?php render_input(["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "value" => $email, "rules" => ["required" => true]]); ?>
-            <?php render_input(["type" => "text", "id" => "username", "name" => "username", "label" => "Username", "value" => $username, "rules" => ["required" => true, "maxlength" => 30]]); ?>
+            <?php render_input(["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "value" => se($user, "email", "", false), "rules" => ["required" => true]]); ?>
+            <?php render_input(["type" => "text", "id" => "username", "name" => "username", "label" => "Username", "value" => se($user, "username", "", false), "rules" => ["required" => true, "maxlength" => 30]]); ?>
             <!-- DO NOT PRELOAD PASSWORD -->
             <div class="lead">Password Reset</div>
             <?php render_input(["type" => "password", "id" => "cp", "name" => "currentPassword", "label" => "Current Password", "rules" => ["minlength" => 8]]); ?>
@@ -137,13 +136,13 @@ if ($user_id > 0) {
         </form>
     <?php else : ?>
         <?php if ($is_me) : ?>
-            <a href="?edit">Edit</a>
+            <a class="btn btn-secondary my-3" href="?edit">Edit</a>
         <?php endif; ?>
         <div class="card">
             <div class="card-body">
-                <div class="h4">
-                    <!-- Info about public profile -->
-                </div>
+                <div class="h4">Username: <?php se($user, "username"); ?></div>
+                <div class="text-body">Joined: <?php se($user, "created"); ?></div>
+                <a class="btn custBtn my-3" href="daily_game.php?id=<?php echo $user_id ?>">Go to User Dailys</a>
             </div>
         </div>
     <?php endif; ?>
