@@ -51,7 +51,7 @@ $form = [
 
     ["type" => "select", "name" => "completed", "label" => "Completed?", "options" => ["false" => "All Challenges", "true" => "Only Done"], "include_margin" => false],
 
-    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["date" => "Date", "attempts" => "Attempts ", "timeTaken" => "Time Taken", "completed" => "Completed", "name" => "Name"], "include_margin" => false],
+    ["type" => "select", "name" => "sort", "label" => "Sort", "options" => ["date" => "Date", "attempts" => "Attempts ", "timeTaken" => "Time Taken", "completed" => "Completed", "name" => "Name", "is_active" => "Active"], "include_margin" => false],
     ["type" => "select", "name" => "order", "label" => "Order", "options" => ["asc" => "+", "desc" => "-"], "include_margin" => false],
 
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false],
