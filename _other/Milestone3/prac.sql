@@ -137,7 +137,7 @@ SELECT
     d.is_active,
     (
         SELECT
-            GROUP_CONCAT(u.username, "-;-", u.id)
+            GROUP_CONCAT(u.username, "#", u.id)
         FROM
             Users u
             JOIN `Completed_Games` cgt ON u.id = cgt.userId
