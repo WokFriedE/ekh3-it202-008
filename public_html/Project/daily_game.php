@@ -60,7 +60,7 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, IF(cg.`userId` is not NULL, 1, 0) AS `Completed`, cg.attempts, cg.timeTaken
+$query = "SELECT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, IF(cg.`userId` is not NULL, 1, 0) AS `Completed`, cg.attempts, cg.timeTaken, d.is_active
 FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE `userId`=:uid and is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE 1=1";
 
 $params = [];

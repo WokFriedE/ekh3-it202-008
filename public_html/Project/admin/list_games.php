@@ -76,8 +76,6 @@ $form = [
 ];
 error_log("Form data: " . var_export($form, true));
 
-
-
 $query = "SELECT id, name, publisher, developer, topCriticScore as `top score`, firstReleaseDate as `release date`, IF(is_api=1, 'Yes', 'No') as `Is API`, 
 IF(is_active=1, 'Active', 'Disabled') as `Active`, created, modified FROM `Games` WHERE 1=1";
 $params = [];
