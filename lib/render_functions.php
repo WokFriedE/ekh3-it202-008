@@ -19,3 +19,8 @@ function render_game_card($game = array())
 {
     include(__DIR__ . "/../partials/game_card.php");
 }
+
+function association_game_card($game = array())
+{
+    include(__DIR__ . "/../partials/association_game_card.php");
+}
