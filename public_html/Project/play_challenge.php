@@ -6,7 +6,7 @@ if ($id < 0) {
     flash("Invalid Challenge ID", "danger");
     redirect("daily_game.php");
 }
-
+// ekh - 4/30/24
 $is_start = isset($_GET["start"]);
 $session_key = $_SERVER["SCRIPT_NAME"];
 $max_attempts = 5;
@@ -80,7 +80,7 @@ if ($is_guess) {
         $params[":uid"] = get_user_id();
         $params[":cid"] = $challengeID;
         $params[":attempts"] = $attempts;
-        $params[":timetaken"] = $_POST["startTime"] - time();
+        $params[":timetaken"] = time() - $_POST["startTime"];
         try {
             $stmt = $db->prepare($query);
             $stmt->execute($params);
@@ -105,14 +105,6 @@ if ($is_guess) {
 if (isset($_GET["a"])) {
     $attempts = (int) $_GET["a"];
 }
-
-/* Hints
-1. top critic score 
-2. genres
-3. platforms
-4. publisher
-5. developer
-*/
 ?>
 
 

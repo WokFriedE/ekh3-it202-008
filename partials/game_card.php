@@ -2,9 +2,8 @@
 if (!isset($game)) {
     error_log("Using game partial without data");
     flash("Dev Alert: game called without data", "danger");
-}
+} // ekh3- 4/30/24
 ?>
-
 <?php
 $is_admin = false;
 if (has_role("Admin")) {
@@ -66,7 +65,8 @@ if (isset($game)) :
                     <?php endif; ?>
                     <?php if ($is_admin) : ?>
                         <div class="row">
-                            <a href="<?php echo get_url('admin/delete_daily.php?id=' . $game["id"]); ?>" class="card-link mx-1"><?php echo $is_active ? "Disable" : "Enable"; ?> Challenge</a>
+                            <a href="<?php echo get_url('admin/delete_daily.php?id=' . $game["id"]); ?>" class="card-link mx-1"><?php echo $is_active ? "Disable" : "Enable"; ?>
+                                Challenge</a>
                         </div>
                     <?php endif; ?>
                 </div>

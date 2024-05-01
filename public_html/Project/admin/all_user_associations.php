@@ -1,6 +1,6 @@
 <?php
 require(__DIR__ . "/../../../partials/nav.php");
-
+//ekh3 - 4/30/24
 $is_admin = false;
 if (has_role("Admin")) {
     $is_admin = true;
@@ -63,7 +63,7 @@ if (isset($_GET["enable"])) {
 
 //build search form
 $form = [
-    ["type" => "text", "name" => "name", "placeholder" => "Game Name", "label" => "Game Name", "include_margin" => false],
+    ["type" => "text", "name" => "name", "placeholder" => "Usermame", "label" => "Usermame", "include_margin" => false],
 
 
     ["type" => "date", "name" => "date_min", "placeholder" => "Min Date", "label" => "Min Date", "include_margin" => false],
@@ -82,8 +82,10 @@ error_log("Form data: " . var_export($form, true));
 // Useful query for a leaderboard
 // $query = "SELECT DISTINCT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, d.is_active, (SELECT GROUP_CONCAT(u.username, '#', u.id) FROM Users u JOIN `Completed_Games` cgt ON u.id = cgt.userId WHERE cgt.`DailyGameID`=d.id AND cgt.is_active=1) as Users
 // FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE 1=1";
-$query = "SELECT DISTINCT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, d.is_active, (SELECT GROUP_CONCAT(u.username, '#', u.id) FROM Users u JOIN `Completed_Games` cgt ON u.id = cgt.userId WHERE cgt.`DailyGameID`=d.id AND cgt.is_active=1 AND u.username like :userPattern) as Users
-FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE cg.userID is not null and 1=1";
+$query = "SELECT DISTINCT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, d.is_active, (SELECT GROUP_CONCAT(u.username, '#', u.id) 
+FROM Users u JOIN `Completed_Games` cgt ON u.id = cgt.userId WHERE cgt.`DailyGameID`=d.id AND cgt.is_active=1 AND u.username like :userPattern) as Users
+FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) 
+WHERE cg.userID is not null and 1=1";
 
 $params = [];
 $params[":userPattern"] = "%%";
@@ -284,5 +286,3 @@ $table = [
 <?php
 require_once(__DIR__ . "/../../../partials/flash.php");
 ?>
-
-<!-- TODO make a button to remove all the users that are within the loaded list -> use the UserDone list -->

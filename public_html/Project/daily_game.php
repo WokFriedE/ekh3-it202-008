@@ -1,6 +1,6 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
-
+//Ekh3 - 4/30/24
 $is_admin = false;
 if (has_role("Admin")) {
     $is_admin = true;
