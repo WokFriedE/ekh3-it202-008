@@ -28,3 +28,5 @@ if (isset($_GET["query"])) {
         error_log("Error purchasing broker: " . var_export($e, true));
     }
 }
+
+// Ekh3- 4/30/24

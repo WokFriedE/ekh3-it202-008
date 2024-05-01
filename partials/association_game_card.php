@@ -4,8 +4,7 @@ if (!isset($game)) {
     flash("Dev Alert: game called without data", "danger");
 }
 ?>
-
-<?php
+<?php //ekh - 4/30/24
 $is_admin = false;
 if (has_role("Admin")) {
     $is_admin = true;
@@ -15,18 +14,15 @@ $solved = false;
 if (isset($game["Completed"]) && $game["Completed"] == 1) {
     $solved = true;
 }
-
 $is_admin_view = false;
 if (isset($game["adminView"]) && $game["adminView"] == "true") {
     $is_admin_view = true;
     $solved = true;
 }
-
 $is_active = false;
 if (isset($game["is_active"]) && $game["is_active"] == 1) {
     $is_active = true;
 }
-
 if (isset($game)) :
 ?>
     <div class="card-group">

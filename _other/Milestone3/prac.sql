@@ -197,3 +197,19 @@ WHERE
     dg.id = :gid
     AND dg.is_active = 1
     AND g.is_active = 1
+INSERT INTO
+    `Completed_Games`(
+        userId,
+        DailyGameID,
+        attempts,
+        timeTaken,
+        completed
+    )
+VALUES
+    (1, 1, 5, 10, 1) ON DUPLICATE KEY
+UPDATE
+    userId = 1,
+    DailyGameID = 1,
+    attempts = 5,
+    timeTaken = 10,
+    completed = 1

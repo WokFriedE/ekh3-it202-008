@@ -35,7 +35,7 @@ if ($id > -1) {
 }
 
 if (is_null($game["firstReleaseDate"]) && $game["is_api"] == 1) {
-    redirect("lazy_load_game.php?id=" . $id);
+    redirect("admin/lazy_load_game.php?id=" . $id);
 }
 
 
