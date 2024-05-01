@@ -168,7 +168,32 @@ FROM
     Users u
     JOIN `Completed_Games` cgt ON u.id = cgt.userId
 WHERE
-    `DailyGameID` = 3
+    `DailyGameID` = 3 -- used for getting totalCount
+SELECT
+    count(1) as `totalCount`
+FROM
+    `DailyGame`
+WHERE
+    `id` in (
+        SELECT
+            `DailyGameID`
+        FROM
+            `Completed_Games`
+        WHERE
+            is_active = 1
+    );
 
--- used for getting totalCount
-SELECT count(1) as `totalCount` FROM `DailyGame` WHERE `id` in (SELECT `DailyGameID` FROM `Completed_Games` WHERE is_active=1);
+SELECT
+    dg.id,
+    g.name,
+    g.`firstReleaseDate`,
+    g.`screenshotImgURL`,
+    g.publisher,
+    g.developer
+FROM
+    `DailyGame` dg
+    LEFT JOIN `Games` g on GameID = g.id
+WHERE
+    dg.id = :gid
+    AND dg.is_active = 1
+    AND g.is_active = 1

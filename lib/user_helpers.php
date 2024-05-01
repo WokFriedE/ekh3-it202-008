@@ -1,5 +1,5 @@
-<!-- ekh3 - 4/1/24 -->
 <?php
+//<!-- ekh3 - 4/1/24 -->
 
 /**
  * Passing $redirect as true will auto redirect a logged out user to the $destination.

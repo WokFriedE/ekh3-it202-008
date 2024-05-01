@@ -10,9 +10,9 @@ if (isset($_GET["NoURL"])) {
     flash("No URL Exists", "warning");
 }
 
+
 $id = se($_GET, "id", -1, false);
 $fetch = se($_GET, "fetch", -1, false);
-
 
 $game = [];
 if ($id > -1) {
@@ -44,12 +44,11 @@ foreach ($game as $key => $value) {
     }
 }
 
-//TODO handle manual create stock
 ?>
 <div class="container-fluid center">
     <h3>Game: <?php se($game, "name", "Unknown"); ?> </h3>
     <div>
-        <a href=" <?php redirect("daily_game.php"); ?>" class="btn btn-secondary mb-3">Back</a>
+        <a href="<?php echo get_url("daily_game.php") ?>" class="btn btn-secondary mb-3">Go to Dailys</a>
     </div>
     <div class="row justify-content-md-center">
         <div class="card mx-3" style="width: 18rem;">

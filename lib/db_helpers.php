@@ -279,7 +279,7 @@ function selectGameInfo($gameId, $returnID = false, $active_only = false)
         )
     WHERE Games.id =:gameID";
     if ($active_only)
-        $query .= "AND Games.is_active = 1";
+        $query .= " AND Games.is_active = 1";
     $params[":gameID"] = $gameId;
     error_log("Query: " . $query);
     error_log("Params: " . var_export($params, true));
@@ -377,9 +377,10 @@ function selectInfo($table, $id = -1, $cols = ["name"], $opts = ["active_only" =
 
     $db = getDB();
     $query = "SELECT $columns FROM `$sanitized_table_name` WHERE 1=1";
+
     if ($active_only)
-        $query .= "AND is_active = 1";
-    if ($id !== -1) {
+        $query .= " AND is_active = 1";
+    if ($id != -1) {
         $query .= " AND id=:id";
         $params[":id"] = $id;
     }
@@ -391,7 +392,7 @@ function selectInfo($table, $id = -1, $cols = ["name"], $opts = ["active_only" =
         $queryRes = $stmt->fetch(PDO::FETCH_ASSOC);
         return $queryRes;
     } catch (PDOException $e) {
-        error_log("Something broke with the query" . var_export($e, true));
+        error_log("Something broke with the query " . var_export($e, true));
         flash("An error occurred", "danger");
     }
 }
