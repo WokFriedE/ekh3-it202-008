@@ -11,6 +11,7 @@ $is_start = isset($_GET["start"]);
 $session_key = $_SERVER["SCRIPT_NAME"];
 $max_attempts = 5;
 $is_guess = isset($_POST["guess"]);
+$guess = "";
 
 if ($is_start && !$is_guess) {
     session_delete($session_key);
@@ -43,9 +44,7 @@ if ($is_start && !$is_guess) {
     session_save($session_key, $_POST);
 } else {
     $session_data = session_load($session_key);
-    if ($is_guess) {
-        $guess = se($_POST, "guess", "", false);
-    }
+    $guess = se($_POST, "guess", "", false);
     $_POST = $session_data;
 }
 
@@ -71,13 +70,27 @@ $is_complete = false;
 
 
 if ($is_guess) {
-    $guess = se($_POST, "guess");
-
-    if ($attempts >= $max_attempts) {
-        flash("Max Attempts reached, better luck next time :(", "info");
+    if ($guess == $gameName) {
         $is_complete = true;
-    } elseif ($guess == $gameName) {
-        flash("Congrats! Correct Guess", "Success");
+        $db = getDB();
+        $query = "INSERT INTO `Completed_Games`(userId, DailyGameID, attempts,timeTaken,completed) VALUES (:uid, :cid, :attempts,:timetaken, 1) 
+        ON DUPLICATE KEY UPDATE userId = :uid, DailyGameID= :cid,attempts = :attempts, timeTaken = :timetaken,completed = 1";
+        $params = [];
+
+        $params[":uid"] = get_user_id();
+        $params[":cid"] = $challengeID;
+        $params[":attempts"] = $attempts;
+        $params[":timetaken"] = $_POST["startTime"] - time();
+        try {
+            $stmt = $db->prepare($query);
+            $stmt->execute($params);
+            flash("Congrats! Correct Guess", "Success");
+        } catch (Exception $e) {
+            error_log("Error Adding game $id" . var_export($e, true));
+            flash("Error Adding record", "danger");
+        }
+    } elseif ($attempts >= $max_attempts) {
+        flash("Max Attempts reached, better luck next time :(", "info");
         $is_complete = true;
     } else {
         flash("Incorrect Guess " . ($max_attempts - $attempts) . " attempts remain.", "info");
