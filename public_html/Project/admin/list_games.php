@@ -4,7 +4,7 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    redirect("home.php");
 }
 
 // Ethan Ho - ekh3 - 4/21/24
@@ -76,8 +76,6 @@ $form = [
 ];
 error_log("Form data: " . var_export($form, true));
 
-
-
 $query = "SELECT id, name, publisher, developer, topCriticScore as `top score`, firstReleaseDate as `release date`, IF(is_api=1, 'Yes', 'No') as `Is API`, 
 IF(is_active=1, 'Active', 'Disabled') as `Active`, created, modified FROM `Games` WHERE 1=1";
 $params = [];
@@ -86,7 +84,7 @@ $is_clear = isset($_GET["clear"]);
 if ($is_clear) {
     session_delete($session_key);
     unset($_GET["clear"]);
-    die(header("Location: " . $session_key));
+    redirect($session_key);
 } else {
     $session_data = session_load($session_key);
 }

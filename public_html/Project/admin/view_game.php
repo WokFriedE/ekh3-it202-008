@@ -4,7 +4,7 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    redirect("home.php");
 }
 ?>
 
@@ -25,17 +25,17 @@ if ($id > -1) {
     if (empty($tempGame)) {
         flash("Error: getting game", "danger");
         error_log("ERROR VIEW_GAME: Game is empty");
-        die(header("Location:" . get_url("admin/list_games.php")));
+        redirect("/admin/list_games.php");
     } else {
         $game = $tempGame;
     }
 } else {
     flash("Invalid id passed", "danger");
-    die(header("Location:" . get_url("admin/list_games.php")));
+    redirect("/admin/list_games.php");
 }
 
 if (is_null($game["firstReleaseDate"]) && $game["is_api"] == 1) {
-    die(header("Location: " . get_url("admin/lazy_load_game.php?id=") . $id));
+    redirect("admin/lazy_load_game.php?id=" . $id);
 }
 
 
@@ -54,7 +54,7 @@ foreach ($game as $key => $value) {
 <div class="container-fluid center">
     <h3>Game: <?php se($game, "name", "Unknown"); ?> </h3>
     <div>
-        <a href=" <?php echo get_url("admin/list_games.php"); ?>" class="btn btn-secondary mb-3">Back</a>
+        <a href="javascript:history.go(-1)" class="btn btn-secondary mb-3">Back</a>
         <a href=" <?php echo get_url("admin/edit_game.php?id=") . $id; ?>" class="btn btn-secondary mb-3">Edit</a>
         <a href=" <?php echo get_url("admin/delete_game.php?id=") . $id; ?>" class="btn btn-secondary mb-3">Delete</a>
     </div>

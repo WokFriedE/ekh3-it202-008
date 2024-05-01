@@ -7,8 +7,8 @@
 
 <?php
 require(__DIR__ . "/../../partials/nav.php");
+//<!-- ekh3 - 4/1/24 -->
 ?>
-<!-- ekh3 - 4/1/24 -->
 <form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email/Username</label>
@@ -118,7 +118,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                             $_SESSION["user"]["roles"] = []; //no roles
                         }
                         flash("Welcome, " . get_username());
-                        die(header("Location: home.php"));
+                        redirect("home.php");
                     } else {
                         flash("Invalid Username/Email or Password");
                     }

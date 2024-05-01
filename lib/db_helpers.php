@@ -279,7 +279,7 @@ function selectGameInfo($gameId, $returnID = false, $active_only = false)
         )
     WHERE Games.id =:gameID";
     if ($active_only)
-        $query .= "AND Games.is_active = 1";
+        $query .= " AND Games.is_active = 1";
     $params[":gameID"] = $gameId;
     error_log("Query: " . $query);
     error_log("Params: " . var_export($params, true));
@@ -377,9 +377,10 @@ function selectInfo($table, $id = -1, $cols = ["name"], $opts = ["active_only" =
 
     $db = getDB();
     $query = "SELECT $columns FROM `$sanitized_table_name` WHERE 1=1";
+
     if ($active_only)
-        $query .= "AND is_active = 1";
-    if ($id !== -1) {
+        $query .= " AND is_active = 1";
+    if ($id != -1) {
         $query .= " AND id=:id";
         $params[":id"] = $id;
     }
@@ -391,9 +392,44 @@ function selectInfo($table, $id = -1, $cols = ["name"], $opts = ["active_only" =
         $queryRes = $stmt->fetch(PDO::FETCH_ASSOC);
         return $queryRes;
     } catch (PDOException $e) {
-        error_log("Something broke with the query" . var_export($e, true));
+        error_log("Something broke with the query " . var_export($e, true));
         flash("An error occurred", "danger");
     }
+}
+
+function get_total_count($table_refs, $params = [])
+{
+    //preg_replace('/[^a-zA-Z0-9_-.]/', '', $table_name);
+    //odds will be table name, and evens will be join type
+    //SELECT ... FROM A JOIN B ON a.pk = b.fk JOIN
+    $table_refs = preg_replace('/[^a-zA-Z0-9_\-.`\s=:()]/', '', $table_refs);
+    error_log("Table refs $table_refs");
+    error_log("Params: " . var_export($params, true));
+    foreach ($params as $k => $v) {
+        if (!str_starts_with($k, ":")) {
+            $params[":$k"] = $v;
+            unset($params[$k]);
+        }
+    }
+    $query = "SELECT count(1) as totalCount FROM $table_refs";
+    try {
+        $db = getDB();
+        $stmt = $db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue("$key", $value);
+            error_log("Binding value for $key: $value");
+        }
+        $stmt->execute();
+        $r = $stmt->fetch();
+        if ($r) {
+            return (int)$r["totalCount"];
+        }
+        return 0;
+    } catch (PDOException $e) {
+        error_log("Error getting count for " . var_export($query, true) . ": " . var_export($e, true));
+        flash("Error getting count", "danger");
+    }
+    return -1;
 }
 
 /*
