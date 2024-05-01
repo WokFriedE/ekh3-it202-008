@@ -85,7 +85,8 @@ error_log("Form data: " . var_export($form, true));
 
 
 $query = "SELECT d.id, d.gameId, dailyDate as `date`, g.name, g.`sqrImgURL`, d.is_active
-FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE `userId`=:uid and is_active=1) cg ON d.id = cg.DailyGameID) LEFT JOIN `Games` g on d.gameId = g.id) WHERE cg.`userId` is NULL AND 1=1";
+FROM ((`DailyGame` d LEFT JOIN (SELECT * FROM `Completed_Games` WHERE `userId`=:uid and is_active=1) cg ON d.id = cg.DailyGameID) 
+LEFT JOIN `Games` g on d.gameId = g.id) WHERE cg.`userId` is NULL AND 1=1";
 
 $params = [];
 $params[":uid"] = $uid;
@@ -182,7 +183,7 @@ foreach ($results as $index => $Game) {
 }
 
 // Used to get total count of non associated data
-$query = "SELECT count(1) as `totalCount` FROM `DailyGame` WHERE id not in (SELECT DISTINCT DailyGameID FROM Completed_Games WHERE is_active = 1)";
+$query = "SELECT count(1) as `totalCount` FROM `DailyGame` WHERE id not in (SELECT DISTINCT DailyGameID FROM Completed_Games)";
 try {
     $stmt = $db->prepare($query);
     $stmt->execute();
