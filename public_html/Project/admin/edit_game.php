@@ -4,12 +4,11 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    redirect("home.php");
 }
 ?>
 
 <!-- Ethan Ho - ekh3 - 4/21/24 -->
-
 <?php
 $id = se($_GET, "id", -1, false);
 if (isset($_POST["name"])) {
@@ -139,11 +138,11 @@ if ($id > -1) {
         $game = $r;
     } else {
         flash("Invalid Game passed", "danger");
-        die(header("Location:" . get_url("admin/list_games.php")));
+        redirect("/admin/list_games.php");
     }
 } else {
     flash("Invalid id passed", "danger");
-    die(header("Location:" . get_url("admin/list_games.php")));
+    redirect("/admin/list_games.php");
 }
 
 

@@ -1,4 +1,3 @@
-SELECT id, name, publisher, developer, topCriticScore, firstReleaseDate, is_api, created, modified FROM `Games` WHERE 1=1 ORDER BY date asc LIMIT 5
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();

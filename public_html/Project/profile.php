@@ -1,9 +1,20 @@
 <?php
 require_once(__DIR__ . "/../../partials/nav.php");
-is_logged_in(true);
+//is_logged_in(true);
+$user_id = -1;
+try {
+    $user_id = (int)se($_GET, "id", -1, false);
+} catch (Exception $e) {
+    //we know it's a data format issue
+}
+if ($user_id < 1) {
+    $user_id = get_user_id(); //get our id if we're logged in
+}
+$is_me = $user_id == get_user_id();
+$is_edit = isset($_GET["edit"]);
 ?>
 <?php
-if (isset($_POST["save"])) {
+if ($is_me && $is_edit && isset($_POST["save"])) {
     $email = se($_POST, "email", null, false);
     $username = se($_POST, "username", null, false);
     $hasError = false;
@@ -75,14 +86,11 @@ if (isset($_POST["save"])) {
 
                             flash("Password reset", "success");
                         } else {
-
                             flash("Current password is invalid", "warning");
                         }
                     }
                 } catch (PDOException $e) {
-                    flash("An unexpected error occurred, please try again", "danger");
-                    error_log("Profile pwd change: " . var_export($e->errorInfo, true));
-                    // echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
+                    echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
                 }
             } else {
                 flash("New passwords don't match", "warning");
@@ -93,34 +101,52 @@ if (isset($_POST["save"])) {
 ?>
 
 <?php
-$email = get_user_email();
-$username = get_username();
+$user = [];
+if ($user_id > 0) {
+    $db = getDB();
+    $query = "SELECT email, username, created FROM Users where id = :user_id";
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute([":user_id" => $user_id]);
+        $r = $stmt->fetch();
+        if ($r) {
+            $user = $r;
+        } else {
+            flash("Couldn't find user profile", "warning");
+        }
+    } catch (PDOException $e) {
+        error_log("Error fetching user: " . var_export($e, true));
+        flash("Error fetching user", "danger");
+    }
+}
 ?>
-<form method="POST" onsubmit="return validate(this);">
-    <div class="mb-3">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" value="<?php se($email); ?>" />
-    </div>
-    <div class="mb-3">
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username" value="<?php se($username); ?>" />
-    </div>
-    <!-- DO NOT PRELOAD PASSWORD -->
-    <h3>Password Reset</h3>
-    <div class="mb-3">
-        <label for="cp">Current Password</label>
-        <input type="password" name="currentPassword" id="cp" />
-    </div>
-    <div class="mb-3">
-        <label for="np">New Password</label>
-        <input type="password" name="newPassword" id="np" />
-    </div>
-    <div class="mb-3">
-        <label for="conp">Confirm Password</label>
-        <input type="password" name="confirmPassword" id="conp" />
-    </div>
-    <input type="submit" value="Update Profile" name="save" />
-</form>
+<div class="container-fluid">
+    <?php if ($is_me && $is_edit) : ?>
+        <a class="btn btn-secondary my-3" href="?">View</a>
+        <form method="POST" onsubmit="return validate(this);">
+            <?php render_input(["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "value" => se($user, "email", "", false), "rules" => ["required" => true]]); ?>
+            <?php render_input(["type" => "text", "id" => "username", "name" => "username", "label" => "Username", "value" => se($user, "username", "", false), "rules" => ["required" => true, "maxlength" => 30]]); ?>
+            <!-- DO NOT PRELOAD PASSWORD -->
+            <div class="lead">Password Reset</div>
+            <?php render_input(["type" => "password", "id" => "cp", "name" => "currentPassword", "label" => "Current Password", "rules" => ["minlength" => 8]]); ?>
+            <?php render_input(["type" => "password", "id" => "np", "name" => "newPassword", "label" => "New Password", "rules" => ["minlength" => 8]]); ?>
+            <?php render_input(["type" => "password", "id" => "conp", "name" => "confirmPassword", "label" => "Confirm Password", "rules" => ["minlength" => 8]]); ?>
+            <?php render_input(["type" => "hidden", "name" => "save"]);/*lazy value to check if form submitted, not ideal*/ ?>
+            <?php render_button(["text" => "Update Profile", "type" => "submit"]); ?>
+        </form>
+    <?php else : ?>
+        <?php if ($is_me) : ?>
+            <a class="btn btn-secondary my-3" href="?edit">Edit</a>
+        <?php endif; ?>
+        <div class="card">
+            <div class="card-body">
+                <div class="h4">Username: <?php se($user, "username"); ?></div>
+                <div class="text-body">Joined: <?php se($user, "created"); ?></div>
+                <a class="btn custBtn my-3" href="daily_game.php?id=<?php echo $user_id ?>">Go to User Dailys</a>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
 
 <script>
     function validate(form) {
