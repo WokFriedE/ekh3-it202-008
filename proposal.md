@@ -19,4 +19,4 @@ Milestone 2: https://github.com/WokFriedE/ekh3-it202-008/blob/dev/_other/Milesto
 
 Milestone 3: https://github.com/WokFriedE/ekh3-it202-008/blob/dev/_other/Milestone3/ekh3_it202-api-project-milestone-3-2024_IT202-008-S2024.pdf
 
-Video: [https://www.youtube.com/watch?v=rBgqCHlvno4](https://www.youtube.com/watch?v=rBgqCHlvno4)
+Video: https://youtu.be/u_J7wTOkm2s 
