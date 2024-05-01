@@ -239,8 +239,6 @@ if ($is_reset) {
     }
 }
 
-
-
 $table = [
     "data" => $results, "title" => "Games", "ignored_columns" => ["id"],
     "view_url" => get_url("Game.php"),

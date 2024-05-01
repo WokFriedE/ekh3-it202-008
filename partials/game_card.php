@@ -52,7 +52,7 @@ if (isset($game)) :
                 <div class="card-body">
                     <?php if ($is_active) : ?>
                         <div class="row">
-                            <a href="<?php echo get_url('play_challenge.php?id=' . $game["id"]); ?>" class="card-link mx-1">Try Challenge <?php $solved ? " again" : "" ?></a>
+                            <a href="<?php echo get_url('play_challenge.php?start&id=' . $game["id"]); ?>" class="card-link mx-1">Try Challenge <?php $solved ? " again" : "" ?></a>
                         </div>
                         <?php if ($is_admin_view) : ?>
                             <div class="row">

@@ -7,8 +7,8 @@
 
 <?php
 require(__DIR__ . "/../../partials/nav.php");
+//<!-- ekh3 - 4/1/24 -->
 ?>
-<!-- ekh3 - 4/1/24 -->
 <form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email/Username</label>

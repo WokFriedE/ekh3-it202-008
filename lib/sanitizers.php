@@ -1,8 +1,7 @@
-<!-- // ekh3 - 4/1/24 -->
-<!-- last modify // ekh3 - 4/21/24 -->
-
 
 <?php
+// <!-- // ekh3 - 4/1/24 -->
+// <!-- last modify // ekh3 - 4/21/24 -->
 
 function sanitize_email($email = "")
 {
